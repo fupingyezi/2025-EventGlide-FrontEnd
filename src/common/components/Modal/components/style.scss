@@ -1,0 +1,136 @@
+.modal {
+  font: {
+    family: 'SimHei';
+  }
+
+  &-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  &-gapline {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 4rpx;
+    width: 92%;
+    background-color: #d8c6ef;
+  }
+
+  &-container {
+    background-color: #fff;
+    border-radius: 15rpx;
+    width: 88%;
+    max-width: 92%;
+    min-height: 300rpx;
+    position: relative;
+    box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
+    animation: modalSlideIn 0.3s ease-out;
+
+    @media (max-width: 768px) {
+      width: 90%;
+    }
+  }
+
+  &-header {
+    padding: 40rpx 40rpx 20rpx 40rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+
+  &-title {
+    font-size: 32rpx;
+    color: #170a1e;
+    flex: 1;
+  }
+
+  &-close {
+    position: absolute;
+    right: 20rpx;
+    top: 20rpx;
+    width: 20rpx;
+    height: 20rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:active {
+      opacity: 0.7;
+    }
+  }
+
+  &-content {
+    padding: 40rpx;
+    color: #5e5064;
+    font-size: 30rpx;
+    line-height: 1.6;
+    max-height: 60vh;
+    overflow-y: auto;
+    position: relative;
+
+    /* 隐藏滚动条 */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &-center {
+      text-align: center;
+    }
+  }
+
+  &-footer {
+    display: flex;
+    padding: 20rpx 40rpx;
+    font-size: 32rpx;
+  }
+
+  &-cancel,
+  &-confirm {
+    flex: 1;
+    height: 80rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10rpx;
+    font-size: 32rpx;
+
+    cursor: pointer;
+
+    &:active {
+      opacity: 0.7;
+    }
+  }
+
+  &-cancel {
+    color: #828283;
+    margin-right: 20rpx;
+  }
+
+  &-confirm {
+    color: #b36aeb;
+    margin-left: 20rpx;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(50%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

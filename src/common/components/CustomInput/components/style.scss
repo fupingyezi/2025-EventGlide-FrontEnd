@@ -1,0 +1,107 @@
+.custom-input {
+  font-family: 'SimHei';
+  width: 100%;
+  position: relative;
+
+  &-title {
+    display: block;
+    font-size: 28rpx;
+    color: #5e5064;
+    margin-bottom: 10rpx;
+  }
+
+  &-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #f9f8fc;
+    border-radius: 10rpx;
+    padding: 0 20rpx;
+    min-height: 80rpx;
+    border: 1rpx solid #e0e0e0;
+
+    &:active {
+      border-color: #b36aeb;
+    }
+  }
+
+  &-field {
+    flex: 1;
+    height: 80rpx;
+    font-size: 28rpx;
+    padding: 0 20rpx;
+    color: #170a1e;
+    outline: none;
+    border: none;
+    background: transparent;
+
+    &::placeholder {
+      color: #ccc;
+      font-size: 24rpx;
+    }
+  }
+
+  &-textarea-field {
+    flex: 1;
+    min-height: 80rpx;
+    max-height: 240rpx;
+    font-size: 28rpx;
+    padding: 20rpx;
+    color: #170a1e;
+    outline: none;
+    border: none;
+    background: transparent;
+    line-height: 1.5;
+
+    &::placeholder {
+      color: #ccc;
+      font-size: 24rpx;
+    }
+  }
+
+  &-left-icon {
+    margin-right: 10rpx;
+    font-size: 28rpx;
+    color: #666;
+  }
+
+  &-right-icon {
+    margin-left: 10rpx;
+    font-size: 28rpx;
+    color: #666;
+  }
+
+  &-clear {
+    width: 40rpx;
+    height: 40rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-left: 10rpx;
+    cursor: pointer;
+
+    &-icon {
+      font-size: 24rpx;
+      color: white;
+      line-height: 1;
+    }
+  }
+
+  &-limit {
+    margin-left: 10rpx;
+    font-size: 24rpx;
+    color: #999;
+
+    &-text {
+      font-size: 24rpx;
+      color: #999;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

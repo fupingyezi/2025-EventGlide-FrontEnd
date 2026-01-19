@@ -1,6 +1,5 @@
 import { View, Image, Input, Text } from '@tarojs/components';
 import './index.scss';
-import logo from '@/common/svg/login/logo.svg';
 import eye from '@/common/assets/logo/小眼睛.png';
 import eye1 from '@/common/assets/logo/小眼睛1.png';
 import Logo from '@/common/assets/logo/mainlogo.png';
@@ -10,7 +9,7 @@ import usePostStore from '@/store/PostStore';
 import { useEffect, useState } from 'react';
 import { switchTab } from '@tarojs/taro';
 import handleUserLogin from '@/common/api/Login';
-import PolicyWindow from '@/modules/PolicyWindow';
+import PolicyModal from '@/modules/PolicyModal';
 import Taro from '@tarojs/taro';
 
 const Index = () => {
@@ -34,6 +33,18 @@ const Index = () => {
       setShowError(true);
     }
   };
+
+  // const quicklogin = () => {
+  //   setShowError(false);
+  //   if (isCheck) {
+  //     handleUserLogin({ params: { studentid: '', password: '', setShowError } });
+  //   }
+  // };
+
+  // const frocelogin = () => {
+  //   switchTab({ url: '/pages/indexHome/index' });
+  // };
+
   useEffect(() => {
     if (Taro.getStorageSync('token') && Taro.getStorageSync('sid')) {
       const sid = Taro.getStorageSync('sid');
@@ -136,7 +147,7 @@ const Index = () => {
       <View className="login-page-btn" onClick={handleLogin}>
         登录
       </View>
-      {showPolicyWindow && <PolicyWindow setShowPolicyWindow={setShowPolicyWindow} />}
+      {showPolicyWindow && <PolicyModal setShowPolicyWindow={setShowPolicyWindow} />}
     </View>
   );
 };

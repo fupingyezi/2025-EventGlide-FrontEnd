@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import DatePicker from '@/modules/DatePicker';
 import useActivityStore from '@/store/ActivityStore';
 import { switchTab, useDidShow } from '@tarojs/taro';
-import {NavigationBarBack } from '@/common/components/NavigationBar';
+import { NavigationBarBack } from '@/common/components/NavigationBar';
 
 const Index = () => {
   const [activeOrganizer, setActiveOrganizer] = useState<number[]>([0]);
@@ -32,24 +32,24 @@ const Index = () => {
   useDidShow(() => {
     console.log(selectedInfo);
     if (selectedInfo) {
-      const organizerIndexes = selectedInfo.holderType.map(type => 
-        activeOrganizerOption.indexOf(type)
-      ).filter(index => index !== -1);
+      const organizerIndexes = selectedInfo.holderType
+        .map((type) => activeOrganizerOption.indexOf(type))
+        .filter((index) => index !== -1);
       setActiveOrganizer(organizerIndexes.length > 0 ? organizerIndexes : [0]);
       setActiveOrganizerAll(organizerIndexes.length === activeOrganizerOption.length);
-      
-      const typeIndexes = selectedInfo.type.map(type => 
-        activeTypeOption.indexOf(type)
-      ).filter(index => index !== -1);
+
+      const typeIndexes = selectedInfo.type
+        .map((type) => activeTypeOption.indexOf(type))
+        .filter((index) => index !== -1);
       setActiveType(typeIndexes.length > 0 ? typeIndexes : [0]);
       setActiveTypeAll(typeIndexes.length === activeTypeOption.length);
-      
-      const siteIndexes = selectedInfo.position.map(type => 
-        activeSiteOption.indexOf(type)
-      ).filter(index => index !== -1);
+
+      const siteIndexes = selectedInfo.position
+        .map((type) => activeSiteOption.indexOf(type))
+        .filter((index) => index !== -1);
       setActiveSite(siteIndexes.length > 0 ? siteIndexes : [0]);
       setActiveSiteAll(siteIndexes.length === activeSiteOption.length);
-      
+
       setSignText(selectedInfo.if_register);
       if (selectedInfo.if_register === '否') {
         setNeedSign(false);
@@ -58,7 +58,7 @@ const Index = () => {
         setNeedSign(true);
         setNotSign(false);
       }
-      
+
       setStartTime(selectedInfo.detailTime?.startTime || '');
       setEndTime(selectedInfo.detailTime?.endTime || '');
     }
@@ -115,7 +115,7 @@ const Index = () => {
       } else {
         setSignText('');
       }
-    } else{
+    } else {
       setNotSign(!notSign);
       setNeedSign(false);
       if (signText === '') {
@@ -157,13 +157,9 @@ const Index = () => {
 
   const handleTimeConfirm = (item) => {
     if (timeType === 'start') {
-      setStartTime(
-        `${item.date}-${item.time}`
-      );
+      setStartTime(`${item.date}-${item.time}`);
     } else if (timeType === 'end') {
-      setEndTime(
-        `${item.date}-${item.time}`
-      );
+      setEndTime(`${item.date}-${item.time}`);
     }
     setIsDatePickerVisiable(false);
   };

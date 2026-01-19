@@ -1,5 +1,5 @@
 import './style.scss';
-import { View, Image, Text } from '@tarojs/components';
+import { View, Image } from '@tarojs/components';
 import { useState, memo } from 'react';
 import Taro from '@tarojs/taro';
 import Picture from '@/common/components/Picture';
@@ -11,7 +11,7 @@ import useActiveInfoStore from '@/store/activeInfoStore';
 import useActivityStore from '@/store/ActivityStore';
 import useUserStore from '@/store/userStore';
 import post from '@/common/api/post';
-import handleInteraction from '@/common/const/Interaction';
+import handleInteraction from '@/common/utils/Interaction';
 import cancel from '@/common/assets/Postlist/cancel.png';
 
 const Label: React.FC<{ text: string }> = memo(({ text }) => {
@@ -142,7 +142,7 @@ const PostWindow: React.FC<{
     showImg: imgUrl,
     labelform,
   } = useActiveInfoStore((state) => state);
-  const [showPic, setShowPic] = useState<string[]>(imgUrl);
+  const [showPic] = useState<string[]>(imgUrl);
   let signText = '无需报名';
   if (labelform.if_register === '是') signText = '需要报名';
   const labelList = [labelform.type, labelform.holderType, signText];
@@ -158,10 +158,11 @@ const PostWindow: React.FC<{
         <View className="post-window">
           <View className="post-window-background"></View>
           <View className="post-window-container">
-            <Image 
-            src={cancel} 
-            className="post-window-close" 
-            onClick={() => props.setShowPostWindow(false)} />
+            <Image
+              src={cancel}
+              className="post-window-close"
+              onClick={() => props.setShowPostWindow(false)}
+            />
             <View className="post-window-header">{title !== '' ? title : defaultTitle}</View>
             <View className="post-window-gapline1"></View>
             <View className="post-window-content">
@@ -208,10 +209,11 @@ const PostWindow: React.FC<{
         <View className="post-window">
           <View className="post-window-background"></View>
           <View className="post-window-container">
-            <Image 
-            src={cancel} 
-            className="post-window-close" 
-            onClick={() => props.setShowPostWindow(false)} />
+            <Image
+              src={cancel}
+              className="post-window-close"
+              onClick={() => props.setShowPostWindow(false)}
+            />
             <View className="post-window-header">{showList.title}</View>
             <View className="post-window-gapline1"></View>
             <View className="post-window-content">

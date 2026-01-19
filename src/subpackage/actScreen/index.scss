@@ -5,8 +5,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  top: 180rpx;
+  position: relative;
+  margin-top: 180rpx;
   &-container {
     width: 86%;
     height: 270rpx;

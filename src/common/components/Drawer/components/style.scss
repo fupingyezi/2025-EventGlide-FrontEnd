@@ -1,0 +1,61 @@
+.drawer {
+  font-family: 'SimHei';
+
+  &-content-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 20rpx 20rpx 0 0;
+  }
+
+  &-header {
+    padding: 40rpx 40rpx 20rpx 40rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+
+    .drawer-gapline {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 4rpx;
+      width: 100%;
+      background-color: #d8c6ef;
+    }
+  }
+
+  &-title {
+    font-size: 32rpx;
+    color: #170a1e;
+    flex: 1;
+  }
+
+  &-close {
+    position: relative;
+    width: 20rpx;
+    height: 20rpx;
+    margin-left: 20rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &-content {
+    flex: 1;
+    padding: 40rpx;
+    color: #5e5064;
+    font-size: 30rpx;
+    line-height: 1.6;
+    overflow-y: auto;
+    position: relative;
+
+    /* 隐藏滚动条 */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

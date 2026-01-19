@@ -15,8 +15,8 @@ import post from '@/common/api/post';
 import { responseType } from '@/common/types/PostList';
 import useActivityStore from '@/store/ActivityStore';
 import useUserStore from '@/store/userStore';
-import handleInteraction from '@/common/const/Interaction';
-import ReplyWindow from '@/modules/ReplyWindow';
+import handleInteraction from '@/common/utils/Interaction';
+import ReplyInput from '@/modules/ReplyInput';
 import { ScrollView } from '@tarojs/components';
 
 export const SetReponseContext = createContext<(params: any) => void>(() => {});
@@ -506,7 +506,7 @@ const Index = () => {
               <Input
                 className="comment-popup-box-input"
                 placeholder="在此输入"
-                placeholderClass="blogDetail-comment-input-text-input"
+                placeholderClass="postDetail-comment-input-text-input"
                 value={inputValue}
                 focus={true}
                 onInput={(e) => handleInput(e)}
@@ -527,7 +527,7 @@ const Index = () => {
 
       {isVisible? 
       <SetReponseContext.Provider value={setReponseContext}>
-        <ReplyWindow
+        <ReplyInput
           isVisible={isVisible}
           setIsVisible={setIsVisible}
           params={reply_params}

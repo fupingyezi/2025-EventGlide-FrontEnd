@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "EventGlide",
   "description": "MuxiMiniPeoject",
-  "appid": "wx2b136b4bff291fba",
+  "appid": "wxb8d843f0289294eb",
   "setting": {
     "urlCheck": true,
     "es6": true,
@@ -21,13 +21,26 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
   "condition": {},
-  "libVersion": "3.7.7",
+  "libVersion": "3.10.3",
   "srcMiniprogramRoot": "dist/",
   "packOptions": {
     "ignore": [],
