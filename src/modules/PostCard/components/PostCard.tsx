@@ -10,7 +10,7 @@ import handleInteraction from '@/common/utils/Interaction';
 
 const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
   const [isVisiable, setIsVisiable] = useState(isShowImg);
-  const { setBlogIndex, setLikeNumChange } = usePostStore();
+  const { setBlogIndex } = usePostStore();
   const [islike, setIsLike] = useState(item.isLike === 'true');
   const [likeNum, setLikeNum] = useState(item.likeNum);
   const studentid = Taro.getStorageSync('sid');

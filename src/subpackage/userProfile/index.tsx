@@ -1,5 +1,5 @@
 import { View, Image, Input } from '@tarojs/components';
-import { navigateTo } from '@tarojs/taro';
+import { reLaunch } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import './index.scss';
@@ -9,9 +9,8 @@ import departmentSrc from '@/common/assets/mineInfo/院系.png';
 import cardSrc from '@/common/assets/mineInfo/一卡通号.png';
 import useUserStore from '@/store/userStore';
 import ImagePicker from '@/modules/ImagePicker';
-import classnames from 'classnames';
 import post from '@/common/api/post';
-import { NavigationBar, NavigationBarBack } from '@/common/components/NavigationBar';
+import { NavigationBarBack } from '@/common/components/NavigationBar';
 import PictureCut from '@/modules/picturecut/components/picturecut';
 const Index = () => {
   const {
@@ -53,7 +52,7 @@ const Index = () => {
       if (res.msg === 'success') {
         Taro.showToast({ title: '退出成功', icon: 'success' });
         Taro.removeStorageSync('token');
-        navigateTo({ url: '/pages/login/index' });
+        reLaunch({ url: '/pages/login/index' });
       }
     });
   };

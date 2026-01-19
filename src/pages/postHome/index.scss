@@ -1,13 +1,13 @@
 .blog-page {
   width: 100%;
-  height: calc(100% - 180rpx);
+  height: calc(100vh - 180rpx);
   overflow: hidden;
   background-color: #f9f8fc;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  top: 180rpx;
+  margin-top: 180rpx;
+
   .blog-container {
     background-color: #f9f8fc;
     width: 90%;

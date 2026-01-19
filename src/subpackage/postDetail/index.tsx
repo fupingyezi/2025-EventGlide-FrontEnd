@@ -1,4 +1,4 @@
-import { View, Image, Input, Swiper, SwiperItem } from '@tarojs/components';
+import { View, Image, Swiper, SwiperItem } from '@tarojs/components';
 import { useState, useEffect, createContext } from 'react';
 import Taro, { useDidShow } from '@tarojs/taro';
 import './index.scss';
@@ -9,7 +9,6 @@ import collectActive from '@/common/svg/post/starAct.svg';
 import favorActive from '@/common/svg/post/heartAct.svg';
 import comment from '@/common/assets/Postlist/comment.png';
 import icon from '@/common/assets/Postlist/inputIcon.png';
-import iconr from '@/common/assets/Postlist/inputIconr.png';
 import { responseType, creatorType } from '@/common/types/PostList';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
@@ -19,22 +18,17 @@ import post from '@/common/api/post';
 import BlogComment from '@/modules/BlogComment/components';
 import ReplyInput from '@/modules/ReplyInput';
 import CommentOperation from '@/modules/CommentOperation';
-import { it } from 'node:test';
 
 export const SetBlogReponseContext = createContext<(params: any) => void>(() => {});
 export const SetBlogComment = createContext<(params: any) => void>(() => {});
 
 const Index = () => {
-  const defaultDesc =
-    '为了让大家更好地了解该活动，请介绍一下活动 亮点，活动流程和注意事项等内容......';
   const [marginTop, setMarginTop] = useState(0);
   const [response, setResponse] = useState<responseType[]>([]);
   const [inputValue, setInputValue] = useState('');
   const { avatar } = useUserStore((state) => state);
   const studentid = Taro.getStorageSync('sid');
-  const { blogList, blogIndex, setCommentNumChange, backPage, setBlogList } = usePostStore(
-    (state) => state
-  );
+  const { blogList, blogIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRequest, setIsRequest] = useState(true);
   const [reply_id, setReply_id] = useState('');
@@ -326,22 +320,22 @@ const Index = () => {
     <>
       <View className="postDetail">
         <NavigationBar url={`/pages/${backPage}/index`} userInfo={Item.userInfo} />
-        <View className="blogDetail-content">
+        <View className="postDetail-content">
           {maxheight > 0 && (
-            <View className="blogDetail-content-avatar" onClick={handleImageClick}>
+            <View className="postDetail-content-avatar" onClick={handleImageClick}>
               <View style={`width: ${windowWidth}px; height: ${windowWidth * maxheight}px`} />
               <Swiper
-                className="blogDetail-content-avatar-swiper"
+                className="postDetail-content-avatar-swiper"
                 indicatorDots={true}
                 circular={false}
                 current={currentIndex}
                 onChange={(e) => setCurrentIndex(e.detail.current)}
               >
                 {Item.showImg.map((item, index) => (
-                  <SwiperItem key={index} className="blogDetail-content-avatar-swiper-item">
+                  <SwiperItem key={index} className="postDetail-content-avatar-swiper-item">
                     <Image
                       src={item}
-                      className={`blogDetail-content-avatar-swiper-item-${imageRatios[index]}`}
+                      className={`postDetail-content-avatar-swiper-item-${imageRatios[index]}`}
                       mode={imageRatios[index] === 'widthimg' ? 'widthFix' : 'heightFix'}
                     />
                   </SwiperItem>
@@ -349,9 +343,9 @@ const Index = () => {
               </Swiper>
             </View>
           )}
-          <View className="blogDetail-content-title">{Item.title}</View>
-          <View className="blogDetail-content-desc">{Item.introduce || ''}</View>
-          <View className="blogDetail-content-timesite">{Item.publishTime}</View>
+          <View className="postDetail-content-title">{Item.title}</View>
+          <View className="postDetail-content-desc">{Item.introduce || ''}</View>
+          <View className="postDetail-content-timesite">{Item.publishTime}</View>
         </View>
         <View className="postDetail-comment" style={{ top: `${marginTop}px` }}>
           <View className="postDetail-comment-number">共{Item.commentNum}条评论</View>
@@ -414,32 +408,32 @@ const Index = () => {
             <View className="postDetail-footer-desc-text">{Item.collectNum}</View>
             <Image className="postDetail-footer-desc-icon3" mode="widthFix" src={comment}></Image>
             <View className="postDetail-footer-desc-text">{Item.commentNum}</View>
-            <View className="blogDetail-footer-desc">
-              <View className="blogDetail-footer-desc-item">
+            <View className="postDetail-footer-desc">
+              <View className="postDetail-footer-desc-item">
                 <Image
-                  className="blogDetail-footer-desc-icon1"
+                  className="postDetail-footer-desc-icon1"
                   mode="widthFix"
                   src={Item.isLike === 'true' ? favorActive : favor}
                   onClick={handleLike}
                 ></Image>
-                <View className="blogDetail-footer-desc-text">{Item.likeNum}</View>
+                <View className="postDetail-footer-desc-text">{Item.likeNum}</View>
               </View>
-              <View className="blogDetail-footer-desc-item">
+              <View className="postDetail-footer-desc-item">
                 <Image
-                  className="blogDetail-footer-desc-icon2"
+                  className="postDetail-footer-desc-icon2"
                   mode="widthFix"
                   src={Item.isCollect === 'true' ? collectActive : collect}
                   onClick={handleCollect}
                 ></Image>
-                <View className="blogDetail-footer-desc-text">{Item.collectNum}</View>
+                <View className="postDetail-footer-desc-text">{Item.collectNum}</View>
               </View>
-              <View className="blogDetail-footer-desc-item">
+              <View className="postDetail-footer-desc-item">
                 <Image
-                  className="blogDetail-footer-desc-icon3"
+                  className="postDetail-footer-desc-icon3"
                   mode="widthFix"
                   src={comment}
                 ></Image>
-                <View className="blogDetail-footer-desc-text">{Item.commentNum}</View>
+                <View className="postDetail-footer-desc-text">{Item.commentNum}</View>
               </View>
             </View>
           </View>

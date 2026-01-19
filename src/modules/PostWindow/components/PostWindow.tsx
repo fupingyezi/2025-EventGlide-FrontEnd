@@ -1,5 +1,5 @@
 import './style.scss';
-import { View, Image, Text } from '@tarojs/components';
+import { View, Image } from '@tarojs/components';
 import { useState, memo } from 'react';
 import Taro from '@tarojs/taro';
 import Picture from '@/common/components/Picture';
@@ -142,7 +142,7 @@ const PostWindow: React.FC<{
     showImg: imgUrl,
     labelform,
   } = useActiveInfoStore((state) => state);
-  const [showPic, setShowPic] = useState<string[]>(imgUrl);
+  const [showPic] = useState<string[]>(imgUrl);
   let signText = '无需报名';
   if (labelform.if_register === '是') signText = '需要报名';
   const labelList = [labelform.type, labelform.holderType, signText];

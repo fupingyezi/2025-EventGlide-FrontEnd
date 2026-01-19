@@ -4,7 +4,6 @@ import './style.scss';
 import MyActivityCard from '@/modules/MyActivityCard';
 import get from '@/common/api/get';
 import post from '@/common/api/post';
-import useUserStore from '@/store/userStore';
 import useActivityStore from '@/store/ActivityStore';
 import { ActivityDetailList } from '@/common/types/ActiveList';
 import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';

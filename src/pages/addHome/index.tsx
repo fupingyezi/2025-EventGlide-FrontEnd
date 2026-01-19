@@ -38,15 +38,13 @@ const Index = () => {
           <View className="add-text">活动填写后可在主页发布</View>
         </View>
         <View className="add-begin">
-          <View className="add-btn">
-            <Button
-              url={addBtn.url}
-              text={addBtn.text}
-              backgroundColor={addBtn.backgroundColor}
-              textColor={addBtn.textColor}
-              isBorder={addBtn.isBorder}
-            ></Button>
-          </View>
+          <Button
+            url={addBtn.url}
+            text={addBtn.text}
+            backgroundColor={addBtn.backgroundColor}
+            textColor={addBtn.textColor}
+            isBorder={addBtn.isBorder}
+          ></Button>
           <View className="add-remind">
             <Image src={remindpic} className="remind-pic" mode="widthFix"></Image>
             <View className="remind-text" onClick={handleAddRulesClick}>

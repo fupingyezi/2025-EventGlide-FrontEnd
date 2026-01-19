@@ -7,7 +7,6 @@ import searchpic from '@/common/assets/Postlist/搜索.png';
 import post from '@/common/api/post';
 import useActivityStore from '@/store/ActivityStore';
 import get from '@/common/api/get';
-import useUserStore from '@/store/userStore';
 
 const datelist = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 const typelist = ['文艺', '体育', '竞赛', '游戏', '学术'];
@@ -20,7 +19,6 @@ const ActivityTabs: React.FC<{
   const [checkTypeIndex, setCheckTypeIndex] = useState<number>(-1);
   const [searchValue, setSearchValue] = useState<string>('');
   const { setActiveList } = useActivityStore();
-  const { studentid } = useUserStore();
   const [placeholder, setPlaceholder] = useState<string>('在这里可以查找你想要的活动哦');
   const handleDateClick = (index: number) => {
     if (checkDateIndex === index) {
@@ -51,7 +49,7 @@ const ActivityTabs: React.FC<{
   };
   const handleSearch = () => {
     if (searchValue === '') {
-      get('/act/all').then((res) => {
+      get(`/act/all`).then((res) => {
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {

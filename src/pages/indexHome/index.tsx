@@ -9,7 +9,6 @@ import useActivityStore from '@/store/ActivityStore';
 import { judgeDate } from '@/common/utils/DateList';
 import get from '@/common/api/get';
 import post from '@/common/api/post';
-import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import IndexPageNull from '@/modules/EmptyComponent/components/indexpagenull';
@@ -20,7 +19,6 @@ const Index = () => {
   const { activeList, setActiveList, setSelectedItem, selectedInfo, isSelect } = useActivityStore();
   const [approximateTime, setApproximateTime] = useState<string>('');
   const [type, setType] = useState<string>('');
-  const studentid = Taro.getStorageSync('sid');
   const { setBlogList } = usePostStore();
 
   useLoad(() => {
@@ -41,8 +39,7 @@ const Index = () => {
           console.log(err);
         });
     } else {
-      console.log('studentid:', studentid);
-      get('/act/all')
+      get(`/act/all`)
         .then((res) => {
           console.log(res);
           setActiveList(res.data);
@@ -64,7 +61,7 @@ const Index = () => {
     <>
       <NavigationBarTabBar backgroundColor="#F8F9FC" title="首页"></NavigationBarTabBar>
       <ScrollView
-        className="active"
+        className="indexHome"
         scrollY={true}
         usingSticky={true}
         enhanced={true}
@@ -73,6 +70,7 @@ const Index = () => {
         <View className="sticky-header">
           <ActivityTabs setApproximateTime={setApproximateTime} setType={setType}></ActivityTabs>
         </View>
+
         <View className="sticky-item">
           {filteredActivities.length === 0 ? (
             <IndexPageNull />

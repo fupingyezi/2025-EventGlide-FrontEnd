@@ -5,8 +5,7 @@ import Taro, { navigateTo, useDidShow } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import arrowheadw from '@/common/assets/arrowhead/引导箭头-白.png';
-import arrowheadp from '@/common/assets/arrowhead/引导箭头-紫.png';
-import check from '@/common/assets/Postlist/check.png'
+import check from '@/common/assets/Postlist/check.png';
 import get from '@/common/api/get';
 import post from '@/common/api/post';
 import useUserStore from '@/store/userStore';
@@ -17,6 +16,7 @@ import PostCard from '@/modules/PostCard';
 import usePostStore from '@/store/PostStore';
 import PostWindow from '@/modules/PostWindow';
 import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';
+
 const Index = () => {
   const [activePage, setActivePage] = useState<'activity' | 'post'>('post');
   const [activeIndex, setActiveIndex] = useState<'release' | 'like' | 'favourite'>('release');
@@ -24,7 +24,7 @@ const Index = () => {
   const [isShowList, setIsShowList] = useState<number[]>([0, 1, 2, 3]);
   const { setBlogIndex, setBackPage } = usePostStore();
   const [minePostList, setMinePostList] = useState<blogType[]>([]);
-  const { avatar, studentid, username, school, setAvatar, setUsername, setSchool } = useUserStore();
+  const { avatar, username, school, setAvatar, setUsername, setSchool } = useUserStore();
   const sid = Taro.getStorageSync('sid');
   const { setIsSelect } = useActivityStore();
 
@@ -49,7 +49,7 @@ const Index = () => {
   useEffect(() => {
     if (activePage === 'post') {
       if (activeIndex === 'release') {
-        get('/post/own')
+        get(`/post/own`)
           .then((res) => {
             console.log('发布：', res.data);
             if (res.data === null) {
@@ -182,6 +182,7 @@ const Index = () => {
             ></Image>
           </View>*/}
         </View>
+
         <View className="mine-order-title" id="scrollView">
           <View className="mine-order-title-choice">
             <View
@@ -200,7 +201,10 @@ const Index = () => {
             >
               活动
             </View>
-            <View className='mine-order-title-choice-check' onClick={() => navigateTo({ url: '/subpackage/isChecking/index' })}>
+            <View
+              className="mine-order-title-choice-check"
+              onClick={() => navigateTo({ url: '/subpackage/isChecking/index' })}
+            >
               审核
             </View>
             <Image className="mine-order-title-choice-img" src={check}></Image>
@@ -235,31 +239,31 @@ const Index = () => {
         </View>
 
         <View className="mine-content">
-        {activePage === 'post' ? (
-          minePostList.length === 0 ? (
-            <MinePageNull />
+          {activePage === 'post' ? (
+            minePostList.length === 0 ? (
+              <MinePageNull />
+            ) : (
+              <GridView type="masonry" crossAxisGap={5} mainAxisGap={5}>
+                {minePostList.map((item, index) => (
+                  <View
+                    key={index}
+                    id={`post-item-${index}`}
+                    onClick={() => {
+                      setBlogIndex(item.bid);
+                      setBackPage('mineHome');
+                    }}
+                  >
+                    <PostCard item={item} index={index} isShowImg={isShowList.includes(index)} />
+                  </View>
+                ))}
+              </GridView>
+            )
           ) : (
-            <GridView type="masonry" crossAxisGap={5} mainAxisGap={5} padding={[10, 10, 10, 10]}>
-              {minePostList.map((item, index) => (
-                <View
-                  key={index}
-                  id={`post-item-${index}`}
-                  onClick={() => {
-                    setBlogIndex(item.bid);
-                    setBackPage('mineHome');
-                  }}
-                >
-                  <PostCard item={item} index={index} isShowImg={isShowList.includes(index)} />
-                </View>
-              ))}
-            </GridView>
-          )
-        ) : (
-          <MineActivity
-            activeIndex={activeIndex}
-            setIsShowActivityWindow={setIsShowActivityWindow}
-          />
-        )}          
+            <MineActivity
+              activeIndex={activeIndex}
+              setIsShowActivityWindow={setIsShowActivityWindow}
+            />
+          )}
         </View>
       </ScrollView>
       {isShowActivityWindow && (
