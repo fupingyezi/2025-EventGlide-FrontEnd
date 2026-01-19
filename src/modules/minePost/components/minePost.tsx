@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { View, ScrollView, GridView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { useState, useEffect } from 'react';
-import Post from '@/modules/Post';
+import PostCard from '@/modules/PostCard';
 import './style.scss';
 import usePostStore from '@/store/PostStore';
 import useUserStore from '@/store/userStore';

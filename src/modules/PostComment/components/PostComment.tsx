@@ -5,7 +5,7 @@ import { responseType } from '@/common/types/PostList';
 import defaultAvatar from '@/common/assets/Postlist/波奇.jpg';
 import favor from '@/common/svg/post/heart.svg';
 import favorAct from '@/common/svg/post/heartAct.svg';
-import TimeTranslation from '@/common/const/TimeTranslation';
+import TimeTranslation from '@/common/utils/TimeTranslation';
 import ReplyComment from '@/modules/ReplyComment';
 
 const PostComment: React.FC<responseType | any> = memo((props) => {

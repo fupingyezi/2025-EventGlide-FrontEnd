@@ -6,7 +6,7 @@ import Taro from '@tarojs/taro';
 import Picture from '@/common/components/Picture';
 import draft from '@/common/svg/add/draft.svg';
 import DraftWinodw from '@/modules/draftWinow';
-import AlbumWindow from '@/modules/albumWindow';
+import ImagePicker from '@/modules/ImagePicker';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import { useDidShow } from '@tarojs/taro';
 import get from '@/common/api/get';
@@ -146,7 +146,7 @@ const Index = () => {
         />
       )}
       {isShowAlbum && (
-        <AlbumWindow
+        <ImagePicker
           isVisiable={isShowAlbum}
           setIsVisiable={setIsShowAlbum}
           isOverlay={true}

@@ -2,8 +2,8 @@ import './style.scss';
 import { memo, useState } from 'react';
 import { View, PageContainer } from '@tarojs/components';
 import DatePicker from '@/modules/DatePicker';
-import AlbumWindow from '@/modules/albumWindow';
-import { year, month, day, hour, minute } from '@/common/const/DateList';
+import ImagePicker from '@/modules/ImagePicker';
+import { year, month, day, hour, minute } from '@/common/utils/DateList';
 import { it } from 'node:test';
 
 const FormWindow: React.FC<any> = memo(function FormWindow({ ...props }) {
@@ -46,7 +46,7 @@ const FormWindow: React.FC<any> = memo(function FormWindow({ ...props }) {
   switch (props.type) {
     case 'albumChoice':
       return (
-        <AlbumWindow
+        <ImagePicker
           isVisiable={props.isVisiable}
           setIsVisiable={props.setIsVisiable}
           imgUrl={props.activeForm}

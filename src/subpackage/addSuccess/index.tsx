@@ -5,7 +5,7 @@ import img from '@/common/assets/add/提交成功.png';
 
 const Index = () => {
   const btn1 = {
-    url: '/subpackage/isChecking/index',
+    url: '/subpackage/review/index',
     text: '查看详细',
     backgroundColor: '#CF79FA',
     textColor: '#FFFEFF',

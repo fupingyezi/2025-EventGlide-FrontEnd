@@ -2,7 +2,7 @@ import './style.scss';
 import { View, Image } from '@tarojs/components';
 import { replyType } from '@/common/types/PostList';
 import { memo } from 'react';
-import TimeTranslation from '@/common/const/TimeTranslation';
+import TimeTranslation from '@/common/utils/TimeTranslation';
 
 const ReplyComment: React.FC<replyType | any> = memo(({ ...props }) => {
   return (

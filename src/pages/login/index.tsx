@@ -10,7 +10,7 @@ import usePostStore from '@/store/PostStore';
 import { useEffect, useState } from 'react';
 import { switchTab } from '@tarojs/taro';
 import handleUserLogin from '@/common/api/Login';
-import PolicyWindow from '@/modules/PolicyWindow';
+import PolicyModal from '@/modules/PolicyModal';
 import Taro from '@tarojs/taro';
 
 const Index = () => {
@@ -150,7 +150,7 @@ const Index = () => {
       <View onClick={frocelogin}>
         强制登录
       </View>*/}
-      {showPolicyWindow && <PolicyWindow setShowPolicyWindow={setShowPolicyWindow} />}
+      {showPolicyWindow && <PolicyModal setShowPolicyWindow={setShowPolicyWindow} />}
     </View>
   );
 };

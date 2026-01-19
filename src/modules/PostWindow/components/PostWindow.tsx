@@ -11,7 +11,7 @@ import useActiveInfoStore from '@/store/activeInfoStore';
 import useActivityStore from '@/store/ActivityStore';
 import useUserStore from '@/store/userStore';
 import post from '@/common/api/post';
-import handleInteraction from '@/common/const/Interaction';
+import handleInteraction from '@/common/utils/Interaction';
 
 const Label: React.FC<{ text: string }> = memo(({ text }) => {
   return <View className="post-window-label-item">{text}</View>;

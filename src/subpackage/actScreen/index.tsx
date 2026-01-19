@@ -9,7 +9,7 @@ import classnames from 'classnames';
 import { useState } from 'react';
 import DatePicker from '@/modules/DatePicker';
 import useActivityStore from '@/store/ActivityStore';
-import { year, month, day, hour, minute } from '@/common/const/DateList';
+import { year, month, day, hour, minute } from '@/common/utils/DateList';
 import { switchTab, useDidShow } from '@tarojs/taro';
 import { NavigationBar, NavigationBarBack } from '@/common/components/NavigationBar';
 

@@ -12,10 +12,10 @@ import useUserStore from '@/store/userStore';
 import useActivityStore from '@/store/ActivityStore';
 import { blogType } from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
-import Post from '@/modules/Post';
+import PostCard from '@/modules/PostCard';
 import usePostStore from '@/store/PostStore';
 import PostWindow from '@/modules/PostWindow';
-import MinePageNull from '@/modules/null/components/minepagenull';
+import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';
 const Index = () => {
   const [activePage, setActivePage] = useState<'activity' | 'post'>('post');
   const [activeIndex, setActiveIndex] = useState<'release' | 'like' | 'favourite'>('release');
@@ -166,7 +166,7 @@ const Index = () => {
               className="mine-user-arrowhead"
               mode="widthFix"
               src={arrowheadw}
-              onClick={() => navigateTo({ url: '/subpackage/mineInfo/index' })}
+              onClick={() => navigateTo({ url: '/subpackage/userProfile/index' })}
             ></Image>
           </View>
 
@@ -174,7 +174,7 @@ const Index = () => {
             <View className="mine-user-check-info">审核中</View>
             <Image
               className="mine-user-check-arrowhead"
-              onClick={() => navigateTo({ url: '/subpackage/isChecking/index' })}
+              onClick={() => navigateTo({ url: '/subpackage/review/index' })}
               mode="widthFix"
               src={arrowheadp}
             ></Image>
@@ -241,7 +241,7 @@ const Index = () => {
                     setBackPage('mineHome');
                   }}
                 >
-                  <Post item={item} index={index} isShowImg={isShowList.includes(index)} />
+                  <PostCard item={item} index={index} isShowImg={isShowList.includes(index)} />
                 </View>
               ))}
             </GridView>

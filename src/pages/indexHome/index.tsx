@@ -1,18 +1,18 @@
 import { View, ScrollView } from '@tarojs/components';
-import Active from '@/modules/activityItem/index';
+import ActivityCard from '@/modules/ActivityCard/index';
 import { useDidShow, useLoad } from '@tarojs/taro';
 import './index.scss';
-import Sticky from '@/modules/index-sticky/index';
+import ActivityTabs from '@/modules/ActivityTabs/index';
 import PostWindow from '@/modules/PostWindow';
 import { useState } from 'react';
 import useActivityStore from '@/store/ActivityStore';
-import { judgeDate } from '@/common/const/DateList';
+import { judgeDate } from '@/common/utils/DateList';
 import get from '@/common/api/get';
 import post from '@/common/api/post';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
-import IndexPageNull from '@/modules/null/components/indexpagenull';
+import IndexPageNull from '@/modules/EmptyComponent/components/indexpagenull';
 
 const Index = () => {
   const [showPostWindow, setShowPostWindow] = useState(false);
@@ -67,7 +67,7 @@ const Index = () => {
         showScrollbar={false}
       >
         <View className="sticky-header">
-          <Sticky setApproximateTime={setApproximateTime} setType={setType}></Sticky>
+          <ActivityTabs setApproximateTime={setApproximateTime} setType={setType}></ActivityTabs>
         </View>
         <View className="sticky-item">
           {filteredActivities.length === 0 ? (
@@ -80,7 +80,11 @@ const Index = () => {
                   setSelectedItem(activeItem);
                 }}
               >
-                <Active key={index} activeItem={activeItem} setShowPostWindow={setShowPostWindow} />
+                <ActivityCard
+                  key={index}
+                  activeItem={activeItem}
+                  setShowPostWindow={setShowPostWindow}
+                />
               </View>
             ))
           )}
