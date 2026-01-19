@@ -61,6 +61,7 @@
       font-size: 24rpx;
       color: #b72b2b;
       margin-left: 20rpx;
+      margin-top: -25rpx;
     }
     &-privacy {
       position: absolute;
@@ -69,6 +70,7 @@
       color: #5e5064;
       margin-left: 20rpx;
       display: flex;
+      align-items: center;
       &-check {
         width: 28rpx;
         height: 28rpx;

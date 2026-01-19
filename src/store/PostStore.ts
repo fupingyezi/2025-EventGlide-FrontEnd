@@ -10,6 +10,7 @@ type blogType = {
   isCollect: string;
   showImg: string[];
   title: string;
+  publishTime: string;
   userInfo: {
     avatar: string;
     school: string;

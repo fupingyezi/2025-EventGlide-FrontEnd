@@ -12,7 +12,7 @@ import AlbumWindow from '@/modules/albumWindow';
 import classnames from 'classnames';
 import post from '@/common/api/post';
 import { NavigationBar, NavigationBarBack } from '@/common/components/NavigationBar';
-
+import PictureCut from '@/modules/picturecut/components/picturecut';
 const Index = () => {
   const {
     studentid: studentId,
@@ -25,17 +25,25 @@ const Index = () => {
   const [inputValue, setInputValue] = useState('');
   const [isVisiable, setIsVisiable] = useState(false);
   const [imgUrl, setImgUrl] = useState<string[]>([avatar]);
-  const [isShowPlaceholder, setIsShowPlaceholder] = useState(true);
+  const [cutImgUrl, setCutImgUrl] = useState<string[]>([]);
+  const [isCutVisible, setIsCutVisible] = useState(false);
+  const [changgename, setChanggename] = useState(false);
   const handleInputChange = (e) => {
     setInputValue(e.detail.value);
   };
   const handleConfirm = () => {
+    if (!inputValue) {
+      Taro.showToast({ title: '昵称不能为空', icon: 'none' });
+      return;
+    }else{
     post('/user/username', { new_name: inputValue, studentid: studentId }).then((res) => {
       console.log(res);
       setUsername(inputValue);
     });
     setUsername(inputValue);
-    setInputValue('');
+    setChanggename(false);
+    setInputValue('');      
+    }
   };
   const handleLogOut = () => {
     post('/user/logout').then((res) => {
@@ -47,6 +55,12 @@ const Index = () => {
       }
     });
   };
+  useEffect(() => {
+    console.log(cutImgUrl);
+    if (cutImgUrl.length > 0) {
+      setIsCutVisible(true);
+    }
+  }, [cutImgUrl]);
   return (
     <>
       <NavigationBarBack backgroundColor="#FFFFFF" title="账号设置" url="/pages/mineHome/index" />
@@ -67,17 +81,7 @@ const Index = () => {
           <View className="mineInfo-container-bottom">
             <View className="mineInfo-container-column">昵称</View>
             <View className="mineInfo-container-desc">
-              <Input
-                className="mineInfo-container-input"
-                placeholder={isShowPlaceholder ? (username ? username : '点击设置昵称') : ''}
-                placeholderClass="mineInfo-container-desc-placeholder"
-                placeholderStyle="text-align: right"
-                value={inputValue}
-                onInput={handleInputChange}
-                onConfirm={handleConfirm}
-                onFocus={() => setIsShowPlaceholder(false)}
-                onBlur={() => setIsShowPlaceholder(true)}
-              />
+              <View onClick={() => setChanggename(true)}>{username ? username : '点击设置昵称'}</View>
             </View>
           </View>
         </View>
@@ -111,16 +115,46 @@ const Index = () => {
           退出登录
         </View>
       </View>
+      {changgename && (
+      <View className='changename'>
+        <View className='changename-background'/>
+        <View className="changename-content">
+          <View onClick={() => setChanggename(false)} className="changename-content-close">
+            x
+          </View>
+          <View className="changename-content-input">
+            <Input 
+            style={{fontSize: '32rpx',fontFamily: 'SimHei'}} 
+            placeholder="请输入新昵称"
+            value={inputValue}
+            onInput={handleInputChange}
+            />
+          </View>
+          <View className="changename-content-line"/>
+          <View className="changename-content-btn">
+            <View onClick={() => setChanggename(false)} className="changename-content-btn-item">取消</View>
+            <View onClick={handleConfirm} className="changename-content-btn-item" style={{color: '#b36aeb'}}>确认</View>
+          </View>
+        </View>
+      </View>)}
       <AlbumWindow
         isVisiable={isVisiable}
         setIsVisiable={setIsVisiable}
         isOverlay={true}
         imgUrl={imgUrl}
-        setImgUrl={setImgUrl}
+        setImgUrl={setCutImgUrl}
         type="event"
         count={1}
         isRequest={true}
       />
+      {cutImgUrl.length > 0 && (
+      <PictureCut
+        isvisible={isCutVisible}
+        imgUrl={cutImgUrl}
+        setImgUrl={setImgUrl}
+        setIsVisible={setIsCutVisible}
+        studentId={studentId}
+      />)}
     </>
   );
 };

@@ -3,6 +3,7 @@ import { switchTab } from '@tarojs/taro';
 const preUrl = 'https://api.inside-me.top';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
+import { log } from 'console';
 
 const handleUserLogin = async ({ params }) => {
   const { setId, setStudentId, setAvatar, setUsername, setSchool } = useUserStore.getState();
@@ -10,7 +11,7 @@ const handleUserLogin = async ({ params }) => {
   const header = {
     'Content-Type': 'application/json;charset=utf-8',
   };
-  const { studentid, password, setShowError } = params;
+  const { studentid, password, setShowError, setErrortext } = params;
   const url = `${preUrl}/user/login`;
   const data = {
     studentid,
@@ -22,7 +23,9 @@ const handleUserLogin = async ({ params }) => {
     header: header,
     data: JSON.stringify(data),
   });
-  if (response.data.msg === 'success') {
+  console.log(response);
+  
+  if (response.data.msg === "处理成功"||response.data.msg === 'success') {
     console.log(response.data.data.token);
     Taro.setStorageSync('token', response.data.data.token);
     Taro.setStorageSync('sid', response.data.data.sid);
@@ -33,12 +36,21 @@ const handleUserLogin = async ({ params }) => {
     setSchool(response.data.data.school);
     setPostStudentId(response.data.data.sid);
     switchTab({ url: '/pages/indexHome/index' });
-  } else {
+  } else if (response.data.msg === "学号或密码错误") {
     Taro.showToast({
       title: response.data.msg,
       icon: 'none',
       duration: 2000,
     });
+    setErrortext('账号或密码错误，请重新输入');
+    setShowError(true);
+  }else {
+    Taro.showToast({
+      title: '登录失败，请稍后重试',
+      icon: 'none',
+      duration: 2000,
+    });
+    setErrortext('登录失败，请稍后重试');
     setShowError(true);
   }
 };

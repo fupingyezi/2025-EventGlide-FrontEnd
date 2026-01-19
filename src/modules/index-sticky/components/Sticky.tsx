@@ -51,7 +51,7 @@ const Sticky: React.FC<{
   };
   const handleSearch = () => {
     if (searchValue === '') {
-      get(`/act/all/${studentid}`).then((res) => {
+      get('/act/all').then((res) => {
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {

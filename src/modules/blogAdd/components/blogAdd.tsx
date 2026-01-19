@@ -3,7 +3,8 @@ import './style.scss';
 import get from '@/common/api/get';
 import usePostStore from '@/store/PostStore';
 import { navigateTo } from '@tarojs/taro';
-
+import add from '@/common/assets/Postlist/add.png';
+import { Image } from '@tarojs/components';
 const BlogAdd: React.FC<{ setIsVisiable: (value: boolean) => void }> = (props) => {
   const { setImgUrl } = usePostStore();
   const handleClick = () => {
@@ -28,8 +29,8 @@ const BlogAdd: React.FC<{ setIsVisiable: (value: boolean) => void }> = (props) =
       });
   };
   return (
-    <View className="blog-add" onClick={() => handleClick()}>
-      +
+    <View onClick={() => handleClick()}>
+      <Image src={add} className="blog-add"/>
     </View>
   );
 };

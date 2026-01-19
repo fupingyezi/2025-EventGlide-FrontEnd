@@ -7,10 +7,10 @@ import favor from '@/common/svg/post/heart.svg';
 import collect from '@/common/svg/post/star.svg';
 import collectActive from '@/common/svg/post/starAct.svg';
 import favorActive from '@/common/svg/post/heartAct.svg';
-import comment from '@/common/svg/post/comment.svg';
+import comment from '@/common/assets/Postlist/comment.png';
 import icon from '@/common/assets/Postlist/inputIcon.png';
 import iconr from '@/common/assets/Postlist/inputIconr.png';
-import { responseType } from '@/common/types/PostList';
+import { responseType, creatorType } from '@/common/types/PostList';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import handleInteraction from '@/common/const/Interaction';
@@ -18,8 +18,11 @@ import get from '@/common/api/get';
 import post from '@/common/api/post';
 import BlogComment from '@/modules/BlogComment/components';
 import ReplyWindow from '@/modules/ReplyWindow';
+import CommentOperation from '@/modules/CommentOperation';
+import { it } from 'node:test';
 
 export const SetBlogReponseContext = createContext<(params: any) => void>(() => {});
+export const SetBlogComment = createContext<(params: any) => void>(() => {});
 
 const Index = () => {
   const defaultDesc =
@@ -37,28 +40,88 @@ const Index = () => {
   const [reply_id, setReply_id] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [commentInput, setCommentInput] = useState(false);
+  const [showpicture, setShowpicture] = useState(false);
+  const [imageRatios, setImageRatios] = useState<string[]>([]);
+  const [ratios, setRatios] = useState<string[]>([]);
+  const [maxheight, setMaxheight] = useState(0);
+  const [clickCount, setClickCount] = useState(0);
+  const [clickTimer, setClickTimer] = useState<NodeJS.Timeout | null>(null);
+  const [commentOperation, setCommentOperation] = useState(false);
+  const [commentItems, setCommentItems] = useState('');
+  const [commentCreator, setCommentCreator] = useState<creatorType>();
+  const [commentid, setCommentid] = useState('');
   const { setLikeNumChange, setCollectNumChange } = usePostStore((state) => state);
   const windowWidth = Taro.getWindowInfo().windowWidth;
+  const windowHeight = Taro.getWindowInfo().windowHeight;
   const Item = blogList[blogIndex];
+  console.log(Item);
   const params = {
     subject: 'post',
     studentid: studentid,
     targetid: Item.bid,
+    receiver: Item.userInfo.studentid,
   };
 
   const reply_params = {
-    studentid: studentid,
     parent_id: reply_id,
     subject: 'post',
+    receiver: Item.userInfo.studentid,
+  };
+  const comment_params = {
+    parent_id: Item.bid,
+    subject: 'post',
+    receiver: Item.userInfo.studentid,
   };
 
-  const handleLikeComment = async (bid: string) => {
+  const handlepic = (pictures) => {
+    let max = 0;
+    let windowRatio = Number((windowHeight / windowWidth).toFixed(2));
+    const res = Array(pictures.length).fill("widthimg");
+    const res2 = Array(pictures.length).fill("widthimg");
+    for (let i = 0; i < pictures.length; i++) {
+      if (pictures[i] > 1.2) {
+        max = 1.2;
+        res[i]="heigthimg";
+        if (pictures[i] > windowRatio) {
+          res2[i]="heigthimg";
+        }
+      }else{
+        max = Math.max(max, pictures[i]);        
+      }
+    }
+    console.log(res);
+    console.log(max);
+    setMaxheight(max);
+    setImageRatios(res);
+    setRatios(res2);
+  }
+
+const loadImageRatios = async () => {
+  if (Item && Item.showImg) {
+    const ratios: number[] = [];
+    
+    for (const imgUrl of Item.showImg) {
+      try {
+        const imgInfo = await Taro.getImageInfo({ src: imgUrl });
+        const ratio = Number((imgInfo.height / imgInfo.width).toFixed(2));
+        ratios.push(ratio);
+      } catch (error) {
+        console.error(`获取图片 ${imgUrl} 比例失败:`, error);
+        ratios.push(1);
+      }
+    }
+    handlepic(ratios);
+  }
+};
+
+  const handleLikeComment = async (bid: string,receiver: string) => {
     const action =
       response.find((item) => item.bid === bid)?.isLike === 'true' ? 'dislike' : 'like';
     const tag = handleInteraction(action, {
       studentid: studentid,
       subject: 'comment',
       targetid: bid,
+      receiver: receiver,
     });
 
     try {
@@ -94,6 +157,43 @@ const Index = () => {
     }
   };
 
+  const handleImageClick = () => {
+    setClickCount(prev => prev + 1);
+    
+    if (clickCount === 1) {
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+        setClickTimer(null);
+      }
+      if (Item.isLike === 'false') {
+        handleInteraction('like', params)
+          .then((res) => {
+            if (res.msg === 'success') {
+              setLikeNumChange(Item, 1);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      setClickCount(0);
+    } else {
+      const timer = setTimeout(() => {
+        setShowpicture(true);
+        setClickCount(0);
+        setClickTimer(null);
+      }, 300);
+      setClickTimer(timer);
+    }
+  };
+  useEffect(() => {
+    return () => {
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+      }
+    };
+  }, [clickTimer]);
+
   useDidShow(() => {
     get(`/comment/load/${Item.bid}`).then((res) => {
       console.log(res);
@@ -112,6 +212,7 @@ const Index = () => {
       console.log(res[0]);
       setMarginTop(res[0].height + 100);
     });
+    loadImageRatios();
   }, [blogIndex]);
 
   useEffect(() => {
@@ -127,9 +228,6 @@ const Index = () => {
     }
   }, [isRequest]);
 
-  const handleInput = (e: any) => {
-    setInputValue(e.detail.value);
-  };
 
   const handleLike = () => {
     if (Item.isLike === 'true') {
@@ -145,6 +243,7 @@ const Index = () => {
     } else if (Item.isLike === 'false') {
       handleInteraction('like', params)
         .then((res) => {
+          console.log(res);
           if (res.msg === 'success') {
             setLikeNumChange(Item, 1);
           }
@@ -179,22 +278,16 @@ const Index = () => {
     }
   };
 
-  const handleSubmit = () => {
-    if (inputValue === '') {
+  const setBlogComment=(params: any)=>{
+    if (params.content === '') {
       Taro.showToast({
         title: '评论不能为空',
         icon: 'none',
         duration: 300,
       });
     } else {
-      const params = {
-        content: inputValue,
-        parent_id: Item.bid,
-        studentid: studentid,
-        subject: 'post',
-      };
-      post('/comment/create', params).then((res) => {
-        console.log(res.data);
+        post('/comment/create', params).then((res) => {
+        console.log(res);
         if (res.msg === 'success') {
           setResponse([...response, res.data]);
           setCommentNumChange(Item);
@@ -202,7 +295,7 @@ const Index = () => {
         }
       });
     }
-  };
+  }
 
   const setBlogReponseContext = (params: any) => {
     console.log('你干嘛', response);
@@ -215,6 +308,8 @@ const Index = () => {
     } else {
       post('/comment/answer', params).then((res) => {
         if (res.msg === 'success') {
+          console.log(res);
+          
           get(`/comment/load/${Item.bid}`).then((res) => {
             console.log(res);
             if (res.data === null) {
@@ -233,17 +328,13 @@ const Index = () => {
       <View className="blogDetail">
         <NavigationBar url={`/pages/${backPage}/index`} userInfo={Item.userInfo} />
         <View className="blogDetail-content">
-          <View className="blogDetail-content-avatar">
-            <Image
-              src={Item.showImg[0]}
-              className="blogDetail-content-avatar-img"
-              style={`width: ${windowWidth}px; max-height: 700rpx;`}
-              mode="widthFix"
-            />
+          {(maxheight>0) && 
+          <View className="blogDetail-content-avatar" onClick={handleImageClick}>
+            <View style={`width: ${windowWidth}px; height: ${windowWidth * maxheight}px`}/>
             <Swiper
               className="blogDetail-content-avatar-swiper"
               indicatorDots={true}
-              circular={true}
+              circular={false}
               current={currentIndex}
               onChange={(e) => setCurrentIndex(e.detail.current)}
             >
@@ -251,16 +342,17 @@ const Index = () => {
                 <SwiperItem key={index} className="blogDetail-content-avatar-swiper-item">
                   <Image
                     src={item}
-                    className="blogDetail-content-avatar-swiper-item-img"
-                    mode="widthFix"
+                    className={`blogDetail-content-avatar-swiper-item-${imageRatios[index]}`}
+                    mode={imageRatios[index]==='widthimg'?'widthFix':'heightFix'}
                   />
                 </SwiperItem>
               ))}
             </Swiper>
-          </View>
+          </View>          
+          }
           <View className="blogDetail-content-title">{Item.title}</View>
-          <View className="blogDetail-content-desc">{Item.introduce || defaultDesc}</View>
-          <View className="blogDetail-content-timesite">昨天8：00 华中师范大学</View>
+          <View className="blogDetail-content-desc">{Item.introduce || ''}</View>
+          <View className="blogDetail-content-timesite">{Item.publishTime}</View>
         </View>
         <View className="blogDetail-comment" style={{ top: `${marginTop}px` }}>
           <View className="blogDetail-comment-number">共{Item.commentNum}条评论</View>
@@ -291,6 +383,10 @@ const Index = () => {
                   setIsVisible={setIsVisible}
                   setReply_id={setReply_id}
                   handleLikeComment={handleLikeComment}
+                  longClick={() => setCommentOperation(true)}
+                  setCommentItems={setCommentItems}
+                  setCommentCreator={setCommentCreator}
+                  setCommentid={setCommentid}
                 ></BlogComment>
               ))}
           </View>
@@ -303,25 +399,31 @@ const Index = () => {
             </View>
           </View>
           <View className="blogDetail-footer-desc">
-            <Image
-              className="blogDetail-footer-desc-icon1"
-              mode="widthFix"
-              src={Item.isLike === 'true' ? favorActive : favor}
-              onClick={handleLike}
-            ></Image>
-            <View className="blogDetail-footer-desc-text">{Item.likeNum}</View>
-            <Image
-              className="blogDetail-footer-desc-icon2"
-              mode="widthFix"
-              src={Item.isCollect === 'true' ? collectActive : collect}
-              onClick={handleCollect}
-            ></Image>
-            <View className="blogDetail-footer-desc-text">{Item.collectNum}</View>
-            <Image className="blogDetail-footer-desc-icon3" mode="widthFix" src={comment}></Image>
-            <View className="blogDetail-footer-desc-text">{Item.commentNum}</View>
+            <View className="blogDetail-footer-desc-item">
+              <Image
+                className="blogDetail-footer-desc-icon1"
+                mode="widthFix"
+                src={Item.isLike === 'true' ? favorActive : favor}
+                onClick={handleLike}
+              ></Image>
+              <View className="blogDetail-footer-desc-text">{Item.likeNum}</View>              
+            </View>
+            <View className="blogDetail-footer-desc-item">
+              <Image
+                className="blogDetail-footer-desc-icon2"
+                mode="widthFix"
+                src={Item.isCollect === 'true' ? collectActive : collect}
+                onClick={handleCollect}
+              ></Image>
+              <View className="blogDetail-footer-desc-text">{Item.collectNum}</View>              
+            </View>
+            <View className="blogDetail-footer-desc-item">
+              <Image className="blogDetail-footer-desc-icon3" mode="widthFix" src={comment}></Image>
+              <View className="blogDetail-footer-desc-text">{Item.commentNum}</View>              
+            </View>
           </View>
         </View>
-        {commentInput && (
+        {/*{commentInput && (
           <View className="comment-popup">
             <View className="comment-popup-cancel" onClick={() => setCommentInput(false)} />
             <View className="comment-popup-box">
@@ -344,17 +446,48 @@ const Index = () => {
               </View>
             </View>
           </View>
-        )}
+        )}*/}
       </View>
-      <SetBlogReponseContext.Provider value={setBlogReponseContext}>
+      {isVisible ?
+        <SetBlogReponseContext.Provider value={setBlogReponseContext}>
+          <ReplyWindow
+            isVisible={isVisible}
+            setIsVisible={setIsVisible}
+            params={reply_params}
+            reply_id={reply_id}
+            page="post"
+          />
+        </SetBlogReponseContext.Provider>
+       : 
+      <SetBlogComment.Provider value={setBlogComment}>
         <ReplyWindow
-          isVisible={isVisible}
-          setIsVisible={setIsVisible}
-          params={reply_params}
-          reply_id={reply_id}
+          isVisible={commentInput}
+          setIsVisible={setCommentInput}
+          params={comment_params}
           page="post"
+          comment={true}
         />
-      </SetBlogReponseContext.Provider>
+      </SetBlogComment.Provider>
+      }
+      {(showpicture && imageRatios.length > 0) && (
+        <View className='showpicture' onClick={() => setShowpicture(false)}>
+          <Swiper className='showpicture-swiper' indicatorDots={true} interval={3000} circular={false} current={currentIndex}>
+            {Item.showImg.map((item, index) => (
+              <SwiperItem key={index} className={`showpicture-swiper-${ratios[index]}`}>
+                <Image src={item} className='showpicture-swiper-item-img' mode='widthFix'/>
+              </SwiperItem>
+            ))}
+          </Swiper>
+        </View>
+      )}
+      {commentOperation && (
+        <CommentOperation 
+        setVisible={setCommentOperation} 
+        studentid={studentid} 
+        commentItems={commentItems} 
+        commentCreator={commentCreator} 
+        commentid={commentid} />
+      )}
     </>
   );
 };

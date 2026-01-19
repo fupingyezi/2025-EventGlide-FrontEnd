@@ -13,13 +13,14 @@ import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import IndexPageNull from '@/modules/null/components/indexpagenull';
+import Taro from '@tarojs/taro';
 
 const Index = () => {
   const [showPostWindow, setShowPostWindow] = useState(false);
   const { activeList, setActiveList, setSelectedItem, selectedInfo, isSelect } = useActivityStore();
   const [approximateTime, setApproximateTime] = useState<string>('');
   const [type, setType] = useState<string>('');
-  const { studentid } = useUserStore();
+  const studentid = Taro.getStorageSync('sid');
   const { setBlogList } = usePostStore();
 
   useLoad(() => {
@@ -30,18 +31,21 @@ const Index = () => {
 
   useDidShow(() => {
     if (isSelect) {
+      console.log("selectedInfo:", selectedInfo);
       post('/act/search', selectedInfo)
         .then((res) => {
+          console.log(res.data);
           setActiveList(res.data);
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
-      get(`/act/all/${studentid}`)
+      console.log('studentid:',studentid);
+      get('/act/all')
         .then((res) => {
+          console.log(res);
           setActiveList(res.data);
-          console.log(res.data);
         })
         .catch((err) => {
           console.log(err);

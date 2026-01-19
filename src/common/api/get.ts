@@ -23,7 +23,7 @@ const get = async (url: string) => {
       method: 'GET',
       header,
     });
-    if (response.data.msg === 'success') {
+    if (response.data.msg === 'success' || response.data.msg === '处理成功') {
       return response.data;
     }
   } catch (error) {

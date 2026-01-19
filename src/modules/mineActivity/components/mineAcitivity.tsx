@@ -8,16 +8,17 @@ import useUserStore from '@/store/userStore';
 import useActivityStore from '@/store/ActivityStore';
 import { ActivityDetailList } from '@/common/types/ActiveList';
 import MinePageNull from '@/modules/null/components/minepagenull';
+import Taro from '@tarojs/taro';
 const MineActivity: React.FC<{
   activeIndex: 'release' | 'like' | 'favourite';
   setIsShowActivityWindow: (isShow: boolean) => void;
 }> = memo(function ({ activeIndex, setIsShowActivityWindow }) {
-  const { studentid } = useUserStore();
+  const studentid = Taro.getStorageSync('sid');
   const [activeList, setActiveList] = useState<ActivityDetailList[]>([]);
   const { setSelectedItem } = useActivityStore();
   useEffect(() => {
     if (activeIndex === 'release') {
-      get(`/act/own/${studentid}`)
+      get('/act/own')
         .then((res) => {
           console.log('发布活动：', res.data);
           if (res.data === null) {

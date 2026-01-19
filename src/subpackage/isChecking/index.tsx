@@ -11,6 +11,7 @@ import { ScrollView } from '@tarojs/components';
 import get from '@/common/api/get';
 import useUserStore from '@/store/userStore';
 import { it } from 'node:test';
+import NoticePageNull from '@/modules/null/components/noticepagenull';
 
 export interface ActiveItem {
   title: string;
@@ -43,7 +44,7 @@ const Index = () => {
   const { studentid } = useUserStore();
   const [activeList, setActiveList] = useState<ActiveItem[]>([]);
   useEffect(() => {
-    get(`/act/own/${studentid}`)
+    get('/act/own')
       .then((res) => {
         console.log(res.data);
         setActiveList(Array.isArray(res.data) ? res.data : []);
@@ -61,7 +62,7 @@ const Index = () => {
   return (
     <View className="isCheckingPage">
       <ScrollView scrollY={true} style={{ height: '100vh' }}>
-        {activeList.length > 0 &&
+        {activeList.length > 0 ?
           activeList.map((item, index) => (
             <View key={index}>
               <View className="isCheckingPage-container">
@@ -93,7 +94,9 @@ const Index = () => {
                 </View>
               </View>
             </View>
-          ))}
+          ))
+          : <NoticePageNull />
+          }
         {/*<View className="isCheckingPage-state">
         <Image
           src={alPost}

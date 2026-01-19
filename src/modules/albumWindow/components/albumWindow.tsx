@@ -59,26 +59,37 @@ const AlbumWindow: React.FC<AlbumWindowProps> = memo(function AlbumWindow({
     }
   };
   return (
-    <PageContainer
-      show={isVisiable}
-      overlay={isOverlay}
-      position="bottom"
-      onLeave={() => setIsVisiable(false)}
-      customStyle="background-color: transparent;"
-      overlayStyle="background-color: rgba(0, 0, 0, 0.5);"
+    <View style={{
+      position: 'absolute',
+      width: '100%',
+      height:'100%',
+      backgroundColor:'rgba(0, 0, 0, 0.5)',
+      zIndex: 10,
+      display: isVisiable ? 'block' : 'none',
+    }}
+    onClick={() => setIsVisiable(false)}
     >
-      <View className="album-window-content">
-        <View className="album-window-content-btn1" onClick={() => handleChooseImageClick()}>
-          从相册中选择
-        </View>
-        <View className="album-window-content-btn2" onClick={() => handleTakePhotoClick()}>
-          拍摄
-        </View>
-        <View className="album-window-content-cancel" onClick={() => setIsVisiable(false)}>
-          取消
+      <View style={{ 
+        position: 'fixed', 
+        bottom: 0, 
+        left: 0, 
+        right: 0, 
+        backgroundColor: 'transparent',
+        zIndex: 20,
+      }}>
+        <View className="album-window-content">
+          <View className="album-window-content-btn1" onClick={() => handleChooseImageClick()}>
+            从相册中选择
+          </View>
+          <View className="album-window-content-btn2" onClick={() => handleTakePhotoClick()}>
+            拍摄
+          </View>
+          <View className="album-window-content-cancel" onClick={() => setIsVisiable(false)}>
+            取消
+          </View>
         </View>
       </View>
-    </PageContainer>
+    </View>
   );
 });
 

@@ -18,6 +18,7 @@ const Index = () => {
   const [windowHeight, setWindowHeight] = useState(0);
   const [isShowList, setIsShowList] = useState<number[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [refreshing, setRefreshing] = useState(false);
   const { showImg: imgUrl, setImgUrl } = usePostStore();
   const { blogList, setBlogList, setBackPage, setBlogIndex } = usePostStore();
   const { setIsSelect } = useActivityStore();
@@ -29,6 +30,7 @@ const Index = () => {
   useDidShow(() => {
     get('/post/all').then((res) => {
       setBlogList(res.data);
+      console.log(res.data);
     });
     get('/feed/total').then((res) => {
       console.log(res.data);
@@ -115,6 +117,70 @@ const Index = () => {
       });
   });
 
+const onRefresh = () => {
+  console.log('refresh');
+  setRefreshing(true);
+  
+  const timeoutId = setTimeout(() => {
+    if (refreshing) {
+      setRefreshing(false);
+      console.log('刷新失败');
+    }
+  }, 3000);
+  
+  const clearTimeoutSafely = () => {
+    clearTimeout(timeoutId);
+  };
+  
+  try {
+    if (searchValue === '') {
+      get('/post/all').then((res) => {
+        clearTimeoutSafely();
+        setBlogList(res.data);
+        get('/feed/total').then((res) => {
+          setMsgCount(res.data.total);
+          setRefreshing(false);
+        }).catch((err) => {
+          clearTimeoutSafely();
+          setRefreshing(false);
+          console.error(err);
+        });
+      }).catch((err) => {
+        clearTimeoutSafely();
+        setRefreshing(false);
+        console.error(err);
+      });
+    } else {
+      post('/post/find', { name: searchValue }).then((res) => {
+        clearTimeoutSafely();
+        if (res.msg === 'success') {
+          setBlogList(res.data);
+        } else {
+          Taro.showToast({
+            title: `${res.msg}`,
+            icon: 'none',
+            duration: 1000,
+          });
+        }
+        setRefreshing(false);
+      }).catch((err) => {
+        clearTimeoutSafely();
+        setRefreshing(false);
+        console.error(err);
+      });
+    }
+  } catch (error) {
+    clearTimeoutSafely();
+    setRefreshing(false);
+    console.error('刷新过程发生错误:', error);
+    Taro.showToast({
+      title: "刷新失败，请稍后重试",
+      icon: 'none',
+      duration: 1000,
+    });
+  }
+};
+
   return (
     <>
       <NavigationBarTabBar backgroundColor="#FFFFFF" title="发现" />
@@ -166,6 +232,10 @@ const Index = () => {
           onScroll={() => handleScroll()}
           enhanced={true}
           showScrollbar={false}
+          refresherEnabled={true}
+          refresherTriggered={refreshing}
+          onRefresherRefresh={onRefresh}
+          refresherBackground="#f9f8fc"
         >
           <GridView type="masonry" crossAxisGap={5} mainAxisGap={5}>
             {blogList === null

@@ -20,6 +20,7 @@ const Index = () => {
   const [showError, setShowError] = useState(false);
   const [isCheck, setIsCheck] = useState(true);
   const [showPolicyWindow, setShowPolicyWindow] = useState(false);
+  const [errortext, setErrortext] = useState('账号或密码错误，请重新输入');
 
   const { setStudentId, setId, setAvatar, setUsername, setSchool } = useUserStore.getState();
   const { setPostStudentId } = usePostStore.getState();
@@ -27,20 +28,11 @@ const Index = () => {
   const handleLogin = () => {
     // switchTab({ url: "/pages/mineHome/index" });
     if (isCheck) {
-      handleUserLogin({ params: { studentid, password, setShowError } });
+      handleUserLogin({ params: { studentid, password, setShowError, setErrortext } });
     } else {
+      setErrortext('请先阅读并同意隐私政策');
       setShowError(true);
     }
-  };
-
-  const quicklogin = () => {
-    setShowError(false);
-    if (isCheck) {
-      handleUserLogin({ params: { studentid: '', password: '', setShowError } });
-    }
-  };
-  const frocelogin = () => {
-    switchTab({ url: '/pages/indexHome/index' });
   };
   useEffect(() => {
     if (Taro.getStorageSync('token') && Taro.getStorageSync('sid')) {
@@ -114,7 +106,7 @@ const Index = () => {
               onClick={() => setShowPassword(!showPassword)}
             />
           </View>
-          {showError && <View className="login-page-form-error">账号或密码错误，请重新输入</View>}
+          {showError && <View className="login-page-form-error">{errortext}</View>}
         </View>
         <View className="login-page-form-privacy">
           {!isCheck && (
@@ -144,12 +136,6 @@ const Index = () => {
       <View className="login-page-btn" onClick={handleLogin}>
         登录
       </View>
-      {/*<View onClick={quicklogin}>
-        快速登录
-      </View>
-      <View onClick={frocelogin}>
-        强制登录
-      </View>*/}
       {showPolicyWindow && <PolicyWindow setShowPolicyWindow={setShowPolicyWindow} />}
     </View>
   );

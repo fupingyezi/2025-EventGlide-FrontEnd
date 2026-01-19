@@ -1,7 +1,7 @@
 import { View, Text, Image } from '@tarojs/components';
 import './style.scss';
 import Null from '@/common/assets/activity/null.png';
-const MinePageNull: React.FC = () => {
+const NoticePageNull: React.FC = () => {
   return (
     <View className="notice-page-null">
       <Image
@@ -16,4 +16,4 @@ const MinePageNull: React.FC = () => {
   );
 };
 
-export default MinePageNull;
+export default NoticePageNull;
