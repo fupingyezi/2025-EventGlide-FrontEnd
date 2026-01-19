@@ -12,7 +12,7 @@ const LetterListItem: React.FC<LetterType> = memo(({ ...props }) => {
     <View className="letter-list-item">
       <Image
         src={props.userInfo.avatar}
-        mode="widthFix"
+        mode="aspectFill"
         className="letter-list-item-avatar"
         lazyLoad={true}
       ></Image>
@@ -132,7 +132,7 @@ const Index = () => {
             activeItem: !isActive,
           })}
         >
-          <View>评论和@</View>
+          <View>评论</View>
           <View
             style={{
               display: notice ? 'block' : 'none',

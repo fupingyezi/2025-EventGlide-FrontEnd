@@ -57,8 +57,8 @@
     padding-bottom: 60rpx;
     border-top: 2rpx solid #f1eefc;
     display: flex;
-    gap: 60rpx;
-    justify-content: center;
+    gap: 40rpx;
+    justify-content: flex-start;
     align-items: center;
     background-color: #fff;
     z-index: 30;
@@ -71,7 +71,7 @@
       display: flex;
       gap: 10rpx;
       align-items: center;
-
+      margin-left: 20rpx;
       &-icon {
         width: 40rpx;
         margin-left: 20rpx;
@@ -87,19 +87,25 @@
     &-desc {
       display: flex;
       align-items: center;
-      gap: 10rpx;
+      gap: 30rpx;
       color: #736f80;
+      &-item {
+        display: flex;
+        gap: 10rpx;
+        align-items: center;
+        width: 90rpx;
+      }
 
       &-icon1 {
-        width: 40rpx;
+        width: 50rpx;
       }
 
       &-icon2 {
-        width: 42rpx;
+        width: 53rpx;
       }
 
       &-icon3 {
-        width: 40rpx;
+        width: 50rpx;
       }
     }
   }
@@ -165,4 +171,44 @@
       }
     }
   }
+}
+.showpicture {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.showpicture-swiper-item-img {
+  width: 100%;
+  height: 100%;
+}
+
+.showpicture-swiper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.showpicture-swiper-widthimg {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  overflow-y:auto;
+}
+.showpicture-swiper-heigthimg {
+  width: 100%;
+  display: flex;
+  overflow-y:auto;
 }

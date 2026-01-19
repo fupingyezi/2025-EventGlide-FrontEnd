@@ -17,7 +17,7 @@ const DraftWinodw: React.FC<{
 }> = memo(({ ...props }) => {
   const { windowTitle, setIsShow, type } = props;
   const { title, introduce, showImg, labelform } = props;
-  const { studentid } = useUserStore();
+  const studentid = Taro.getStorageSync('sid');
   const { title: blogTitle, introduce: blogIntroduce, showImg: blogShowImg } = props;
   const handleConfirm = (type: string) => {
     if (type === 'event') {

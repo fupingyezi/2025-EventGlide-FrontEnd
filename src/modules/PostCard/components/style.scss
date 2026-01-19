@@ -4,6 +4,8 @@
   flex-direction: column;
   .img {
     width: 100%;
+    height: auto;
+    object-fit: contain;
     border-radius: 10rpx 10rpx 0 0;
     transition: all 0.3s ease;
     opacity: 0;
@@ -12,10 +14,15 @@
     opacity: 1;
   }
   .content {
-    height: 160rpx;
+    height: 140rpx;
     width: 100%;
     background-color: #fff;
     border-radius: 0 0 15rpx 15rpx;
+    .title {
+      position: relative;
+      left: 12rpx;
+      top:20rpx;
+    }
     .title-container {
       position: absolute;
       bottom: 3rpx;
@@ -32,6 +39,7 @@
         left: 12rpx;
         .avatar {
           width: 50rpx;
+          height: 50rpx;
           border-radius: 50%;
           margin-right: 10rpx;
         }

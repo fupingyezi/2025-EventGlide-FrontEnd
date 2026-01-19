@@ -10,7 +10,7 @@ import falPost from '@/common/assets/isChecking/falPost.png';
 import { ScrollView } from '@tarojs/components';
 import get from '@/common/api/get';
 import useUserStore from '@/store/userStore';
-import { it } from 'node:test';
+import NoticePageNull from '@/modules/EmptyComponent/components/noticepagenull';
 
 export interface ActiveItem {
   title: string;
@@ -43,7 +43,7 @@ const Index = () => {
   const { studentid } = useUserStore();
   const [activeList, setActiveList] = useState<ActiveItem[]>([]);
   useEffect(() => {
-    get(`/act/own/${studentid}`)
+    get('/act/own')
       .then((res) => {
         console.log(res.data);
         setActiveList(Array.isArray(res.data) ? res.data : []);
@@ -61,7 +61,7 @@ const Index = () => {
   return (
     <View className="reviewPage">
       <ScrollView scrollY={true} style={{ height: '100vh' }}>
-        {activeList.length > 0 &&
+        {activeList.length > 0 ? (
           activeList.map((item, index) => (
             <View key={index}>
               <View className="reviewPage-container">
@@ -93,39 +93,10 @@ const Index = () => {
                 </View>
               </View>
             </View>
-          ))}
-        {/*<View className="reviewPage-state">
-        <Image
-          src={alPost}
-          mode="widthFix"
-          className="reviewPage-state-img"
-        ></Image>
-      </View>
-      <View className="reviewPage-container">
-        <View className="reviewPage-header">
-          {title !== "" ? title : defaultTitle}
-        </View>
-        <View className="reviewPage-gapline1"></View>
-        <View className="reviewPage-content">
-          {description !== "" ? description : defaultDescription}
-        </View>
-        <View className="reviewPage-label">
-          {labelList.map((item, index) => (
-            <Label key={index} text={item}></Label>
-          ))}
-        </View>
-        <View className="reviewPage-pic">
-          {showImgList.map((item, index) => (
-            <Picture
-              key={index}
-              src={item}
-              isShowDelete={true}
-              imgUrl={[]}
-              setImgUrl={([]) => {}}
-            ></Picture>
-          ))}
-        </View>
-      </View>*/}
+          ))
+        ) : (
+          <NoticePageNull />
+        )}
         <View style={{ height: '100rpx' }} />
       </ScrollView>
     </View>

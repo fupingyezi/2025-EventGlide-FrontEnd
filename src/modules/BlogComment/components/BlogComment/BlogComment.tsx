@@ -25,24 +25,32 @@ const BlogComment: React.FC<responseType | any> = memo((props) => {
   return (
     <>
       <View className="BlogComment">
-        <View className="BlogComment-content">
+        <View className="BlogComment-content" 
+        >
           <Image
             className="BlogComment-avatar"
             src={props.creator.avatar ? props.creator.avatar : defaultAvatar}
             mode="scaleToFill"
           />
-          <View className="BlogComment-info">
+          <View className="BlogComment-info" 
+          onClick={() => {
+            props.setIsVisible(true);
+            props.setReply_id(props.bid);
+          }}
+          onLongPress={()=>{
+            props.setCommentItems(props.content || defaultContent);
+            props.setCommentCreator(props.creator);
+            props.setCommentid(props.bid);
+            props.longClick();
+          }}
+          >
             <View className="BlogComment-info-name">{props.creator.username ?? '校灵通'}</View>
             <View className="BlogComment-info-content">{props.content || defaultContent}</View>
             <View className="BlogComment-info-timesite">
               {TimeTranslation(props.commented_time)}&nbsp;&nbsp;
-              {props.commented_pos}
+              
               <View
                 className="BlogComment-info-reply"
-                onClick={() => {
-                  props.setIsVisible(true);
-                  props.setReply_id(props.bid);
-                }}
               >
                 回复
               </View>
@@ -50,7 +58,7 @@ const BlogComment: React.FC<responseType | any> = memo((props) => {
           </View>
           <Image
             className="BlogComment-favor"
-            onClick={() => props.handleLikeComment(props.bid)}
+            onClick={() => props.handleLikeComment(props.bid, props.creator.studentid)}
             src={props.isLike === 'true' ? favorAct : favor}
             mode="widthFix"
           />
@@ -69,6 +77,8 @@ const BlogComment: React.FC<responseType | any> = memo((props) => {
                 parentUserName={item.parentUserName}
                 setIsVisible={props.setIsVisible}
                 setReply_id={props.setReply_id}
+                isLike={item.isLike}
+                likeNum={item.likeNum}
               />
             </View>
           ))}

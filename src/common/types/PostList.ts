@@ -24,16 +24,18 @@ interface replyType {
   reply_time: string;
 }
 
+interface creatorType {
+  username: string;
+  avatar: string;
+  studentid: string;
+}
+
 interface responseType {
   bid: string;
   commented_pos: string;
   commented_time: string;
   content: string;
-  creator: {
-    username: string;
-    avatar: string;
-    studentid: string;
-  };
+  creator: creatorType;
   isLike: string;
   likeNum: number;
   replyNum: number;
@@ -45,4 +47,4 @@ interface PostCommentProps extends PostCommentProp {
 }
 
 export default PostList;
-export { PostCommentProps, responseType, replyType };
+export { PostCommentProps, responseType, replyType, creatorType };

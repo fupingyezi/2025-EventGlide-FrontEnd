@@ -12,6 +12,7 @@ import useUserStore from '@/store/userStore';
 import post from '@/common/api/post';
 import get from '@/common/api/get';
 import LabelForm from '@/common/types/LabelForm';
+import Taro from '@tarojs/taro';
 
 const Index = () => {
   const { showImg: imgUrl } = usePostStore();
@@ -20,8 +21,9 @@ const Index = () => {
   const [pageImgUrl, setPageImgUrl] = useState<string[]>(imgUrl);
   const [title, setTitle] = useState('');
   const [introduce, setIntroduce] = useState('');
-  const { studentid } = useUserStore();
+  const studentid = Taro.getStorageSync('sid');
   const [count, setCount] = useState(0);
+  const [load, setLoad] = useState(false);
 
   useDidShow(() => {
     get('/post/load')
@@ -29,25 +31,39 @@ const Index = () => {
         console.log(res);
         if (res.data === null) return;
         if (res.msg === 'success') {
-          setTitle(res.data.Title || '');
-          setIntroduce(res.data.Introduce || '');
+          setTitle(res.data.Title || title);
+          setIntroduce(res.data.Introduce || introduce);
+          setCount(res.data.Introduce ? res.data.Introduce.length : 0);
           if (Array.isArray(res.data.ShowImg)) {
             setPageImgUrl(res.data.ShowImg);
-          } else if (typeof res.data.ShowImg === 'string') {
-            setPageImgUrl([res.data.ShowImg]);
           } else {
             setPageImgUrl([]);
           }
         }
+        setLoad(true);
       })
       .catch((err) => {
-        console.log(err);
+        console.log('Error loading post:', err);
+        setLoad(true);
       });
   });
 
   const handleConfirm = () => {
+    if (pageImgUrl.length === 0) {
+      Taro.showToast({
+        title: '请上传图片',
+        icon: 'none',
+      });
+    }else if (title.length === 0) {
+      Taro.showToast({
+        title: '请输入标题',
+        icon: 'none',
+      });
+    }else{
     setIsShowDraft(false);
     const postInfo = { introduce, showImg: pageImgUrl, studentid, title };
+    console.log(postInfo);
+    
     post('/post/create', postInfo)
       .then((res) => {
         console.log(res);
@@ -55,7 +71,8 @@ const Index = () => {
       })
       .catch((err) => {
         console.log(err);
-      });
+      });     
+    }
   };
 
   const btn = {
@@ -65,9 +82,16 @@ const Index = () => {
     textColor: '#FFFEFF',
     isBorder: false,
   };
+  const btnDisabled = {
+    text: '发布',
+    backgroundColor: '#CF79FA',
+    textColor: '#FFFEFF',
+    isBorder: false,
+  }
 
   return (
     <>
+    {load&&
       <View className="addblog-introduce">
         <View className="addblog-introduce-container">
           <View className="addblog-introduce-container-title">{count}/1000</View>
@@ -116,10 +140,12 @@ const Index = () => {
             <View className="addblog-introduce-floor-draft-text">存草稿</View>
           </View>
           <View className="addblog-introduce-floor-btn" onClick={() => handleConfirm()}>
-            <Button {...btn} />
+            {pageImgUrl.length > 0 ? <Button {...btn} /> : <Button {...btnDisabled} />}
           </View>
         </View>
-      </View>
+      </View>    
+    }
+
       {isShowDraft && (
         <DraftWinodw
           windowTitle="是否保存草稿？"

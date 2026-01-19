@@ -22,7 +22,7 @@ const PostComment: React.FC<responseType | any> = memo((props) => {
     '为了让大家更好地了解该活动， 请介绍一下活动亮点，活动流程 和注意事项等内容......';
 
   const handleCommentLike = () => {
-    props.onLikeComment(props.bid);
+    props.onLikeComment(props.bid, props.creator.studentid);
   };
 
   return (
@@ -34,18 +34,19 @@ const PostComment: React.FC<responseType | any> = memo((props) => {
             src={props.creator.avatar ? props.creator.avatar : defaultAvatar}
             mode="scaleToFill"
           />
-          <View className="postComment-info">
+          <View className="postComment-info"
+          onClick={() => {
+            props.setIsVisible(true);
+            props.setReply_id(props.bid);
+          }}
+          >
             <View className="postComment-info-name">{props.creator.username ?? '校灵通'}</View>
             <View className="postComment-info-content">{props.content || defaultContent}</View>
             <View className="postComment-info-timesite">
               {TimeTranslation(props.commented_time)}&nbsp;&nbsp;
-              {props.commented_pos}
+              
               <View
                 className="postComment-info-reply"
-                onClick={() => {
-                  props.setIsVisible(true);
-                  props.setReply_id(props.bid);
-                }}
               >
                 回复
               </View>
@@ -72,6 +73,8 @@ const PostComment: React.FC<responseType | any> = memo((props) => {
                 setIsVisible={props.setIsVisible}
                 parentUserName={item.parentUserName}
                 setReply_id={props.setReply_id}
+                isLike={item.isLike}
+                likeNum={item.likeNum}
               />
             </View>
           ))}

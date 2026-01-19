@@ -16,6 +16,9 @@
     }
     .form-title {
       color: #170a1e;
+      &-required {
+        color: rgb(217, 2, 32);
+      }
     }
   }
   .form-item {

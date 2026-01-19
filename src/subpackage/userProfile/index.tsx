@@ -12,7 +12,7 @@ import ImagePicker from '@/modules/ImagePicker';
 import classnames from 'classnames';
 import post from '@/common/api/post';
 import { NavigationBar, NavigationBarBack } from '@/common/components/NavigationBar';
-
+import PictureCut from '@/modules/picturecut/components/picturecut';
 const Index = () => {
   const {
     studentid: studentId,
@@ -25,17 +25,27 @@ const Index = () => {
   const [inputValue, setInputValue] = useState('');
   const [isVisiable, setIsVisiable] = useState(false);
   const [imgUrl, setImgUrl] = useState<string[]>([avatar]);
+  const [cutImgUrl, setCutImgUrl] = useState<string[]>([]);
+  const [isCutVisible, setIsCutVisible] = useState(false);
+  const [changgename, setChanggename] = useState(false);
   const [isShowPlaceholder, setIsShowPlaceholder] = useState(true);
+
   const handleInputChange = (e) => {
     setInputValue(e.detail.value);
   };
   const handleConfirm = () => {
-    post('/user/username', { new_name: inputValue, studentid: studentId }).then((res) => {
-      console.log(res);
+    if (!inputValue) {
+      Taro.showToast({ title: '昵称不能为空', icon: 'none' });
+      return;
+    } else {
+      post('/user/username', { new_name: inputValue, studentid: studentId }).then((res) => {
+        console.log(res);
+        setUsername(inputValue);
+      });
       setUsername(inputValue);
-    });
-    setUsername(inputValue);
-    setInputValue('');
+      setChanggename(false);
+      setInputValue('');
+    }
   };
   const handleLogOut = () => {
     post('/user/logout').then((res) => {
@@ -47,6 +57,12 @@ const Index = () => {
       }
     });
   };
+  useEffect(() => {
+    console.log(cutImgUrl);
+    if (cutImgUrl.length > 0) {
+      setIsCutVisible(true);
+    }
+  }, [cutImgUrl]);
   return (
     <>
       <NavigationBarBack backgroundColor="#FFFFFF" title="账号设置" url="/pages/mineHome/index" />
@@ -116,11 +132,20 @@ const Index = () => {
         setIsVisiable={setIsVisiable}
         isOverlay={true}
         imgUrl={imgUrl}
-        setImgUrl={setImgUrl}
+        setImgUrl={setCutImgUrl}
         type="event"
         count={1}
         isRequest={true}
       />
+      {cutImgUrl.length > 0 && (
+        <PictureCut
+          isvisible={isCutVisible}
+          imgUrl={cutImgUrl}
+          setImgUrl={setImgUrl}
+          setIsVisible={setIsCutVisible}
+          studentId={studentId}
+        />
+      )}
     </>
   );
 };

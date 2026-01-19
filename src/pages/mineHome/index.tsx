@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import arrowheadw from '@/common/assets/arrowhead/引导箭头-白.png';
 import arrowheadp from '@/common/assets/arrowhead/引导箭头-紫.png';
+import check from '@/common/assets/Postlist/check.png'
 import get from '@/common/api/get';
 import post from '@/common/api/post';
 import useUserStore from '@/store/userStore';
@@ -24,6 +25,7 @@ const Index = () => {
   const { setBlogIndex, setBackPage } = usePostStore();
   const [minePostList, setMinePostList] = useState<blogType[]>([]);
   const { avatar, studentid, username, school, setAvatar, setUsername, setSchool } = useUserStore();
+  const sid = Taro.getStorageSync('sid');
   const { setIsSelect } = useActivityStore();
 
   useDidShow(() => {
@@ -31,7 +33,7 @@ const Index = () => {
   });
 
   useDidShow(() => {
-    get(`/user/info/${studentid}`)
+    get(`/user/info/${sid}`)
       .then((res) => {
         console.log(res.data);
         setAvatar(res.data.avatar);
@@ -47,7 +49,7 @@ const Index = () => {
   useEffect(() => {
     if (activePage === 'post') {
       if (activeIndex === 'release') {
-        get(`/post/own/${studentid}`)
+        get('/post/own')
           .then((res) => {
             console.log('发布：', res.data);
             if (res.data === null) {
@@ -65,7 +67,7 @@ const Index = () => {
             console.log(err);
           });
       } else if (activeIndex === 'favourite') {
-        post('/user/collect/post', { studentid })
+        post('/user/collect/post', { sid })
           .then((res) => {
             console.log('收藏：', res);
             if (res.data === null) {
@@ -85,7 +87,7 @@ const Index = () => {
             console.log(err);
           });
       } else if (activeIndex === 'like') {
-        post('/user/like/post', { studentid })
+        post('/user/like/post', { sid })
           .then((res) => {
             console.log('点赞：', res);
             if (res.data === null) {
@@ -157,7 +159,7 @@ const Index = () => {
       >
         <View className="mine-user">
           <View className="mine-user-content">
-            <Image className="mine-user-avatar" mode="aspectFit" src={avatar}></Image>
+            <Image className="mine-user-avatar" mode="aspectFill" src={avatar}></Image>
             <View className="mine-user-info">
               <View className="mine-user-name">{username}</View>
               <View className="mine-user-school">{school}</View>
@@ -170,7 +172,7 @@ const Index = () => {
             ></Image>
           </View>
 
-          <View className="mine-user-check">
+          {/*<View className="mine-user-check">
             <View className="mine-user-check-info">审核中</View>
             <Image
               className="mine-user-check-arrowhead"
@@ -178,7 +180,7 @@ const Index = () => {
               mode="widthFix"
               src={arrowheadp}
             ></Image>
-          </View>
+          </View>*/}
         </View>
         <View className="mine-order-title" id="scrollView">
           <View className="mine-order-title-choice">
@@ -198,6 +200,10 @@ const Index = () => {
             >
               活动
             </View>
+            <View className='mine-order-title-choice-check' onClick={() => navigateTo({ url: '/subpackage/isChecking/index' })}>
+              审核
+            </View>
+            <Image className="mine-order-title-choice-img" src={check}></Image>
           </View>
           <View className="mine-order-title-line"></View>
           <View className="mine-order-title-index">
@@ -227,6 +233,8 @@ const Index = () => {
             </View>
           </View>
         </View>
+
+        <View className="mine-content">
         {activePage === 'post' ? (
           minePostList.length === 0 ? (
             <MinePageNull />
@@ -251,7 +259,8 @@ const Index = () => {
             activeIndex={activeIndex}
             setIsShowActivityWindow={setIsShowActivityWindow}
           />
-        )}
+        )}          
+        </View>
       </ScrollView>
       {isShowActivityWindow && (
         <PostWindow WindowType="active" setShowPostWindow={setIsShowActivityWindow}></PostWindow>

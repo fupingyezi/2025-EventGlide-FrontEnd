@@ -26,11 +26,14 @@
     bottom: 40rpx;
     right: 20rpx;
     border-radius: 50rpx;
-    background-color: pink;
+    background-color: #d7ccf9;
     font-family: SimHei;
     font-size: 25rpx;
     color: #fff;
     text-align: center;
     line-height: 50rpx;
+  }
+  &-active {
+    background-color: #9b8df2;
   }
 }
