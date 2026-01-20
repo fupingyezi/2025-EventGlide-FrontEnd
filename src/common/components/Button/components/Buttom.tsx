@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
 import './style.scss';
-import BtnType from '@/common/types/BtnType';
+import { ButtonProps } from '@/common/types';
 import { View } from '@tarojs/components';
 import { navigateTo, reLaunch } from '@tarojs/taro';
 import classnames from 'classnames';
 
-const Button: React.FC<BtnType> = memo(function ({ ...props }) {
+const Button: React.FC<ButtonProps> = memo(function ({ ...props }) {
   const handleClick = () => {
     if (props.url === '/pages/indexHome/index' || props.url === '/pages/postHome/index') {
       reLaunch({ url: props.url });

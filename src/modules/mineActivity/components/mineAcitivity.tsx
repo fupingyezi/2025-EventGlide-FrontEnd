@@ -5,7 +5,7 @@ import MyActivityCard from '@/modules/MyActivityCard';
 import get from '@/common/api/get';
 import post from '@/common/api/post';
 import useActivityStore from '@/store/ActivityStore';
-import { ActivityDetailList } from '@/common/types/ActiveList';
+import { ActivityDetailList } from '@/common/types';
 import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';
 
 import Taro from '@tarojs/taro';

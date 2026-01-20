@@ -2,33 +2,7 @@ import { View, Text, Image, PageContainer } from '@tarojs/components';
 import React, { memo } from 'react';
 import deleteSvg from '@/common/svg/delete.svg';
 import './style.scss';
-
-interface DrawerProps {
-  /** 是否显示抽屉 */
-  visible: boolean;
-  /** 关闭回调 */
-  onClose: () => void;
-  placement?: 'left' | 'right' | 'top' | 'bottom';
-  title?: string | React.ReactNode;
-  /** 自定义类名 */
-  className?: string;
-  /** 自定义样式 */
-  customStyle?: React.CSSProperties;
-  /** 子元素 */
-  children?: React.ReactNode;
-  /** 是否显示标题栏 */
-  showHeader?: boolean;
-  /** 是否显示关闭按钮 */
-  showClose?: boolean;
-  /** 自定义关闭组件 */
-  customCloseComponent?: React.ReactNode;
-  /** 蒙版是否打开 */
-  mask?: boolean;
-  /** 抽屉宽度（仅在placement为left/right时有效） */
-  width?: string;
-  /** 抽屉高度（仅在placement为top/bottom时有效） */
-  height?: string;
-}
+import { DrawerProps } from '@/common/types';
 
 const Drawer: React.FC<DrawerProps> = memo(({ ...props }) => {
   const {

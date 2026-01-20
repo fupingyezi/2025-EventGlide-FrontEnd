@@ -3,7 +3,7 @@ import { View, Image } from '@tarojs/components';
 import pos from '@/common/assets/activity/pos.png';
 import date from '@/common/assets/activity/act.png';
 import { memo } from 'react';
-import { ActivityDetailList } from '@/common/types/ActiveList';
+import { ActivityDetailList } from '@/common/types';
 import { activeColor } from '@/common/const/Formconst';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 

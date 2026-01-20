@@ -1,10 +1,10 @@
 import './style.scss';
 import { View, Image } from '@tarojs/components';
-import { replyType } from '@/common/types/PostList';
+import { ReplyType } from '@/common/types';
 import { useState, memo } from 'react';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 
-const BlogReply: React.FC<replyType> = memo(({ ...props }) => {
+const BlogReply: React.FC<ReplyType> = memo(({ ...props }) => {
   return (
     <View className="BlogReply">
       <View className="BlogReply-content">

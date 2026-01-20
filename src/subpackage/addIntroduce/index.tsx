@@ -10,7 +10,7 @@ import ImagePicker from '@/modules/ImagePicker';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import { useDidShow } from '@tarojs/taro';
 import get from '@/common/api/get';
-import LabelForm from '@/common/types/LabelForm';
+import { LabelForm } from '@/common/types';
 
 const Index = () => {
   const [isShowDraft, setIsShowDraft] = useState(false);

@@ -1,14 +1,14 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { View, Image } from '@tarojs/components';
 import './style.scss';
-import { responseType } from '@/common/types/PostList';
+import { ResponseType } from '@/common/types';
 import defaultAvatar from '@/common/assets/Postlist/波奇.jpg';
 import favor from '@/common/svg/post/heart.svg';
 import favorAct from '@/common/svg/post/heartAct.svg';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 import BlogReply from '@/modules/ReplyComment';
 
-const BlogComment: React.FC<responseType | any> = memo((props) => {
+const BlogComment: React.FC<ResponseType | any> = memo((props) => {
   const flattenReplies = (replies) => {
     return replies.flatMap((reply) => {
       const result = [reply];
@@ -25,35 +25,30 @@ const BlogComment: React.FC<responseType | any> = memo((props) => {
   return (
     <>
       <View className="BlogComment">
-        <View className="BlogComment-content" 
-        >
+        <View className="BlogComment-content">
           <Image
             className="BlogComment-avatar"
             src={props.creator.avatar ? props.creator.avatar : defaultAvatar}
             mode="scaleToFill"
           />
-          <View className="BlogComment-info" 
-          onClick={() => {
-            props.setIsVisible(true);
-            props.setReply_id(props.bid);
-          }}
-          onLongPress={()=>{
-            props.setCommentItems(props.content || defaultContent);
-            props.setCommentCreator(props.creator);
-            props.setCommentid(props.bid);
-            props.longClick();
-          }}
+          <View
+            className="BlogComment-info"
+            onClick={() => {
+              props.setIsVisible(true);
+              props.setReply_id(props.bid);
+            }}
+            onLongPress={() => {
+              props.setCommentItems(props.content || defaultContent);
+              props.setCommentCreator(props.creator);
+              props.setCommentid(props.bid);
+              props.longClick();
+            }}
           >
             <View className="BlogComment-info-name">{props.creator.username ?? '校灵通'}</View>
             <View className="BlogComment-info-content">{props.content || defaultContent}</View>
             <View className="BlogComment-info-timesite">
               {TimeTranslation(props.commented_time)}&nbsp;&nbsp;
-              
-              <View
-                className="BlogComment-info-reply"
-              >
-                回复
-              </View>
+              <View className="BlogComment-info-reply">回复</View>
             </View>
           </View>
           <Image

@@ -1,12 +1,11 @@
 import './style.scss';
 import { View, Input, Text } from '@tarojs/components';
 import React, { memo } from 'react';
-import formType from '@/common/types/FormType';
 import classnames from 'classnames';
-import LabelForm from '@/common/types/LabelForm';
+import { FormType, LabelForm } from '@/common/types';
 import Picture from '@/common/components/Picture';
 
-interface formProps extends formType {
+interface formProps extends FormType {
   id: number;
   value: string;
   formValue: LabelForm;

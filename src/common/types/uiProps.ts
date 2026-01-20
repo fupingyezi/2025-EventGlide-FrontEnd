@@ -1,0 +1,152 @@
+// UI组件属性相关类型
+
+/** ----核心组件Props---- */
+export interface ModalProps {
+  /** 是否显示模态框 */
+  visible: boolean;
+  /** 关闭回调 */
+  onClose: () => void;
+  /** 标题 */
+  title?: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm?: () => void;
+  /** 是否显示取消按钮 */
+  showCancel?: boolean;
+  /** 是否显示确认按钮 */
+  showConfirm?: boolean;
+  /** 子元素 */
+  children?: React.ReactNode;
+  /** 是否显示标题栏 */
+  showHeader?: boolean;
+  /** 是否显示内容栏 */
+  showContent?: boolean;
+  /** 自定义样式 */
+  className?: string;
+  customStyle?: React.CSSProperties;
+  /** 标题栏自定义样式 */
+  headerClassName: string;
+}
+
+export interface DrawerProps {
+  /** 是否显示抽屉 */
+  visible: boolean;
+  /** 关闭回调 */
+  onClose: () => void;
+  placement?: 'left' | 'right' | 'top' | 'bottom';
+  title?: string | React.ReactNode;
+  /** 自定义类名 */
+  className?: string;
+  /** 自定义样式 */
+  customStyle?: React.CSSProperties;
+  /** 子元素 */
+  children?: React.ReactNode;
+  /** 是否显示标题栏 */
+  showHeader?: boolean;
+  /** 是否显示关闭按钮 */
+  showClose?: boolean;
+  /** 自定义关闭组件 */
+  customCloseComponent?: React.ReactNode;
+  /** 蒙版是否打开 */
+  mask?: boolean;
+  /** 抽屉宽度（仅在placement为left/right时有效） */
+  width?: string;
+  /** 抽屉高度（仅在placement为top/bottom时有效） */
+  height?: string;
+}
+
+export interface ButtonProps {
+  /** 如果有跳转，跳转的url */
+  url?: string;
+  text: string;
+  backgroundColor: string;
+  textColor: string;
+  /** 是否显示边框 */
+  isBorder: boolean;
+}
+
+export interface CustomInputProps {
+  /** 输入框类型 */
+  type?: 'text' | 'number' | 'password' | 'textarea';
+  /** 输入框的值 */
+  value?: string;
+  /** 输入框为空时占位符 */
+  placeholder?: string;
+  /** 是否禁用输入框 */
+  disabled?: boolean;
+  /** 最大输入长度 */
+  maxLength?: number;
+  /** 是否是密码类型 */
+  password?: boolean;
+  /** 是否聚焦 */
+  focus?: boolean;
+  /** 键盘弹起时，是否自动上推页面 */
+  adjustPosition?: boolean;
+  /** 点击完成时，是否保持键盘不收起 */
+  holdKeyboard?: boolean;
+  /** 是否自动聚焦 */
+  autoFocus?: boolean;
+  /** 是否可清空 */
+  clearable?: boolean;
+  /** 是否显示字数统计 */
+  showWordLimit?: boolean;
+  /** 标题 */
+  title?: string;
+  /** 左侧图标 */
+  leftIcon?: string;
+  /** 右侧图标 */
+  rightIcon?: string;
+  /** 输入框样式 */
+  inputStyle?: React.CSSProperties;
+  /** 自定义样式 */
+  customStyle?: React.CSSProperties;
+  /** 自定义类名 */
+  className?: string;
+  /** 输入时触发的事件 */
+  onInput?: (value: string) => void;
+  /** 聚焦时触发的事件 */
+  onFocus?: (e: any) => void;
+  /** 失焦时触发的事件 */
+  onBlur?: (e: any) => void;
+  /** 点击完成时触发的事件 */
+  onConfirm?: (value: string) => void;
+  /** 清空内容时触发的事件 */
+  onClear?: () => void;
+  /** 是否自动增高 */
+  autoHeight?: boolean;
+  /** 指定光标与键盘的距离 */
+  cursorSpacing?: number;
+  /** 是否显示键盘上方带有"完成"按钮那一栏 */
+  showConfirmBar?: boolean;
+  /** 光标起始位置 */
+  selectionStart?: number;
+  /** 光标结束位置 */
+  selectionEnd?: number;
+}
+
+export interface ImagePickerProps {
+  /** 是否弹出 */
+  isVisiable: boolean;
+  setIsVisiable: (value: boolean) => void;
+  setImgUrl: (value: string[]) => void;
+  imgUrl: string[];
+  isOverlay: boolean;
+  type: string;
+  count?: number;
+  isRequest?: boolean;
+}
+
+export interface AddPeopleProps {
+  id: number;
+  name: string;
+  number: string;
+  isEditormode: boolean;
+}
+
+export interface PictureCutProps {
+  isvisible: boolean;
+  imgUrl: string[];
+  setImgUrl: (value: string[]) => void;
+  setIsVisible: (value: boolean) => void;
+  studentId: string;
+}

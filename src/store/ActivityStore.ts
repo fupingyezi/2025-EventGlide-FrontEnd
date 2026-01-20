@@ -1,13 +1,13 @@
 import { create } from 'zustand';
-import { selectedInfo, ActivityDetailList } from '@/common/types/ActiveList';
+import { SelectedInfo, ActivityDetailList } from '@/common/types';
 
 interface ActivityStoreState {
-  selectedInfo: selectedInfo;
+  selectedInfo: SelectedInfo;
   activeList: ActivityDetailList[];
   selectedItem: ActivityDetailList;
   isSelect: boolean;
   setIsSelect: (type: boolean) => void;
-  setSelectInfo: (info: selectedInfo) => void; //筛选条件
+  setSelectInfo: (info: SelectedInfo) => void; //筛选条件
   setActiveList: (list: ActivityDetailList[]) => void;
   setSelectedItem: (list: ActivityDetailList) => void; //选中的活动详情
   setLikeNumChange: (id: string, type: string) => void;
@@ -22,8 +22,8 @@ const useActivityStore = create<ActivityStoreState>((set) => ({
     if_register: '',
     detailTime: {
       startTime: '',
-      endTime: ''
-    }
+      endTime: '',
+    },
   },
   activeList: [],
   selectedItem: {} as ActivityDetailList,

@@ -9,7 +9,7 @@ import draft from '@/common/svg/add/draft.svg';
 import PostWindow from '@/modules/PostWindow';
 import DraftWinodw from '@/modules/draftWinow';
 import { navigateTo, useDidShow } from '@tarojs/taro';
-import LabelForm from '@/common/types/LabelForm';
+import { LabelForm } from '@/common/types';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import useSignersStore from '@/store/SignersStore';
 import get from '@/common/api/get';

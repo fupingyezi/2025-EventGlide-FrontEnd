@@ -2,7 +2,7 @@ import { View } from '@tarojs/components';
 import { useState, memo } from 'react';
 import { navigateTo, navigateBack } from '@tarojs/taro';
 import './index.scss';
-import AddPeopleProps from '@/common/types/AddPeopleProps';
+import { AddPeopleProps } from '@/common/types';
 import classnames from 'classnames';
 import useSignersStore from '@/store/SignersStore';
 
