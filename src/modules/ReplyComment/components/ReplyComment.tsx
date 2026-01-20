@@ -1,13 +1,13 @@
 import './style.scss';
 import { View, Image } from '@tarojs/components';
-import { replyType } from '@/common/types/PostList';
+import { ReplyType } from '@/common/types';
 import { memo } from 'react';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 import favor from '@/common/svg/post/heart.svg';
 import favorAct from '@/common/svg/post/heartAct.svg';
 import { useState } from 'react';
 import handleInteraction from '@/common/utils/Interaction';
-const ReplyComment: React.FC<replyType | any> = memo(({ ...props }) => {
+const ReplyComment: React.FC<ReplyType | any> = memo(({ ...props }) => {
   const [islike, setIslike] = useState(props.isLike);
   const [nums, setNums] = useState(props.likeNum);
   const param = {

@@ -17,7 +17,7 @@ import get from '@/common/api/get';
 import post from '@/common/api/post';
 import BlogComment from '@/modules/BlogComment/components';
 import ReplyInput from '@/modules/ReplyInput';
-import CommentOperation from '@/modules/CommentOperation';
+import CommentActionSheet from '@/modules/CommentActionSheet';
 
 export const SetBlogReponseContext = createContext<(params: any) => void>(() => {});
 export const SetBlogComment = createContext<(params: any) => void>(() => {});
@@ -408,34 +408,6 @@ const Index = () => {
             <View className="postDetail-footer-desc-text">{Item.collectNum}</View>
             <Image className="postDetail-footer-desc-icon3" mode="widthFix" src={comment}></Image>
             <View className="postDetail-footer-desc-text">{Item.commentNum}</View>
-            <View className="postDetail-footer-desc">
-              <View className="postDetail-footer-desc-item">
-                <Image
-                  className="postDetail-footer-desc-icon1"
-                  mode="widthFix"
-                  src={Item.isLike === 'true' ? favorActive : favor}
-                  onClick={handleLike}
-                ></Image>
-                <View className="postDetail-footer-desc-text">{Item.likeNum}</View>
-              </View>
-              <View className="postDetail-footer-desc-item">
-                <Image
-                  className="postDetail-footer-desc-icon2"
-                  mode="widthFix"
-                  src={Item.isCollect === 'true' ? collectActive : collect}
-                  onClick={handleCollect}
-                ></Image>
-                <View className="postDetail-footer-desc-text">{Item.collectNum}</View>
-              </View>
-              <View className="postDetail-footer-desc-item">
-                <Image
-                  className="postDetail-footer-desc-icon3"
-                  mode="widthFix"
-                  src={comment}
-                ></Image>
-                <View className="postDetail-footer-desc-text">{Item.commentNum}</View>
-              </View>
-            </View>
           </View>
           {/*{commentInput && (
           <View className="comment-popup">
@@ -501,7 +473,7 @@ const Index = () => {
           </View>
         )}
         {commentOperation && (
-          <CommentOperation
+          <CommentActionSheet
             setVisible={setCommentOperation}
             studentid={studentid}
             commentItems={commentItems}

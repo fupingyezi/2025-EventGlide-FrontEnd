@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import LabelForm from '@/common/types/LabelForm';
+import { LabelForm } from '@/common/types';
 
 interface activeInfoState {
   title: string;

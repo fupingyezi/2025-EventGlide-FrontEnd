@@ -1,10 +1,10 @@
 import { View, PageContainer } from '@tarojs/components';
 import { memo } from 'react';
 import './style.scss';
-import AlbumWindowProps from '@/common/types/AlbumWindowProps';
+import { ImagePickerProps } from '@/common/types';
 import { handleChooseImage } from '@/common/utils/AlbumFunction';
 
-const ImagePicker: React.FC<AlbumWindowProps> = memo(function AlbumWindow({
+const ImagePicker: React.FC<ImagePickerProps> = memo(function AlbumWindow({
   isVisiable,
   setIsVisiable,
   isOverlay,
@@ -59,24 +59,27 @@ const ImagePicker: React.FC<AlbumWindowProps> = memo(function AlbumWindow({
     }
   };
   return (
-    <View style={{
-      position: 'absolute',
-      width: '100%',
-      height:'100%',
-      backgroundColor:'rgba(0, 0, 0, 0.5)',
-      zIndex: 10,
-      display: isVisiable ? 'block' : 'none',
-    }}
-    onClick={() => setIsVisiable(false)}
+    <View
+      style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 10,
+        display: isVisiable ? 'block' : 'none',
+      }}
+      onClick={() => setIsVisiable(false)}
     >
-      <View style={{ 
-        position: 'fixed', 
-        bottom: 0, 
-        left: 0, 
-        right: 0, 
-        backgroundColor: 'transparent',
-        zIndex: 20,
-      }}>
+      <View
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: 'transparent',
+          zIndex: 20,
+        }}
+      >
         <View className="album-window-content">
           <View className="album-window-content-btn1" onClick={() => handleChooseImageClick()}>
             从相册中选择

@@ -4,7 +4,7 @@ import './style.scss';
 import post from '@/common/api/post';
 import Taro from '@tarojs/taro';
 import useUserStore from '@/store/userStore';
-import LabelForm from '@/common/types/LabelForm';
+import { LabelForm } from '@/common/types';
 
 const DraftWinodw: React.FC<{
   windowTitle: string;

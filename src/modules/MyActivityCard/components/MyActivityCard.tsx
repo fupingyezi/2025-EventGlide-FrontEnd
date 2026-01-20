@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { View, Image } from '@tarojs/components';
-import { MineActivityList } from '@/common/types/ActiveList';
+import { MineActivityList } from '@/common/types';
 import './style.scss';
 import favor from '@/common/svg/post/star.svg';
 import favorActive from '@/common/svg/post/starAct.svg';

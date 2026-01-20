@@ -3,7 +3,7 @@ import './index.scss';
 import addpic from '@/common/svg/add/addHome.svg';
 import remindpic from '@/common/svg/add/remind.svg';
 import Button from '@/common/components/Button';
-import BtnType from '@/common/types/BtnType';
+import { ButtonProps } from '@/common/types';
 import useActivityStore from '@/store/ActivityStore';
 import { useDidShow } from '@tarojs/taro';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
@@ -13,7 +13,7 @@ import ActivityAddRules from '@/modules/ActivityAddRules';
 const Index = () => {
   const [showAddRules, setShowAddRules] = useState(false);
 
-  const addBtn: BtnType = {
+  const addBtn: ButtonProps = {
     url: '/subpackage/addIntroduce/index',
     text: '去填写',
     backgroundColor: '#CF79FA',

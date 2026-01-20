@@ -1,14 +1,14 @@
 import { memo } from 'react';
 import { View, Image } from '@tarojs/components';
 import './style.scss';
-import { responseType } from '@/common/types/PostList';
+import { ResponseType } from '@/common/types';
 import defaultAvatar from '@/common/assets/Postlist/波奇.jpg';
 import favor from '@/common/svg/post/heart.svg';
 import favorAct from '@/common/svg/post/heartAct.svg';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 import ReplyComment from '@/modules/ReplyComment';
 
-const PostComment: React.FC<responseType | any> = memo((props) => {
+const PostComment: React.FC<ResponseType | any> = memo((props) => {
   const flattenReplies = (replies) => {
     return replies.flatMap((reply) => {
       const result = [reply];
@@ -34,22 +34,18 @@ const PostComment: React.FC<responseType | any> = memo((props) => {
             src={props.creator.avatar ? props.creator.avatar : defaultAvatar}
             mode="scaleToFill"
           />
-          <View className="postComment-info"
-          onClick={() => {
-            props.setIsVisible(true);
-            props.setReply_id(props.bid);
-          }}
+          <View
+            className="postComment-info"
+            onClick={() => {
+              props.setIsVisible(true);
+              props.setReply_id(props.bid);
+            }}
           >
             <View className="postComment-info-name">{props.creator.username ?? '校灵通'}</View>
             <View className="postComment-info-content">{props.content || defaultContent}</View>
             <View className="postComment-info-timesite">
               {TimeTranslation(props.commented_time)}&nbsp;&nbsp;
-              
-              <View
-                className="postComment-info-reply"
-              >
-                回复
-              </View>
+              <View className="postComment-info-reply">回复</View>
             </View>
           </View>
           <Image

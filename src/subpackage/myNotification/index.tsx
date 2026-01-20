@@ -1,7 +1,7 @@
 import { View, Image } from '@tarojs/components';
 import { memo, useState } from 'react';
 import './index.scss';
-import LetterType from '@/common/types/LetterType';
+import { LetterType } from '@/common/types';
 import classnames from 'classnames';
 import get from '@/common/api/get';
 import { useDidShow } from '@tarojs/taro';
