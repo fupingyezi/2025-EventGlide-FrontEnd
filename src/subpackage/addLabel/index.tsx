@@ -29,6 +29,15 @@ const Index = () => {
   const [showFormWindow, setShowFormWindow] = useState(false);
   const [showFormIndex, setShowFormIndex] = useState<number>(0);
   const [activeForm, setActiveForm] = useState<string[]>([]);
+
+  const updateActiveForm = (values: string[]) => {
+    setActiveForm(values);
+    setFormValue((prev) => ({
+      ...prev,
+      activeForm: values.join(','), // 将数组转换为字符串存储
+    }));
+  };
+
   const [formValue, setFormValue] = useState<LabelForm>({
     type: '',
     holderType: '',
@@ -146,7 +155,7 @@ const Index = () => {
                 required={item.required}
                 disabled={item.disabled}
                 activeForm={activeForm}
-                setActiveForm={setActiveForm}
+                setActiveForm={updateActiveForm}
                 value={Object.values(formValue).filter((value) => typeof value === 'string')[index]}
                 formValue={formValue}
                 setFormValue={setFormValue}
@@ -200,7 +209,7 @@ const Index = () => {
           formValue={formValue}
           setFormValue={setFormValue}
           activeForm={activeForm}
-          setActiveForm={setActiveForm}
+          setActiveForm={updateActiveForm}
         ></FormPicker>
       )}
     </View>
