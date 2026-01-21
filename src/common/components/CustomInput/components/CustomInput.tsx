@@ -1,5 +1,5 @@
 import { View, Input, Textarea, Text } from '@tarojs/components';
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import './style.scss';
 import { CustomInputProps } from '@/common/types';
 
@@ -10,6 +10,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
     placeholder,
     disabled = false,
     maxLength = 140,
+    maxHeight = 120,
     password = false,
     focus = false,
     adjustPosition = true,
@@ -22,6 +23,8 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
     rightIcon,
     inputStyle,
     customStyle,
+    wrapperStyle,
+    wrapperClassName = '',
     className = '',
     onInput,
     onFocus,
@@ -37,10 +40,11 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
 
   const [innerValue, setInnerValue] = useState(value);
 
-  // 当外部value变化时同步内部状态
-  if (value !== innerValue && typeof value !== 'undefined') {
-    setInnerValue(value);
-  }
+  useEffect(() => {
+    if (typeof value !== 'undefined') {
+      setInnerValue(value);
+    }
+  }, [value]);
 
   const handleInput = (e: any) => {
     const newValue = e.detail.value;
@@ -98,7 +102,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
           onBlur={handleBlur}
           onConfirm={handleConfirm}
           className="custom-input-field custom-textarea-field"
-          style={inputStyle}
+          style={{ maxHeight: `${maxHeight}px`, ...inputStyle }}
         />
       );
     } else {
@@ -119,7 +123,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
           onBlur={handleBlur}
           onConfirm={handleConfirm}
           className="custom-input-field"
-          style={inputStyle}
+          style={{ maxHeight: `${maxHeight}px`, ...inputStyle }}
         />
       );
     }
@@ -128,7 +132,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
   return (
     <View className={`custom-input ${className}`} style={customStyle}>
       {title && <Text className="custom-input-title">{title}</Text>}
-      <View className="custom-input-wrapper">
+      <View className={`custom-input-wrapper ${wrapperClassName}`} style={wrapperStyle}>
         {leftIcon && (
           <View className="custom-input-left-icon">
             <Text>{leftIcon}</Text>
