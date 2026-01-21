@@ -1,4 +1,4 @@
 import FormItem from './components/FormItem/FormItem';
-import FormWindow from './components/FormWindow/FormWindow';
+import FormPicker from './components/FormPicker/FormPicker';
 
-export { FormItem as Form, FormWindow };
+export { FormItem, FormPicker };

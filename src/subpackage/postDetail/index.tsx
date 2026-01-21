@@ -32,8 +32,8 @@ const Index = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRequest, setIsRequest] = useState(true);
   const [reply_id, setReply_id] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
   const [commentInput, setCommentInput] = useState(false);
+  const [replytype, setReplytype] = useState('create');
   const [showpicture, setShowpicture] = useState(false);
   const [imageRatios, setImageRatios] = useState<string[]>([]);
   const [ratios, setRatios] = useState<string[]>([]);
@@ -61,7 +61,7 @@ const Index = () => {
     subject: 'post',
     receiver: Item.userInfo.studentid,
   };
-  const comment_params = {
+  const comment_reply_params = {
     parent_id: Item.bid,
     subject: 'post',
     receiver: Item.userInfo.studentid,
@@ -300,6 +300,8 @@ const Index = () => {
       });
     } else {
       post('/comment/answer', params).then((res) => {
+        console.log(res,params);
+        
         if (res.msg === 'success') {
           console.log(res);
 
@@ -315,6 +317,11 @@ const Index = () => {
       });
     }
   };
+
+  const replyComment=() => {
+    setCommentInput(true)
+    setReplytype('reply')
+  }
 
   return (
     <>
@@ -355,7 +362,11 @@ const Index = () => {
               mode="scaleToFill"
               src={avatar}
             ></Image>
-            <View className="postDetail-comment-input-text" onClick={() => setCommentInput(true)}>
+            <View className="postDetail-comment-input-text"          
+            onClick={() => {
+            setCommentInput(true)
+            setReplytype('create')
+            }}>
               {inputValue ? inputValue : '让大家听到你的声音'}
             </View>
           </View>
@@ -373,7 +384,7 @@ const Index = () => {
                   likeNum={item.likeNum}
                   isLike={item.isLike}
                   replyNum={item.replyNum}
-                  setIsVisible={setIsVisible}
+                  replycomment={replyComment}
                   setReply_id={setReply_id}
                   handleLikeComment={handleLikeComment}
                   longClick={() => setCommentOperation(true)}
@@ -385,7 +396,11 @@ const Index = () => {
           </View>
         </View>
         <View className="postDetail-footer">
-          <View className="postDetail-footer-input" onClick={() => setCommentInput(true)}>
+          <View className="postDetail-footer-input" 
+          onClick={() => {
+            setCommentInput(true)
+            setReplytype('create')
+            }}>
             <Image className="postDetail-footer-input-icon" mode="widthFix" src={icon}></Image>
             <View className="postDetail-footer-input-text">
               {inputValue ? inputValue : '说点什么'}
@@ -409,49 +424,15 @@ const Index = () => {
             <Image className="postDetail-footer-desc-icon3" mode="widthFix" src={comment}></Image>
             <View className="postDetail-footer-desc-text">{Item.commentNum}</View>
           </View>
-          {/*{commentInput && (
-          <View className="comment-popup">
-            <View className="comment-popup-cancel" onClick={() => setCommentInput(false)} />
-            <View className="comment-popup-box">
-              <Input
-                className="comment-popup-box-input"
-                placeholder="在此输入"
-                placeholderClass="postDetail-comment-input-text-input"
-                value={inputValue}
-                focus={true}
-                onInput={(e) => handleInput(e)}
-              ></Input>
-              <View
-                className={`comment-popup-box-send ${inputValue ? 'comment-popup-box-send-active' : ''}`}
-                onClick={() => {
-                  handleSubmit();
-                  setCommentInput(false);
-                }}
-              >
-                发送
-              </View>
-            </View>
-          </View>
-        )}*/}
         </View>
-        {isVisible ? (
-          <SetBlogReponseContext.Provider value={setBlogReponseContext}>
-            <ReplyInput
-              isVisible={isVisible}
-              setIsVisible={setIsVisible}
-              params={reply_params}
-              reply_id={reply_id}
-              page="post"
-            />
-          </SetBlogReponseContext.Provider>
-        ) : (
-          <SetBlogComment.Provider value={setBlogComment}>
+        {commentInput && (
+          <SetBlogComment.Provider value={replytype === 'create' ? setBlogComment : setBlogReponseContext}>
             <ReplyInput
               isVisible={commentInput}
               setIsVisible={setCommentInput}
-              params={comment_params}
+              params={replytype === 'create' ? comment_reply_params : reply_params}
               page="post"
-              comment={true}
+              comment={replytype === 'create' ? true : false}
             />
           </SetBlogComment.Provider>
         )}
@@ -474,6 +455,7 @@ const Index = () => {
         )}
         {commentOperation && (
           <CommentActionSheet
+            visible={commentOperation}
             setVisible={setCommentOperation}
             studentid={studentid}
             commentItems={commentItems}

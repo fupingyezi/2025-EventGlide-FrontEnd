@@ -141,7 +141,7 @@ const Index = () => {
       >
         <CustomInput
           className="userProfile-container-input"
-          customWrapperStyle={{ border: 'none' }}
+          wrapperStyle={{ border: 'none' }}
           value={inputValue}
           onInput={handleInputChange}
           onConfirm={handleConfirm}

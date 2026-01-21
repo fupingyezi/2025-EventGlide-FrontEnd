@@ -34,7 +34,7 @@ const BlogComment: React.FC<ResponseType | any> = memo((props) => {
           <View
             className="BlogComment-info"
             onClick={() => {
-              props.setIsVisible(true);
+              props.replycomment(true);
               props.setReply_id(props.bid);
             }}
             onLongPress={() => {

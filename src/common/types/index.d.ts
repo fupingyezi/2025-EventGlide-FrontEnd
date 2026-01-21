@@ -40,6 +40,9 @@ export type {
   ConfirmModalProps,
   AddPeopleProps,
   PictureCutProps,
+  ReplyInputProps,
+  DateItem,
+  CalendarDay,
 } from './uiProps';
 
 // 导入资源模块声明

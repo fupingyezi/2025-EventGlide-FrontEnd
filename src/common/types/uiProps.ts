@@ -65,6 +65,8 @@ export interface ButtonProps {
   textColor: string;
   /** 是否显示边框 */
   isBorder: boolean;
+  /** 表单提交类型，当为submit时触发表单提交 */
+  formType?: 'submit' | 'reset';
 }
 
 export interface CustomInputProps {
@@ -78,6 +80,8 @@ export interface CustomInputProps {
   disabled?: boolean;
   /** 最大输入长度 */
   maxLength?: number;
+  /** 最大高度 */
+  maxHeight?: number;
   /** 是否是密码类型 */
   password?: boolean;
   /** 是否聚焦 */
@@ -103,9 +107,9 @@ export interface CustomInputProps {
   /** 自定义样式 */
   customStyle?: React.CSSProperties;
   /** 自定义输入框包装器样式 */
-  customWrapperStyle?: React.CSSProperties;
+  wrapperStyle?: React.CSSProperties;
   /** 自定义输入框包装器类名 */
-  customWrapperClassName?: string;
+  wrapperClassName?: string;
   /** 自定义类名 */
   className?: string;
   /** 输入时触发的事件 */
@@ -166,4 +170,33 @@ export interface PictureCutProps {
   setImgUrl: (value: string[]) => void;
   setIsVisible: (value: boolean) => void;
   studentId: string;
+}
+
+export interface ReplyInputProps {
+  isVisible: boolean;
+  setIsVisible: (visible: boolean) => void;
+  params: {
+    parent_id: string;
+    subject: string;
+    receiver: string;
+  };
+  reply_id?: string;
+  page: string;
+  comment?: boolean;
+}
+
+export interface DateItem {
+  label: string;
+  subLabel: string;
+  value: string;
+  isToday?: boolean;
+  isAll?: boolean;
+}
+export interface CalendarDay {
+  date: Date;
+  day: number;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+  dateString: string;
 }

@@ -1,8 +1,8 @@
-import { View, Image } from '@tarojs/components';
+import { View, Image, Form } from '@tarojs/components';
 import { useState } from 'react';
 import './index.scss';
 import Taro from '@tarojs/taro';
-import { Form, FormWindow } from '@/modules/Form';
+import { FormItem, FormPicker } from '@/modules/Form';
 import formList from '@/common/const/Formconst';
 import Button from '@/common/components/Button';
 import draft from '@/common/svg/add/draft.svg';
@@ -118,6 +118,12 @@ const Index = () => {
     setLabelForm({ ...labelform, ...formValue, signer: signers });
     setShowPostWindow(true);
   };
+
+  const handleFormSubmitEvent = (e: any) => {
+    console.log('Form submitted:', e.detail.value);
+    handleFormSubmit();
+  };
+
   const btn = {
     text: '下一步',
     backgroundColor: '#CF79FA',
@@ -127,43 +133,45 @@ const Index = () => {
 
   return (
     <View className="add-label">
-      <View className="add-label-form-container">
-        <View className="add-label-title">{title}</View>
-        {formList.map((item, index) => (
-          <View key={index} className="add-label-form">
-            <Form
-              id={index}
-              text={item.text}
-              type={item.type}
-              reminder={item.reminder}
-              required={item.required}
-              disabled={item.disabled}
-              activeForm={activeForm}
-              setActiveForm={setActiveForm}
-              value={Object.values(formValue).filter((value) => typeof value === 'string')[index]}
-              formValue={formValue}
-              setFormValue={setFormValue}
-              setFormIndex={setSafeFormIndex}
-              setIsVisable={setShowFormWindow}
-            ></Form>
+      <Form onSubmit={handleFormSubmitEvent}>
+        <View className="add-label-form-container">
+          <View className="add-label-title">{title}</View>
+          {formList.map((item, index) => (
+            <View key={index} className="add-label-form">
+              <FormItem
+                id={index}
+                text={item.text}
+                type={item.type}
+                reminder={item.reminder}
+                required={item.required}
+                disabled={item.disabled}
+                activeForm={activeForm}
+                setActiveForm={setActiveForm}
+                value={Object.values(formValue).filter((value) => typeof value === 'string')[index]}
+                formValue={formValue}
+                setFormValue={setFormValue}
+                setFormIndex={setSafeFormIndex}
+                setIsVisable={setShowFormWindow}
+              ></FormItem>
+            </View>
+          ))}
+          <View
+            className="add-label-last"
+            onClick={() => navigateTo({ url: '/subpackage/addPeopleIndex/index' })}
+          >
+            申报人身份认证
           </View>
-        ))}
-        <View
-          className="add-label-last"
-          onClick={() => navigateTo({ url: '/subpackage/addPeopleIndex/index' })}
-        >
-          申报人身份认证
         </View>
-      </View>
-      <View className="add-label-floor">
-        <View className="add-label-floor-draft" onClick={() => setShowDraftWindow(true)}>
-          <Image src={draft} mode="widthFix" style={{ width: '60rpx' }}></Image>
-          <View className="add-label-floor-draft-text">存草稿</View>
+        <View className="add-label-floor">
+          <View className="add-label-floor-draft" onClick={() => setShowDraftWindow(true)}>
+            <Image src={draft} mode="widthFix" style={{ width: '60rpx' }}></Image>
+            <View className="add-label-floor-draft-text">存草稿</View>
+          </View>
+          <View className="add-label-floor-btn">
+            <Button formType="submit" {...btn} />
+          </View>
         </View>
-        <View className="add-label-floor-btn" onClick={() => handleFormSubmit()}>
-          <Button {...btn} />
-        </View>
-      </View>
+      </Form>
       {/* 草稿保存modal */}
       <ConfirmModal
         title="是否保存草稿？"
@@ -183,7 +191,7 @@ const Index = () => {
         <ActivityModal WindowType="add" setShowPostWindow={setShowPostWindow}></ActivityModal>
       )}
       {showFormWindow && (
-        <FormWindow
+        <FormPicker
           type={typeChoice(showFormIndex)}
           options={formList[showFormIndex].options ?? []}
           isVisiable={showFormWindow}
@@ -193,7 +201,7 @@ const Index = () => {
           setFormValue={setFormValue}
           activeForm={activeForm}
           setActiveForm={setActiveForm}
-        ></FormWindow>
+        ></FormPicker>
       )}
     </View>
   );
