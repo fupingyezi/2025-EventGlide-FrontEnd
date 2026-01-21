@@ -1,12 +1,15 @@
 import { View, Image } from '@tarojs/components';
-import Taro, { useDidShow } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
 import { memo, useEffect, useState } from 'react';
 import { CreatorType } from '@/common/types';
 import deleteComment from '@/common/const/DeleteComment';
 import './style.scss';
 import Confirmation from '@/modules/ConfirmationCard/components/confirmation';
+import Drawer from '@/common/components/Drawer';
+import Message from '@/common/components/Message';
 
 interface CommentOperationProps {
+  visible: boolean;
   setVisible: (visible: boolean) => void;
   studentid: string;
   commentItems: string;
@@ -15,7 +18,7 @@ interface CommentOperationProps {
 }
 
 const CommentActionSheet: React.FC<CommentOperationProps> = memo(
-  ({ setVisible, studentid, commentItems, commentCreator, commentid }) => {
+  ({ visible, setVisible, studentid, commentItems, commentCreator, commentid }) => {
     const [isDelete, setIsDelete] = useState(false);
     const [commentContent, setCommentContent] = useState(commentItems);
     useEffect(() => {
@@ -38,6 +41,10 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
             if (res.msg === 'success') {
               setIsDelete(false);
               setVisible(false);
+              Message.success({
+                content: '删除成功',
+                duration: 2000,
+              });
             }
           })
           .catch((err) => {
@@ -51,17 +58,15 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
       Taro.setClipboardData({
         data: commentItems,
         success: function () {
-          Taro.showToast({
-            title: '复制成功',
-            icon: 'success',
+          Message.success({
+            content: '复制成功',
             duration: 2000,
           });
           console.log('复制成功:', commentItems);
         },
         fail: function (err) {
-          Taro.showToast({
-            title: '复制失败',
-            icon: 'none',
+          Message.error({
+            content: '复制失败',
             duration: 2000,
           });
           console.error('复制失败:', err);
@@ -70,8 +75,13 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
     };
 
     return (
-      <View className="commentOperation" onClick={() => setVisible(false)}>
-        <View className="commentOperation-box" onClick={(e) => e.stopPropagation()}>
+      <>
+        <Drawer
+          visible={visible}
+          onClose={() => setVisible(false)}
+          placement="bottom"
+          showHeader={false}
+        >
           <View className="commentOperation-top">
             <Image
               className="commentOperation-top-user"
@@ -100,7 +110,7 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
               <View className="commentOperation-btn-text">分享</View>
             </View>
           </View>
-        </View>
+        </Drawer>
         {isDelete && (
           <View onClick={(e) => e.stopPropagation()}>
             <Confirmation
@@ -113,7 +123,7 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
             />
           </View>
         )}
-      </View>
+      </>
     );
   }
 );

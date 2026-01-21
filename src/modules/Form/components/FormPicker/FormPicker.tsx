@@ -1,12 +1,11 @@
 import './style.scss';
 import { memo, useState } from 'react';
-import { View, PageContainer } from '@tarojs/components';
+import { View } from '@tarojs/components';
 import DatePicker from '@/modules/DatePicker';
 import ImagePicker from '@/modules/ImagePicker';
-import { year, month, day, hour, minute } from '@/common/utils/DateList';
-import { it } from 'node:test';
+import Drawer from '@/common/components/Drawer';
 
-const FormWindow: React.FC<any> = memo(function FormWindow({ ...props }) {
+const FormPicker: React.FC<any> = memo(function FormPicker({ ...props }) {
   const [selectedValue, setSelectedValue] = useState<number>(-1);
   const [activeYearIndex, setActiveYearIndex] = useState(0);
   const [activeMonthIndex, setActiveMonthIndex] = useState(0);
@@ -75,14 +74,12 @@ const FormWindow: React.FC<any> = memo(function FormWindow({ ...props }) {
       );
     case 'SimpChoice':
       return (
-        <PageContainer
-          show={props.isVisiable && showLIst.includes(props.showFormIndex)}
-          overlay={true}
-          position="bottom"
-          onLeave={() => props.setIsVisiable(false)}
-          customStyle="background-color: transparent;"
-          overlayStyle="background-color: rgba(0, 0, 0, 0.5);"
-        >
+          <Drawer
+            visible={props.isVisiable && showLIst.includes(props.showFormIndex)}
+            onClose={() => props.setIsVisiable(false)}
+            placement="bottom"
+            showHeader={false}
+          >
           <View className="formWindow">
             <View className="formWindow-title">
               <View className="formWindow-title-text">请选择</View>
@@ -103,9 +100,9 @@ const FormWindow: React.FC<any> = memo(function FormWindow({ ...props }) {
               </View>
             ))}
           </View>
-        </PageContainer>
+          </Drawer>
       );
   }
 });
 
-export default FormWindow;
+export default FormPicker;

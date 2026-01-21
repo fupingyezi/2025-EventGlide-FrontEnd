@@ -1,23 +1,9 @@
-import { View, PageContainer, ScrollView } from '@tarojs/components';
+import { View, ScrollView } from '@tarojs/components';
 import React, { useState, useEffect, memo } from 'react';
 import './style.scss';
 import classnames from 'classnames';
-
-interface DateItem {
-  label: string;
-  subLabel: string;
-  value: string;
-  isToday?: boolean;
-  isAll?: boolean;
-}
-interface CalendarDay {
-  date: Date;
-  day: number;
-  isCurrentMonth: boolean;
-  isToday: boolean;
-  isSelected: boolean;
-  dateString: string;
-}
+import Drawer from '@/common/components/Drawer';
+import { DateItem, CalendarDay } from '@/common/types';
 
 const generateTimeSlots = (): string[] => {
   const slots: string[] = [];
@@ -245,11 +231,11 @@ const DatePicker: React.FC<any> = memo(({ isVisiable, setIsVisiable, handleConfi
 
   return (
     <>
-      <PageContainer
-        show={isVisiable}
-        overlay={true}
-        customStyle="background-color:transparent;"
-        onLeave={() => setIsVisiable(false)}
+      <Drawer
+        visible={isVisiable}
+        onClose={() => setIsVisiable(false)}
+        placement="bottom"
+        showHeader={false}
       >
         <View className="scrolled-title">
           <View className="scrolled-title-text">选择时间</View>
@@ -298,7 +284,7 @@ const DatePicker: React.FC<any> = memo(({ isVisiable, setIsVisiable, handleConfi
             确定
           </View>
         </View>
-      </PageContainer>
+      </Drawer>
 
       {showFullDatePicker && (
         <View className="full-date-picker">
