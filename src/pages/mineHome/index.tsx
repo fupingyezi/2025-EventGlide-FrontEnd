@@ -1,6 +1,6 @@
 import { View, Image, ScrollView, GridView } from '@tarojs/components';
 import './index.scss';
-import MineActivity from '@/modules/mineActivity/index';
+import { MyActivityTab } from '@/modules/MyPageContent';
 import Taro, { navigateTo, useDidShow } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import classnames from 'classnames';
@@ -171,16 +171,6 @@ const Index = () => {
               onClick={() => navigateTo({ url: '/subpackage/userProfile/index' })}
             ></Image>
           </View>
-
-          {/*<View className="mine-user-check">
-            <View className="mine-user-check-info">审核中</View>
-            <Image
-              className="mine-user-check-arrowhead"
-              onClick={() => navigateTo({ url: '/subpackage/review/index' })}
-              mode="widthFix"
-              src={arrowheadp}
-            ></Image>
-          </View>*/}
         </View>
 
         <View className="mine-order-title" id="scrollView">
@@ -247,6 +237,7 @@ const Index = () => {
                 {minePostList.map((item, index) => (
                   <View
                     key={index}
+                    style={{ padding: '10rpx' }}
                     id={`post-item-${index}`}
                     onClick={() => {
                       setBlogIndex(item.bid);
@@ -259,7 +250,7 @@ const Index = () => {
               </GridView>
             )
           ) : (
-            <MineActivity
+            <MyActivityTab
               activeIndex={activeIndex}
               setIsShowActivityWindow={setIsShowActivityWindow}
             />

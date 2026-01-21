@@ -1,21 +1,22 @@
 import { memo, useEffect, useState } from 'react';
 import { View } from '@tarojs/components';
 import './style.scss';
-import MyActivityCard from '@/modules/MyActivityCard';
+import MyActivityCard from './MyActivityCard';
 import get from '@/common/api/get';
 import post from '@/common/api/post';
 import useActivityStore from '@/store/ActivityStore';
 import { ActivityDetailList } from '@/common/types';
 import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';
-
 import Taro from '@tarojs/taro';
-const MineActivity: React.FC<{
+
+const MyActivityTab: React.FC<{
   activeIndex: 'release' | 'like' | 'favourite';
   setIsShowActivityWindow: (isShow: boolean) => void;
 }> = memo(function ({ activeIndex, setIsShowActivityWindow }) {
   const studentid = Taro.getStorageSync('sid');
   const [activeList, setActiveList] = useState<ActivityDetailList[]>([]);
   const { setSelectedItem } = useActivityStore();
+
   useEffect(() => {
     if (activeIndex === 'release') {
       get('/act/own')
@@ -114,4 +115,4 @@ const MineActivity: React.FC<{
   );
 });
 
-export default MineActivity;
+export default MyActivityTab;

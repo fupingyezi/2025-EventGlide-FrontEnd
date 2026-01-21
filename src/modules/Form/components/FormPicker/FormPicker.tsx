@@ -74,12 +74,12 @@ const FormPicker: React.FC<any> = memo(function FormPicker({ ...props }) {
       );
     case 'SimpChoice':
       return (
-          <Drawer
-            visible={props.isVisiable && showLIst.includes(props.showFormIndex)}
-            onClose={() => props.setIsVisiable(false)}
-            placement="bottom"
-            showHeader={false}
-          >
+        <Drawer
+          visible={props.isVisiable && showLIst.includes(props.showFormIndex)}
+          onClose={() => props.setIsVisiable(false)}
+          placement="bottom"
+          showHeader={false}
+        >
           <View className="formWindow">
             <View className="formWindow-title">
               <View className="formWindow-title-text">请选择</View>
@@ -100,7 +100,7 @@ const FormPicker: React.FC<any> = memo(function FormPicker({ ...props }) {
               </View>
             ))}
           </View>
-          </Drawer>
+        </Drawer>
       );
   }
 });
