@@ -5,12 +5,13 @@ import './index.scss';
 import Taro from '@tarojs/taro';
 import Picture from '@/common/components/Picture';
 import draft from '@/common/svg/add/draft.svg';
-import DraftWinodw from '@/modules/draftWinow';
+import ConfirmModal from '@/modules/ConfirmModal';
 import ImagePicker from '@/modules/ImagePicker';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import { useDidShow } from '@tarojs/taro';
 import get from '@/common/api/get';
 import { LabelForm } from '@/common/types';
+import { useDraft } from '@/common/hooks/useDraft';
 
 const Index = () => {
   const [isShowDraft, setIsShowDraft] = useState(false);
@@ -20,6 +21,15 @@ const Index = () => {
   const [description, setDescription] = useState('');
   const { setBasicInfo } = useActiveInfoStore();
   const [count, setCount] = useState(0);
+
+  const { saveDraft } = useDraft({
+    onSaveSuccess: () => {
+      setIsShowDraft(false);
+    },
+    onSaveError: (error) => {
+      console.error('草稿保存失败:', error);
+    },
+  });
 
   useDidShow(() => {
     get('/act/load').then((res) => {
@@ -134,17 +144,23 @@ const Index = () => {
           </View>
         </View>
       </View>
-      {isShowDraft && (
-        <DraftWinodw
-          windowTitle="是否保存草稿？"
-          setIsShow={setIsShowDraft}
-          type="event"
-          title={title}
-          introduce={description}
-          showImg={imgUrl}
-          labelform={{} as LabelForm}
-        />
-      )}
+
+      {/* 草稿保存modal */}
+      <ConfirmModal
+        title="是否保存草稿？"
+        visible={isShowDraft}
+        onClose={() => setIsShowDraft(false)}
+        onConfirm={() =>
+          saveDraft({
+            title: title,
+            introduce: description,
+            showImg: imgUrl,
+            labelform: {} as LabelForm,
+          })
+        }
+        headerClassName="textmid"
+      />
+
       {isShowAlbum && (
         <ImagePicker
           isVisiable={isShowAlbum}

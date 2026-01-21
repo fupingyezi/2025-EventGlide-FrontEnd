@@ -3,7 +3,7 @@ import ActivityCard from '@/modules/ActivityCard/index';
 import { useDidShow, useLoad } from '@tarojs/taro';
 import './index.scss';
 import ActivityTabs from '@/modules/ActivityTabs/index';
-import PostWindow from '@/modules/PostWindow';
+import ActivityModal from '@/modules/ActivityModal';
 import { useState } from 'react';
 import useActivityStore from '@/store/ActivityStore';
 import { judgeDate } from '@/common/utils/DateList';
@@ -93,7 +93,7 @@ const Index = () => {
         </View>
       </ScrollView>
       {showPostWindow && (
-        <PostWindow WindowType="active" setShowPostWindow={setShowPostWindow}></PostWindow>
+        <ActivityModal WindowType="active" setShowPostWindow={setShowPostWindow}></ActivityModal>
       )}
     </>
   );

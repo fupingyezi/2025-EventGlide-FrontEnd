@@ -50,7 +50,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
     const newValue = e.detail.value;
     setInnerValue(newValue);
     if (onInput) {
-      onInput(newValue);
+      onInput(e);
     }
   };
 

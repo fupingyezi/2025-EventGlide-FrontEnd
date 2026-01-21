@@ -53,7 +53,9 @@ const Index = () => {
           </View>
         </View>
       </View>
-      {showAddRules && <ActivityAddRules setShowAddRules={setShowAddRules} />}
+      {showAddRules && (
+        <ActivityAddRules showAddRules={showAddRules} setShowAddRules={setShowAddRules} />
+      )}
     </>
   );
 };

@@ -31,7 +31,6 @@
     border-radius: 15rpx;
     width: 88%;
     max-width: 92%;
-    min-height: 300rpx;
     position: relative;
     box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
     animation: modalSlideIn 0.3s ease-out;
@@ -50,7 +49,6 @@
   }
 
   &-title {
-    font-size: 32rpx;
     color: #170a1e;
     flex: 1;
   }
@@ -72,11 +70,8 @@
   }
 
   &-content {
-    padding: 40rpx;
     color: #5e5064;
-    font-size: 30rpx;
     line-height: 1.6;
-    max-height: 60vh;
     overflow-y: auto;
     position: relative;
 
@@ -93,7 +88,6 @@
   &-footer {
     display: flex;
     padding: 20rpx 40rpx;
-    font-size: 32rpx;
   }
 
   &-cancel,
@@ -104,7 +98,6 @@
     justify-content: center;
     align-items: center;
     border-radius: 10rpx;
-    font-size: 32rpx;
 
     cursor: pointer;
 

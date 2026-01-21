@@ -4,7 +4,7 @@ import { memo, useEffect, useState } from 'react';
 import { CreatorType } from '@/common/types';
 import deleteComment from '@/common/const/DeleteComment';
 import './style.scss';
-import Confirmation from '@/modules/ConfirmationCard/components/confirmation';
+import ConfirmModal from '@/modules/ConfirmModal';
 import Drawer from '@/common/components/Drawer';
 import Message from '@/common/components/Message';
 
@@ -111,18 +111,14 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
             </View>
           </View>
         </Drawer>
-        {isDelete && (
-          <View onClick={(e) => e.stopPropagation()}>
-            <Confirmation
-              visible={isDelete}
-              title="确认删除评论吗？"
-              confirmText="是"
-              cancelText="否"
-              onConfirm={deleteCommentClick}
-              onCancel={() => setIsDelete(false)}
-            />
-          </View>
-        )}
+
+        <ConfirmModal
+          title="确认删除评论吗？"
+          visible={isDelete}
+          onConfirm={deleteCommentClick}
+          onClose={() => setIsDelete(false)}
+          headerClassName="textmid"
+        />
       </>
     );
   }

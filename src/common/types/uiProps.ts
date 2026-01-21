@@ -25,7 +25,9 @@ export interface ModalProps {
   className?: string;
   customStyle?: React.CSSProperties;
   /** 标题栏自定义样式 */
-  headerClassName: string;
+  headerClassName?: string;
+  /** 自定义底部样式 */
+  customFooter?: React.ReactNode;
 }
 
 export interface DrawerProps {
@@ -146,11 +148,20 @@ export interface ImagePickerProps {
   isRequest?: boolean;
 }
 
+export interface ConfirmModalProps extends Pick<
+  ModalProps,
+  'visible' | 'onClose' | 'onConfirm' | 'title'
+> {
+  headerClassName?: string;
+}
+
 export interface AddPeopleProps {
   id: number;
   name: string;
   number: string;
   isEditormode: boolean;
+  setSelectedId: (selectId: number) => void;
+  setIsVisible: (isVisible: boolean) => void;
 }
 
 export interface PictureCutProps {

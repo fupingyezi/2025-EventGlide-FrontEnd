@@ -69,6 +69,8 @@ const Modal: React.FC<ModalProps> = memo(({ ...props }) => {
             )}
           </View>
         )}
+
+        {props.customFooter || <></>}
       </View>
     </View>
   );

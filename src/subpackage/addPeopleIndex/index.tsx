@@ -5,38 +5,50 @@ import './index.scss';
 import { AddPeopleProps } from '@/common/types';
 import classnames from 'classnames';
 import useSignersStore from '@/store/SignersStore';
+import ConfirmModal from '@/modules/ConfirmModal';
 
-const AddPeopleItem: React.FC<AddPeopleProps> = memo(({ id, name, number, isEditormode }) => {
-  const { setRemoveSigner } = useSignersStore();
-  const handleRemove = () => {
-    setRemoveSigner(id);
-  };
-  return (
-    <>
-      <View
-        className={classnames('addPeopleItem', 'border', {
-          'border-top': id === 1,
-          'border-bottom': id === 10 && isEditormode,
-        })}
-      >
-        {isEditormode && (
-          <View className="addPeopleItem-edit" onClick={handleRemove}>
-            －
+const AddPeopleItem: React.FC<AddPeopleProps> = memo(
+  ({ id, name, number, isEditormode, setIsVisible, setSelectedId }) => {
+    const handleClick = (e: any) => {
+      e.stopPropagation();
+      setSelectedId(id);
+      setIsVisible(true);
+    };
+
+    return (
+      <>
+        <View
+          className={classnames('addPeopleItem', 'border', {
+            'border-top': id === 1,
+            'border-bottom': id === 10 && isEditormode,
+          })}
+        >
+          {isEditormode && (
+            <View className="addPeopleItem-edit" onClick={(e) => handleClick(e)}>
+              －
+            </View>
+          )}
+          <View className="addPeopleItem-id">{id}</View>
+          <View className="addPeopleItem-info">
+            <View className="addPeopleItem-info-name">{name}</View>
+            <View className="addPeopleItem-info-number">{number}</View>
           </View>
-        )}
-        <View className="addPeopleItem-id">{id}</View>
-        <View className="addPeopleItem-info">
-          <View className="addPeopleItem-info-name">{name}</View>
-          <View className="addPeopleItem-info-number">{number}</View>
         </View>
-      </View>
-    </>
-  );
-});
+      </>
+    );
+  }
+);
 
 const Index = () => {
   const [isEditormode, setIsEditormode] = useState(false);
-  const { signers } = useSignersStore();
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<number>(-1);
+  const { signers, setRemoveSigner } = useSignersStore();
+
+  const handleRemove = () => {
+    setRemoveSigner(selectedId);
+    setIsVisible(false);
+  };
 
   return (
     <View className="addPeopleIndex">
@@ -51,6 +63,8 @@ const Index = () => {
             name={item.name}
             number={item.studentid}
             isEditormode={isEditormode}
+            setSelectedId={setSelectedId}
+            setIsVisible={setIsVisible}
           />
         ))}
       </View>
@@ -68,6 +82,13 @@ const Index = () => {
       <View className="addPeopleIndex-footer" onClick={() => navigateBack()}>
         完成
       </View>
+      <ConfirmModal
+        visible={isVisible}
+        onClose={() => setIsVisible(false)}
+        onConfirm={handleRemove}
+        title="是否删除该申报人信息"
+        headerClassName="textmid"
+      />
     </View>
   );
 };

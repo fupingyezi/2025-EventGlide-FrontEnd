@@ -14,10 +14,11 @@
     position: relative;
     display: flex;
     align-items: center;
-
-    &:active {
-      border-color: #b36aeb;
-    }
+    background-color: white;
+    border-radius: 10rpx;
+    padding: 0 20rpx;
+    min-height: 80rpx;
+    border: 1rpx solid #e0e0e0;
   }
 
   &-field {
