@@ -21,7 +21,7 @@ const useActiveInfoStore = create<activeInfoState>((set) => ({
     endTime: '',
     position: '',
     if_register: '',
-    activeForm: '',
+    activeForm: '111',
     register_method: '',
     signer: [],
   },

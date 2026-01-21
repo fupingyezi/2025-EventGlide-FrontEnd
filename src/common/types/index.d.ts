@@ -37,6 +37,7 @@ export type {
   CustomInputProps,
   ButtonProps,
   ImagePickerProps,
+  ConfirmModalProps,
   AddPeopleProps,
   PictureCutProps,
 } from './uiProps';

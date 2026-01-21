@@ -1,10 +1,11 @@
 import { View, Image } from '@tarojs/components';
-import Taro, { useDidShow } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
 import { memo, useEffect, useState } from 'react';
 import { CreatorType } from '@/common/types';
 import deleteComment from '@/common/const/DeleteComment';
 import './style.scss';
 import Confirmation from '@/modules/ConfirmationCard/components/confirmation';
+import ConfirmModal from '@/modules/ConfirmModal';
 
 interface CommentOperationProps {
   setVisible: (visible: boolean) => void;
@@ -101,18 +102,14 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
             </View>
           </View>
         </View>
-        {isDelete && (
-          <View onClick={(e) => e.stopPropagation()}>
-            <Confirmation
-              visible={isDelete}
-              title="确认删除评论吗？"
-              confirmText="是"
-              cancelText="否"
-              onConfirm={deleteCommentClick}
-              onCancel={() => setIsDelete(false)}
-            />
-          </View>
-        )}
+
+        <ConfirmModal
+          title="确认删除评论吗？"
+          visible={isDelete}
+          onConfirm={deleteCommentClick}
+          onClose={() => setIsDelete(false)}
+          headerClassName="textmid"
+        />
       </View>
     );
   }

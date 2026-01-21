@@ -6,13 +6,14 @@ import { Form, FormWindow } from '@/modules/Form';
 import formList from '@/common/const/Formconst';
 import Button from '@/common/components/Button';
 import draft from '@/common/svg/add/draft.svg';
-import PostWindow from '@/modules/PostWindow';
-import DraftWinodw from '@/modules/draftWinow';
+import ActivityModal from '@/modules/ActivityModal';
+import ConfirmModal from '@/modules/ConfirmModal';
 import { navigateTo, useDidShow } from '@tarojs/taro';
 import { LabelForm } from '@/common/types';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import useSignersStore from '@/store/SignersStore';
 import get from '@/common/api/get';
+import { useDraft } from '@/common/hooks/useDraft';
 
 const Index = () => {
   const { setLabelForm } = useActiveInfoStore();
@@ -39,6 +40,16 @@ const Index = () => {
     register_method: '',
     signer: [],
   });
+
+  const { saveDraft } = useDraft({
+    onSaveSuccess: () => {
+      setShowDraftWindow(false);
+    },
+    onSaveError: (error) => {
+      console.error('草稿保存失败:', error);
+    },
+  });
+
   useDidShow(() => {
     get('/act/load').then((res) => {
       console.log('label', res);
@@ -153,19 +164,23 @@ const Index = () => {
           <Button {...btn} />
         </View>
       </View>
-      {showDraftWindow && (
-        <DraftWinodw
-          windowTitle="是否保存草稿？"
-          setIsShow={setShowDraftWindow}
-          type="event"
-          title={title}
-          introduce={introduce}
-          showImg={showImg}
-          labelform={formValue}
-        ></DraftWinodw>
-      )}
+      {/* 草稿保存modal */}
+      <ConfirmModal
+        title="是否保存草稿？"
+        visible={showDraftWindow}
+        onClose={() => setShowDraftWindow(false)}
+        onConfirm={() =>
+          saveDraft({
+            title: title,
+            introduce: introduce,
+            showImg: showImg,
+            labelform: formValue,
+          })
+        }
+        headerClassName="textmid"
+      />
       {showPostWindow && (
-        <PostWindow WindowType="add" setShowPostWindow={setShowPostWindow}></PostWindow>
+        <ActivityModal WindowType="add" setShowPostWindow={setShowPostWindow}></ActivityModal>
       )}
       {showFormWindow && (
         <FormWindow

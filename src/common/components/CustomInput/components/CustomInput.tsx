@@ -22,6 +22,8 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
     rightIcon,
     inputStyle,
     customStyle,
+    customWrapperStyle,
+    customWrapperClassName,
     className = '',
     onInput,
     onFocus,
@@ -37,16 +39,11 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
 
   const [innerValue, setInnerValue] = useState(value);
 
-  // 当外部value变化时同步内部状态
-  if (value !== innerValue && typeof value !== 'undefined') {
-    setInnerValue(value);
-  }
-
   const handleInput = (e: any) => {
     const newValue = e.detail.value;
     setInnerValue(newValue);
     if (onInput) {
-      onInput(newValue);
+      onInput(e);
     }
   };
 
@@ -128,7 +125,10 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
   return (
     <View className={`custom-input ${className}`} style={customStyle}>
       {title && <Text className="custom-input-title">{title}</Text>}
-      <View className="custom-input-wrapper">
+      <View
+        className={`custom-input-wrapper ${customWrapperClassName || ''}`}
+        style={customWrapperStyle}
+      >
         {leftIcon && (
           <View className="custom-input-left-icon">
             <Text>{leftIcon}</Text>

@@ -14,7 +14,7 @@ import { blogType } from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import PostCard from '@/modules/PostCard';
 import usePostStore from '@/store/PostStore';
-import PostWindow from '@/modules/PostWindow';
+import ActivityModal from '@/modules/ActivityModal';
 import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';
 
 const Index = () => {
@@ -267,7 +267,10 @@ const Index = () => {
         </View>
       </ScrollView>
       {isShowActivityWindow && (
-        <PostWindow WindowType="active" setShowPostWindow={setIsShowActivityWindow}></PostWindow>
+        <ActivityModal
+          WindowType="active"
+          setShowPostWindow={setIsShowActivityWindow}
+        ></ActivityModal>
       )}
     </>
   );

@@ -23,12 +23,12 @@
 .commentOperation-top {
   width: 100%;
   height: 120rpx;
-  background-color: #DFDEE2;
+  background-color: #dfdee2;
   border-bottom: 2rpx solid #f1eefc;
   display: flex;
   justify-content: flex-start;
   gap: 40rpx;
-  &-user{
+  &-user {
     width: 80rpx;
     height: 80rpx;
     border-radius: 50%;
@@ -37,20 +37,20 @@
     margin-top: 20rpx;
     overflow: hidden;
   }
-  &-text{
+  &-text {
     font-size: 30rpx;
     text-align: center;
     line-height: 120rpx;
   }
 }
-.commentOperation-btn{
+.commentOperation-btn {
   width: 100%;
   height: 200rpx;
   display: flex;
   justify-content: flex-start;
   gap: 60rpx;
   padding-left: 40rpx;
-  &-item{
+  &-item {
     width: 100rpx;
     height: 150rpx;
     display: flex;
@@ -58,14 +58,14 @@
     align-items: center;
     justify-content: center;
   }
-  &-icon{
+  &-icon {
     width: 100rpx;
     height: 100rpx;
     border-radius: 50%;
     background-color: #f9f8fc;
     margin-top: 10rpx;
   }
-  &-text{
+  &-text {
     width: 100rpx;
     font-size: 25rpx;
     color: #5e5064;
@@ -75,49 +75,54 @@
     justify-content: center;
   }
 }
-.draftWindow-content{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 6;
-    width: 86%;
-    height: 260rpx;
-    background-color: #fff;
-    border: 2rpx solid #f0f2fa;
-    border-radius: 10rpx;
-    &-title {
-      font-size: 44rpx;
-      color: #170a1e;
+.draftWindow-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  width: 86%;
+  height: 260rpx;
+  background-color: #fff;
+  border: 2rpx solid #f0f2fa;
+  border-radius: 10rpx;
+  &-title {
+    font-size: 44rpx;
+    color: #170a1e;
+    text-align: center;
+    height: 130rpx;
+    line-height: 130rpx;
+  }
+  &-line {
+    height: 1rpx;
+    width: 90%;
+    background-color: #d8c6ef;
+    margin: 0 auto;
+  }
+  &-btn {
+    display: flex;
+    width: 100%;
+    height: 129rpx;
+    &-item {
+      flex: 1;
       text-align: center;
-      height: 130rpx;
-      line-height: 130rpx;
+      height: 100%;
+      line-height: 129rpx;
+      text-align: center;
+      font-size: 48rpx;
+      color: #828283;
     }
-    &-line {
-      height: 1rpx;
-      width: 90%;
-      background-color: #d8c6ef;
-      margin: 0 auto;
-    }
-    &-btn {
-      display: flex;
-      width: 100%;
-      height: 129rpx;
-      &-item {
-        flex: 1;
-        text-align: center;
-        height: 100%;
-        line-height: 129rpx;
-        text-align: center;
-        font-size: 48rpx;
-        color: #828283;
-      }
-    }
-    &-mask {
-      position: absolute;
-      top: 15rpx;
-      right: 15rpx;
-      color: #b36aeb;
-      font-weight: 700;
-    }
+  }
+  &-mask {
+    position: absolute;
+    top: 15rpx;
+    right: 15rpx;
+    color: #b36aeb;
+    font-weight: 700;
+  }
+}
+
+.textmid {
+  text-align: center;
+  justify-content: center;
 }

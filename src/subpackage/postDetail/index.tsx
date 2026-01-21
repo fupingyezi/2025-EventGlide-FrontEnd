@@ -9,7 +9,7 @@ import collectActive from '@/common/svg/post/starAct.svg';
 import favorActive from '@/common/svg/post/heartAct.svg';
 import comment from '@/common/assets/Postlist/comment.png';
 import icon from '@/common/assets/Postlist/inputIcon.png';
-import { responseType, creatorType } from '@/common/types/PostList';
+import { ResponseType, CreatorType } from '@/common/types';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import handleInteraction from '@/common/utils/Interaction';
@@ -24,7 +24,7 @@ export const SetBlogComment = createContext<(params: any) => void>(() => {});
 
 const Index = () => {
   const [marginTop, setMarginTop] = useState(0);
-  const [response, setResponse] = useState<responseType[]>([]);
+  const [response, setResponse] = useState<ResponseType[]>([]);
   const [inputValue, setInputValue] = useState('');
   const { avatar } = useUserStore((state) => state);
   const studentid = Taro.getStorageSync('sid');
@@ -42,7 +42,7 @@ const Index = () => {
   const [clickTimer, setClickTimer] = useState<NodeJS.Timeout | null>(null);
   const [commentOperation, setCommentOperation] = useState(false);
   const [commentItems, setCommentItems] = useState('');
-  const [commentCreator, setCommentCreator] = useState<creatorType>();
+  const [commentCreator, setCommentCreator] = useState<CreatorType>();
   const [commentid, setCommentid] = useState('');
   const { setLikeNumChange, setCollectNumChange } = usePostStore((state) => state);
   const windowWidth = Taro.getWindowInfo().windowWidth;

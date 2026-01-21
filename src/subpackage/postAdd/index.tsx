@@ -5,14 +5,13 @@ import { useState } from 'react';
 import './index.scss';
 import Picture from '@/common/components/Picture';
 import draft from '@/common/svg/add/draft.svg';
-import DraftWinodw from '@/modules/draftWinow';
+import ConfirmModal from '@/modules/ConfirmModal';
 import ImagePicker from '@/modules/ImagePicker';
 import usePostStore from '@/store/PostStore';
-import useUserStore from '@/store/userStore';
 import post from '@/common/api/post';
 import get from '@/common/api/get';
-import { LabelForm } from '@/common/types';
 import Taro from '@tarojs/taro';
+import { useDraft } from '@/common/hooks/useDraft';
 
 const Index = () => {
   const { showImg: imgUrl } = usePostStore();
@@ -24,6 +23,15 @@ const Index = () => {
   const studentid = Taro.getStorageSync('sid');
   const [count, setCount] = useState(0);
   const [load, setLoad] = useState(false);
+
+  const { saveDraft } = useDraft({
+    onSaveSuccess: () => {
+      setIsShowDraft(false);
+    },
+    onSaveError: (error) => {
+      console.error('草稿保存失败:', error);
+    },
+  });
 
   useDidShow(() => {
     get('/post/load')
@@ -48,7 +56,7 @@ const Index = () => {
       });
   });
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (pageImgUrl.length === 0) {
       Taro.showToast({
         title: '请上传图片',
@@ -60,7 +68,6 @@ const Index = () => {
         icon: 'none',
       });
     } else {
-      setIsShowDraft(false);
       const postInfo = { introduce, showImg: pageImgUrl, studentid, title };
       console.log(postInfo);
 
@@ -146,17 +153,23 @@ const Index = () => {
         </View>
       )}
 
-      {isShowDraft && (
-        <DraftWinodw
-          windowTitle="是否保存草稿？"
-          setIsShow={setIsShowDraft}
-          type="blog"
-          title={title}
-          introduce={introduce}
-          showImg={pageImgUrl}
-          labelform={{} as LabelForm}
-        />
-      )}
+      {/* 草稿保存modal */}
+      <ConfirmModal
+        title="是否保存草稿？"
+        visible={isShowDraft}
+        onClose={() => setIsShowDraft(false)}
+        onConfirm={() =>
+          saveDraft({
+            title: title,
+            introduce,
+            showImg: pageImgUrl,
+            studentid: studentid,
+            labelform: {},
+          })
+        }
+        headerClassName="textmid"
+      />
+
       {isShowAlbum && (
         <ImagePicker
           isVisiable={isShowAlbum}
