@@ -4,14 +4,14 @@ import './style.scss';
 import MyActivityCard from './MyActivityCard';
 import { getMyActivityList } from '@/common/api/Activity';
 import useActivityStore from '@/store/ActivityStore';
-import { ActivityDetailList } from '@/common/types';
+import { ActivityDetailInfo } from '@/common/types';
 import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';
 
 const MyActivityTab: React.FC<{
   activeIndex: 'release' | 'like' | 'favourite';
   setIsShowActivityWindow: (isShow: boolean) => void;
 }> = memo(function ({ activeIndex, setIsShowActivityWindow }) {
-  const [activeList, setActiveList] = useState<ActivityDetailList[]>([]);
+  const [activeList, setActiveList] = useState<ActivityDetailInfo[]>([]);
   const { setSelectedItem } = useActivityStore();
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const MyActivityTab: React.FC<{
           setActiveList([]);
           return;
         }
-        const newActiveList: ActivityDetailList[] = [];
+        const newActiveList: ActivityDetailInfo[] = [];
         res.data.forEach((item) => {
           if (item.title !== '')
             newActiveList.push({

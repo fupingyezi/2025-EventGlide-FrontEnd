@@ -1,9 +1,24 @@
+import { UserInfo } from './UserTypes';
 // 帖子相关类型
 export type PostList = {
   imgUrl: string;
   title: string;
   content: string;
 };
+
+export interface PostDetailInfo {
+  bid: string;
+  collectNum: number;
+  commentNum: number;
+  introduce: string;
+  likeNum: number;
+  isLike: string;
+  isCollect: string;
+  showImg: string[];
+  title: string;
+  publishTime: string;
+  userInfo: UserInfo;
+}
 
 export interface PostCommentProp {
   username: string;

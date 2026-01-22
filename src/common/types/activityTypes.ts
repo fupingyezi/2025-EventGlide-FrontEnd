@@ -1,12 +1,12 @@
 // 活动相关类型
-import { User } from './userTypes';
+import { UserInfo } from './UserTypes';
 
 export type ActiveList = {
   date: string;
   position: string;
 };
 
-export interface MineActivityList {
+export interface MyActivityList {
   avatar: string;
   title: string;
   name: string;
@@ -27,9 +27,9 @@ export interface SelectedInfo {
   if_register: string;
 }
 
-export interface ActivityDetailList {
+export interface ActivityDetailInfo {
   bid: string;
-  userInfo: User;
+  userInfo: UserInfo;
   title: string;
   detailTime: { startTime: string; endTime: string };
   position: string;
@@ -43,6 +43,7 @@ export interface ActivityDetailList {
   commentNum: number;
   isLike: string;
   isCollect: string;
+  isChecking?: string;
 }
 
 export interface LetterType {

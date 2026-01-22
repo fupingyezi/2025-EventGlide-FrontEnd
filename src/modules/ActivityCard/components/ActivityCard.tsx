@@ -3,12 +3,12 @@ import { View, Image } from '@tarojs/components';
 import pos from '@/common/assets/activity/pos.png';
 import date from '@/common/assets/activity/act.png';
 import { memo } from 'react';
-import { ActivityDetailList } from '@/common/types';
+import { ActivityDetailInfo } from '@/common/types';
 import { activeColor } from '@/common/const/Formconst';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 
 const ActivityCard: React.FC<{
-  activeItem: ActivityDetailList;
+  activeItem: ActivityDetailInfo;
   setShowPostWindow: (show: boolean) => void;
 }> = memo(({ activeItem, setShowPostWindow }) => {
   return (

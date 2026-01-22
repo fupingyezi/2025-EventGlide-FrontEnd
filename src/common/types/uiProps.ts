@@ -142,7 +142,6 @@ export interface ImagePickerProps {
   setIsVisiable: (value: boolean) => void;
   setImgUrl: (value: string[]) => void;
   imgUrl: string[];
-  isOverlay: boolean;
   type: string;
   count?: number;
   isRequest?: boolean;
@@ -183,20 +182,4 @@ export interface ReplyInputProps {
   reply_id?: string;
   page: string;
   comment?: boolean;
-}
-
-export interface DateItem {
-  label: string;
-  subLabel: string;
-  value: string;
-  isToday?: boolean;
-  isAll?: boolean;
-}
-export interface CalendarDay {
-  date: Date;
-  day: number;
-  isCurrentMonth: boolean;
-  isToday: boolean;
-  isSelected: boolean;
-  dateString: string;
 }

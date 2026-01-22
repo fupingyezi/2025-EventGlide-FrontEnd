@@ -5,15 +5,18 @@ export interface WebGetTubeTokenData {
   access_token: string;
   domain_name: string;
 }
+
 export interface QiniuUploadResponse {
   key: string;
   hash: string;
 }
+
 export interface ResponseQiniu {
   code?: number;
   data: WebGetTubeTokenData;
   msg?: string;
 }
+
 export const fetchQiniuToken = async () => {
   try {
     const url = '/user/token/qiniu';

@@ -1,17 +1,10 @@
 import { apiClient } from './request';
 import Taro from '@tarojs/taro';
-import { ActivityDetailList, SelectedInfo } from '../types/activityTypes';
-import { User } from '../types/userTypes';
-import { LabelForm } from '../types';
+import { CreateActivityRequest, GetActivityResponse, FilteAcitivityRequest } from '../types';
 
 // 创建活动
-export const createActivity = (activityData: {
-  title: string;
-  introduce: string;
-  showImg: string[];
-  labelform: LabelForm;
-}) => {
-  return apiClient.post<ActivityDetailList>('/act/create', activityData);
+export const createActivity = (activityData: CreateActivityRequest) => {
+  return apiClient.post<GetActivityResponse>('/act/create', activityData);
 };
 
 // 获取活动列表
@@ -23,7 +16,7 @@ export const getActivityList = (params?: {
   date?: string;
   position?: string;
 }) => {
-  return apiClient.get<ActivityDetailList[]>('/act/all', params);
+  return apiClient.get<GetActivityResponse[]>('/act/all', params);
 };
 
 export const getActivityDraft = () => {
@@ -33,13 +26,13 @@ export const getActivityDraft = () => {
 // 获取我的活动列表
 export const getMyActivityList = (type: 'release' | 'like' | 'favourite') => {
   if (type === 'release') {
-    return apiClient.get<ActivityDetailList[]>('/act/own');
+    return apiClient.get<GetActivityResponse[]>('/act/own');
   } else if (type === 'like') {
-    return apiClient.post<ActivityDetailList[]>('/user/like/act', {
+    return apiClient.post<GetActivityResponse[]>('/user/like/act', {
       studentid: Taro.getStorageSync('sid'),
     });
   } else if (type === 'favourite') {
-    return apiClient.post<ActivityDetailList[]>('/user/collect/act', {
+    return apiClient.post<GetActivityResponse[]>('/user/collect/act', {
       studentid: Taro.getStorageSync('sid'),
     });
   }
@@ -48,17 +41,17 @@ export const getMyActivityList = (type: 'release' | 'like' | 'favourite') => {
 
 // 获取活动详情
 export const getActivityDetail = (activityId: string) => {
-  return apiClient.get<ActivityDetailList>(`/act/detail/${activityId}`);
+  return apiClient.get<GetActivityResponse>(`/act/detail/${activityId}`);
 };
 
 // 根据搜索获取帖子列表
 export const searchActivityList = (data?: { name: string }) => {
-  return apiClient.post<ActivityDetailList[]>('/act/name', data);
+  return apiClient.post<GetActivityResponse[]>('/act/name', data);
 };
 
 // 筛选活动
-export const filterActivity = (filterData: SelectedInfo) => {
-  return apiClient.post<ActivityDetailList[]>('/act/search', filterData);
+export const filterActivity = (filterData: FilteAcitivityRequest) => {
+  return apiClient.post<GetActivityResponse[]>('/act/search', filterData);
 };
 
 // 收藏/取消收藏活动
@@ -97,9 +90,4 @@ export const toggleActivityLike = (
       studentid,
     });
   }
-};
-
-// 获取用户信息
-export const getUserInfo = (studentid: string) => {
-  return apiClient.get<User>(`/user/info/${studentid}`);
 };

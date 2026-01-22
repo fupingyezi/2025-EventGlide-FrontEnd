@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
-import { User } from '@/common/types';
+import { UserInfo } from '@/common/types';
 
-interface userStoreType extends User {
+interface userStoreType extends UserInfo {
   setId: (id: number) => void;
   setAvatar: (avatar: string) => void;
   setUsername: (username: string) => void;

@@ -1,5 +1,5 @@
 // 用户信息存储类型
-export interface User {
+export interface UserInfo {
   /** 唯一标识 */
   id?: number;
   /** 头像url */

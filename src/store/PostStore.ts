@@ -1,40 +1,22 @@
 import { create } from 'zustand';
-
-type PostType = {
-  bid: string;
-  collectNum: number;
-  commentNum: number;
-  introduce: string;
-  likeNum: number;
-  isLike: string;
-  isCollect: string;
-  showImg: string[];
-  title: string;
-  publishTime: string;
-  userInfo: {
-    avatar: string;
-    school: string;
-    studentid: string;
-    username: string;
-  };
-};
+import { PostDetailInfo } from '@/common/types';
 
 interface PostStoreType {
   showImg: string[];
   title: string;
   introduce: string;
   studentid: string;
-  PostList: PostType[];
+  PostList: PostDetailInfo[];
   PostIndex: number;
   backPage: string;
   setBackPage: (page: string) => void;
-  setPostList: (PostList: PostType[]) => void;
+  setPostList: (PostList: PostDetailInfo[]) => void;
   setPostIndex: (bid: string) => void;
-  setLikeNumChange: (blog: PostType, type: number) => void;
-  setCollectNumChange: (blog: PostType, type: number) => void;
+  setLikeNumChange: (blog: PostDetailInfo, type: number) => void;
+  setCollectNumChange: (blog: PostDetailInfo, type: number) => void;
   setImgUrl: (url: string[]) => void;
   setPostStudentId: (id: string) => void;
-  setCommentNumChange: (blog: PostType) => void;
+  setCommentNumChange: (blog: PostDetailInfo) => void;
   setContent: (title: string, description: string, imgUrl: string[]) => void;
 }
 
@@ -101,4 +83,3 @@ const usePostStore = create<PostStoreType>((set, get) => ({
 }));
 
 export default usePostStore;
-export { PostType };

@@ -1,14 +1,13 @@
-import { View} from '@tarojs/components';
+import { View } from '@tarojs/components';
 import { memo } from 'react';
 import './style.scss';
 import { ImagePickerProps } from '@/common/types';
 import { handleChooseImage } from '@/common/utils/AlbumFunction';
 import Drawer from '@/common/components/Drawer';
 
-const ImagePicker: React.FC<ImagePickerProps> = memo(function AlbumWindow({
+const ImagePicker: React.FC<ImagePickerProps> = memo(function ({
   isVisiable,
   setIsVisiable,
-  isOverlay,
   imgUrl,
   setImgUrl,
   type,
@@ -62,7 +61,7 @@ const ImagePicker: React.FC<ImagePickerProps> = memo(function AlbumWindow({
   return (
     <Drawer
       visible={isVisiable}
-      onClose={() => setIsVisiable(false)}  
+      onClose={() => setIsVisiable(false)}
       placement="bottom"
       showHeader={false}
     >

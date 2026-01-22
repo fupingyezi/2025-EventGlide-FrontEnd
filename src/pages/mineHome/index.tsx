@@ -9,7 +9,7 @@ import check from '@/common/assets/Postlist/check.png';
 import { getMyPostList, getUserInfo } from '@/common/api';
 import useUserStore from '@/store/userStore';
 import useActivityStore from '@/store/ActivityStore';
-import { PostType } from '@/store/PostStore';
+import { PostDetailInfo } from '@/common/types';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import PostCard from '@/modules/PostCard';
 import usePostStore from '@/store/PostStore';
@@ -22,7 +22,7 @@ const Index = () => {
   const [isShowActivityWindow, setIsShowActivityWindow] = useState(false);
   const [isShowList, setIsShowList] = useState<number[]>([0, 1, 2, 3]);
   const { setPostIndex, setBackPage } = usePostStore();
-  const [minePostList, setMinePostList] = useState<PostType[]>([]);
+  const [minePostList, setMinePostList] = useState<PostDetailInfo[]>([]);
   const { avatar, username, school, setAvatar, setUsername, setSchool } = useUserStore();
   const sid = Taro.getStorageSync('sid');
   const { setIsSelect } = useActivityStore();
@@ -52,9 +52,9 @@ const Index = () => {
             setMinePostList([]);
             return;
           }
-          const newPostList: PostType[] = [];
+          const newPostList: PostDetailInfo[] = [];
           res.data.forEach((item: unknown) => {
-            newPostList.push(item as PostType);
+            newPostList.push(item as PostDetailInfo);
           });
           setMinePostList(newPostList);
           handleScroll();

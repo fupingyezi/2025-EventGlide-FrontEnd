@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import { View, Image } from '@tarojs/components';
-import { MineActivityList } from '@/common/types';
+import { MyActivityList } from '@/common/types';
 import './style.scss';
 import favor from '@/common/svg/post/star.svg';
 import favorActive from '@/common/svg/post/starAct.svg';
 import commentpic from '@/common/svg/post/comment.svg';
 
-const MyActivityCard: React.FC<MineActivityList> = memo(({ ...props }) => {
+const MyActivityCard: React.FC<MyActivityList> = memo(({ ...props }) => {
   return (
     <View className="mine-activity-container">
       <Image className="mine-activity-avatar" src={props.avatar}></Image>

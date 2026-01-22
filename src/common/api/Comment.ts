@@ -1,7 +1,5 @@
 import { apiClient } from './request';
-import { ResponseType, ReplyType } from '../types/postTypes';
-
-// 评论相关API接口
+import { ResponseType, ReplyType } from '../types';
 
 // 创建评论
 export const createComment = (commentData: {

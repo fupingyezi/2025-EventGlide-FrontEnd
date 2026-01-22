@@ -2,10 +2,10 @@ import './style.scss';
 import { View, Input, Text } from '@tarojs/components';
 import React, { memo } from 'react';
 import classnames from 'classnames';
-import { FormType, LabelForm } from '@/common/types';
+import { FormItemType, LabelForm } from '@/common/types';
 import Picture from '@/common/components/Picture';
 
-interface formProps extends FormType {
+interface FormItemProps extends FormItemType {
   id: number;
   value: string;
   formValue: LabelForm;
@@ -16,7 +16,7 @@ interface formProps extends FormType {
   setFormIndex: (index: number) => void;
 }
 
-const FormItem: React.FC<formProps> = memo(function ({ ...props }) {
+const FormItem: React.FC<FormItemProps> = memo(function ({ ...props }) {
   const handleInput = (e: any) => {
     if (props.id === 4) props.setFormValue({ ...props.formValue, position: e.detail.value });
     else if (props.id === 7)

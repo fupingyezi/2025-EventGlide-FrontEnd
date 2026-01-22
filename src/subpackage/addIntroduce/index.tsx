@@ -1,6 +1,6 @@
 import Button from '@/common/components/Button';
 import { View, Image, Input, Textarea } from '@tarojs/components';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './index.scss';
 import Taro from '@tarojs/taro';
 import Picture from '@/common/components/Picture';
@@ -9,9 +9,9 @@ import ConfirmModal from '@/modules/ConfirmModal';
 import ImagePicker from '@/modules/ImagePicker';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import { useDidShow } from '@tarojs/taro';
-import { get, getActivityDraft } from '@/common/api';
+import { getActivityDraft } from '@/common/api';
 import { LabelForm } from '@/common/types';
-import { useDraft } from '@/common/hooks/useDraft';
+import { useSaveDraft } from '@/common/hooks/useSaveDraft';
 
 const Index = () => {
   const [isShowDraft, setIsShowDraft] = useState(false);
@@ -22,7 +22,7 @@ const Index = () => {
   const { setBasicInfo } = useActiveInfoStore();
   const [count, setCount] = useState(0);
 
-  const { saveDraft } = useDraft({
+  const { saveDraft } = useSaveDraft({
     onSaveSuccess: () => {
       setIsShowDraft(false);
     },
@@ -161,16 +161,13 @@ const Index = () => {
         headerClassName="textmid"
       />
 
-      {isShowAlbum && (
-        <ImagePicker
-          isVisiable={isShowAlbum}
-          setIsVisiable={setIsShowAlbum}
-          isOverlay={true}
-          imgUrl={imgUrl}
-          setImgUrl={setImgUrl}
-          type={'event'}
-        />
-      )}
+      <ImagePicker
+        isVisiable={isShowAlbum}
+        setIsVisiable={setIsShowAlbum}
+        imgUrl={imgUrl}
+        setImgUrl={setImgUrl}
+        type={'event'}
+      />
     </>
   );
 };

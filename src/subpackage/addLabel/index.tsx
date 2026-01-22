@@ -12,7 +12,7 @@ import { navigateTo, useDidShow } from '@tarojs/taro';
 import { LabelForm } from '@/common/types';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import useSignersStore from '@/store/SignersStore';
-import { useDraft } from '@/common/hooks/useDraft';
+import { useSaveDraft } from '@/common/hooks/useSaveDraft';
 import { getActivityDraft } from '@/common/api';
 
 const Index = () => {
@@ -50,7 +50,7 @@ const Index = () => {
     signer: [],
   });
 
-  const { saveDraft } = useDraft({
+  const { saveDraft } = useSaveDraft({
     onSaveSuccess: () => {
       setShowDraftWindow(false);
     },
