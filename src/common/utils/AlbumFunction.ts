@@ -1,7 +1,6 @@
 import Taro, { navigateTo } from '@tarojs/taro';
 import { fetchToQiniu } from '../api/qiniu';
-import post from '../api/post';
-import useUserStore from '@/store/userStore';
+
 type AlbumFunctionProps = {
   setIsVisiable: (isVisiable: boolean) => void;
   setImgUrl: (imgUrl: string[]) => void;

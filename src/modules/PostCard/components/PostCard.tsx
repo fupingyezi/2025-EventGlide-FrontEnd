@@ -10,7 +10,7 @@ import handleInteraction from '@/common/utils/Interaction';
 
 const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
   const [isVisiable, setIsVisiable] = useState(isShowImg);
-  const { setBlogIndex } = usePostStore();
+  const { setPostIndex } = usePostStore();
   const [islike, setIsLike] = useState(item.isLike === 'true');
   const [likeNum, setLikeNum] = useState(item.likeNum);
   const studentid = Taro.getStorageSync('sid');
@@ -65,7 +65,7 @@ const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
           src={isVisiable ? item.showImg[0] : ''}
           onClick={() => {
             navigateTo({ url: '/subpackage/postDetail/index' });
-            setBlogIndex(index);
+            setPostIndex(index);
           }}
         ></Image>
       </View>

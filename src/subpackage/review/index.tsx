@@ -7,7 +7,7 @@ import isChecking from '@/common/assets/isChecking/isChecking1.png';
 import alPost from '@/common/assets/isChecking/alPost.png';
 import falPost from '@/common/assets/isChecking/falPost.png';
 import { ScrollView } from '@tarojs/components';
-import get from '@/common/api/get';
+import { get } from '@/common/api/request';
 import NoticePageNull from '@/modules/EmptyComponent/components/noticepagenull';
 
 export interface ActiveItem {

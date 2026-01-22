@@ -9,7 +9,7 @@ import ConfirmModal from '@/modules/ConfirmModal';
 import ImagePicker from '@/modules/ImagePicker';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import { useDidShow } from '@tarojs/taro';
-import get from '@/common/api/get';
+import { get, getActivityDraft } from '@/common/api';
 import { LabelForm } from '@/common/types';
 import { useDraft } from '@/common/hooks/useDraft';
 
@@ -32,7 +32,7 @@ const Index = () => {
   });
 
   useDidShow(() => {
-    get('/act/load').then((res) => {
+    getActivityDraft().then((res) => {
       if (res.msg === 'success') {
         console.log(res.data);
         setTitle(title || res.data.Title);

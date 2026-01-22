@@ -5,12 +5,13 @@ import { navigateTo } from '@tarojs/taro';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import useActivityStore from '@/store/ActivityStore';
 import useUserStore from '@/store/userStore';
-import post from '@/common/api/post';
+import { createActivity } from '@/common/api/Activity';
 import Modal from '@/common/components/Modal';
 import ActivityContent from './ActivityContent';
 import ActivityFooter from './ActivityFooter';
 
 const ActivityModal: React.FC<{
+  isShowActivityWindow: boolean;
   WindowType: 'add' | 'active';
   setShowPostWindow: (show: boolean) => void;
 }> = memo(({ ...props }) => {
@@ -23,7 +24,7 @@ const ActivityModal: React.FC<{
   if (props.WindowType === 'add') {
     return (
       <Modal
-        visible={true}
+        visible={props.isShowActivityWindow}
         title={title}
         onClose={handleModalClose}
         onConfirm={() => {
@@ -41,7 +42,9 @@ const ActivityModal: React.FC<{
             title,
           };
 
-          post('/act/create', activeInfo)
+          createActivity({
+            ...activeInfo,
+          })
             .then((res) => {
               if (res.msg !== 'success') {
                 Taro.showToast({
@@ -80,7 +83,7 @@ const ActivityModal: React.FC<{
 
     return (
       <Modal
-        visible={true}
+        visible={props.isShowActivityWindow}
         title={activeItem.title}
         onClose={handleModalClose}
         showConfirm={false}

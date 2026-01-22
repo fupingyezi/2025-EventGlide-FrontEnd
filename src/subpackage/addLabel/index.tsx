@@ -12,8 +12,8 @@ import { navigateTo, useDidShow } from '@tarojs/taro';
 import { LabelForm } from '@/common/types';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import useSignersStore from '@/store/SignersStore';
-import get from '@/common/api/get';
 import { useDraft } from '@/common/hooks/useDraft';
+import { getActivityDraft } from '@/common/api';
 
 const Index = () => {
   const { setLabelForm } = useActiveInfoStore();
@@ -60,7 +60,7 @@ const Index = () => {
   });
 
   useDidShow(() => {
-    get('/act/load').then((res) => {
+    getActivityDraft().then((res) => {
       console.log('label', res);
       if (res.msg === 'success') {
         const newLabelForm: LabelForm = {
@@ -196,9 +196,12 @@ const Index = () => {
         }
         headerClassName="textmid"
       />
-      {showPostWindow && (
-        <ActivityModal WindowType="add" setShowPostWindow={setShowPostWindow}></ActivityModal>
-      )}
+      <ActivityModal
+        isShowActivityWindow={showPostWindow}
+        WindowType="add"
+        setShowPostWindow={setShowPostWindow}
+      ></ActivityModal>
+
       {showFormWindow && (
         <FormPicker
           type={typeChoice(showFormIndex)}

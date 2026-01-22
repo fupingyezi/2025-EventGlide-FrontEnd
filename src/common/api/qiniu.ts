@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro';
-import get from './get';
+import { get } from './request';
 
 export interface WebGetTubeTokenData {
   access_token: string;

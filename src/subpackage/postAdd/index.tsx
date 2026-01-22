@@ -8,8 +8,7 @@ import draft from '@/common/svg/add/draft.svg';
 import ConfirmModal from '@/modules/ConfirmModal';
 import ImagePicker from '@/modules/ImagePicker';
 import usePostStore from '@/store/PostStore';
-import post from '@/common/api/post';
-import get from '@/common/api/get';
+import { createPost, loadPostDraft } from '@/common/api/PostRequest';
 import Taro from '@tarojs/taro';
 import { useDraft } from '@/common/hooks/useDraft';
 
@@ -34,16 +33,16 @@ const Index = () => {
   });
 
   useDidShow(() => {
-    get('/post/load')
+    loadPostDraft()
       .then((res) => {
         console.log(res);
         if (res.data === null) return;
         if (res.msg === 'success') {
-          setTitle(res.data.Title || title);
-          setIntroduce(res.data.Introduce || introduce);
-          setCount(res.data.Introduce ? res.data.Introduce.length : 0);
-          if (Array.isArray(res.data.ShowImg)) {
-            setPageImgUrl(res.data.ShowImg);
+          setTitle(res.data.title || title);
+          setIntroduce(res.data.introduce || introduce);
+          setCount(res.data.introduce ? res.data.introduce.length : 0);
+          if (Array.isArray(res.data.showImg)) {
+            setPageImgUrl(res.data.showImg);
           } else {
             setPageImgUrl([]);
           }
@@ -71,7 +70,12 @@ const Index = () => {
       const postInfo = { introduce, showImg: pageImgUrl, studentid, title };
       console.log(postInfo);
 
-      post('/post/create', postInfo)
+      createPost({
+        title: postInfo.title,
+        introduce: postInfo.introduce,
+        showImg: postInfo.showImg,
+        studentid: postInfo.studentid,
+      })
         .then((res) => {
           console.log(res);
           switchTab({ url: '/pages/postHome/index' });

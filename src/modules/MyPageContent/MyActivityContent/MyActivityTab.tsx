@@ -2,82 +2,39 @@ import { memo, useEffect, useState } from 'react';
 import { View } from '@tarojs/components';
 import './style.scss';
 import MyActivityCard from './MyActivityCard';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
+import { getMyActivityList } from '@/common/api/Activity';
 import useActivityStore from '@/store/ActivityStore';
 import { ActivityDetailList } from '@/common/types';
 import MinePageNull from '@/modules/EmptyComponent/components/minepagenull';
-import Taro from '@tarojs/taro';
 
 const MyActivityTab: React.FC<{
   activeIndex: 'release' | 'like' | 'favourite';
   setIsShowActivityWindow: (isShow: boolean) => void;
 }> = memo(function ({ activeIndex, setIsShowActivityWindow }) {
-  const studentid = Taro.getStorageSync('sid');
   const [activeList, setActiveList] = useState<ActivityDetailList[]>([]);
   const { setSelectedItem } = useActivityStore();
 
   useEffect(() => {
-    if (activeIndex === 'release') {
-      get('/act/own')
-        .then((res) => {
-          console.log('发布活动：', res.data);
-          if (res.data === null) {
-            setActiveList([]);
-            return;
-          }
-          const newActiveList: ActivityDetailList[] = [];
-          res.data.forEach((item) => {
+    getMyActivityList(activeIndex)
+      .then((res) => {
+        console.log(`${activeIndex}:`, res.data);
+
+        if (res.data === null) {
+          setActiveList([]);
+          return;
+        }
+        const newActiveList: ActivityDetailList[] = [];
+        res.data.forEach((item) => {
+          if (item.title !== '')
             newActiveList.push({
               ...item,
             });
-          });
-          setActiveList(newActiveList);
-        })
-        .catch((err) => {
-          console.log(err);
         });
-    } else if (activeIndex === 'favourite') {
-      post('/user/collect/act', { studentid })
-        .then((res) => {
-          console.log('收藏活动：', res);
-          if (res.data === null) {
-            setActiveList([]);
-            return;
-          }
-          const newActiveList: ActivityDetailList[] = [];
-          res.data.forEach((item) => {
-            if (item.title !== '')
-              newActiveList.push({
-                ...item,
-              });
-          });
-          setActiveList(newActiveList);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else if (activeIndex === 'like') {
-      post('/user/like/act', { studentid })
-        .then((res) => {
-          console.log('点赞活动：', res);
-          if (res.data === null) {
-            setActiveList([]);
-            return;
-          }
-          const newActiveList: ActivityDetailList[] = [];
-          res.data.forEach((item) => {
-            if (item.title !== '')
-              newActiveList.push({
-                ...item,
-              });
-          });
-          setActiveList(newActiveList);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+        setActiveList(newActiveList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [activeIndex]);
 
   return (

@@ -3,66 +3,28 @@ import './index.scss';
 import eye from '@/common/assets/logo/小眼睛.png';
 import eye1 from '@/common/assets/logo/小眼睛1.png';
 import Logo from '@/common/assets/logo/mainlogo.png';
-import get from '@/common/api/get';
-import useUserStore from '@/store/userStore';
-import usePostStore from '@/store/PostStore';
 import { useEffect, useState } from 'react';
-import { switchTab } from '@tarojs/taro';
-import handleUserLogin from '@/common/api/Login';
+import { handleUserLogin, handleCheckLogin } from '@/common/api';
 import PolicyModal from '@/modules/PolicyModal';
-import Taro from '@tarojs/taro';
+import Message from '@/common/components/Message';
 
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [studentid, setStudentid] = useState('');
   const [password, setPassword] = useState('');
-  const [showError, setShowError] = useState(false);
   const [isCheck, setIsCheck] = useState(true);
   const [showPolicyWindow, setShowPolicyWindow] = useState(false);
-  const [errortext, setErrortext] = useState('账号或密码错误，请重新输入');
-
-  const { setStudentId, setId, setAvatar, setUsername, setSchool } = useUserStore.getState();
-  const { setPostStudentId } = usePostStore.getState();
 
   const handleLogin = () => {
-    // switchTab({ url: "/pages/mineHome/index" });
     if (isCheck) {
-      handleUserLogin({ params: { studentid, password, setShowError, setErrortext } });
+      handleUserLogin({ studentid, password });
     } else {
-      setErrortext('请先阅读并同意隐私政策');
-      setShowError(true);
+      Message.error({ content: '请先阅读并同意隐私政策' });
     }
   };
 
-  // const quicklogin = () => {
-  //   setShowError(false);
-  //   if (isCheck) {
-  //     handleUserLogin({ params: { studentid: '', password: '', setShowError } });
-  //   }
-  // };
-
-  // const frocelogin = () => {
-  //   switchTab({ url: '/pages/indexHome/index' });
-  // };
-
   useEffect(() => {
-    if (Taro.getStorageSync('token') && Taro.getStorageSync('sid')) {
-      const sid = Taro.getStorageSync('sid');
-      get(`/user/info/${sid}`)
-        .then((res) => {
-          console.log('userinfo', res.data);
-          setId(res.data.Id);
-          setStudentId(res.data.studentId);
-          setAvatar(res.data.avatar);
-          setUsername(res.data.name);
-          setSchool(res.data.school);
-          setPostStudentId(sid);
-          switchTab({ url: '/pages/indexHome/index' });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    handleCheckLogin();
   }, []);
 
   const handlePolicyClick = () => {
@@ -90,7 +52,6 @@ const Index = () => {
               value={studentid}
               onInput={(e) => {
                 setStudentid(e.detail.value);
-                setShowError(false);
               }}
             />
           </View>
@@ -107,7 +68,6 @@ const Index = () => {
               value={password}
               onInput={(e) => {
                 setPassword(e.detail.value);
-                setShowError(false);
               }}
             />
             <Image
@@ -117,7 +77,6 @@ const Index = () => {
               onClick={() => setShowPassword(!showPassword)}
             />
           </View>
-          {showError && <View className="login-page-form-error">{errortext}</View>}
         </View>
         <View className="login-page-form-privacy">
           {!isCheck && (

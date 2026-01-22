@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import Taro from '@tarojs/taro';
-import post from '@/common/api/post';
+import { post } from '@/common/api/request';
 
 interface DraftData {
   title: string;

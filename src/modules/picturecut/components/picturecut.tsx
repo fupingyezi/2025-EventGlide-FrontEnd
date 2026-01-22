@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import './style.scss';
 import { PictureCutProps } from '@/common/types';
 import { fetchToQiniu } from '../../../common/api/qiniu';
-import post from '@/common/api/post';
+import { post } from '@/common/api/request';
 
 interface CropState {
   x: number;

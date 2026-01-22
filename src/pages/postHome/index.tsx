@@ -8,10 +8,10 @@ import ImagePicker from '@/modules/ImagePicker';
 import searchpic from '@/common/assets/Postlist/搜索.png';
 import Info from '@/common/assets/Postlist/info.png';
 import usePostStore from '@/store/PostStore';
-import get from '@/common/api/get';
+import { get } from '@/common/api/request';
 import useActivityStore from '@/store/ActivityStore';
-import post from '@/common/api/post';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
+import { getPostList, searchPostList } from '@/common/api';
 
 const Index = () => {
   const [isAlbumVisiable, setIsAlbumVisiable] = useState(false);
@@ -20,7 +20,7 @@ const Index = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
   const { showImg: imgUrl, setImgUrl } = usePostStore();
-  const { blogList, setBlogList, setBackPage, setBlogIndex } = usePostStore();
+  const { PostList, setPostList, setBackPage, setPostIndex } = usePostStore();
   const { setIsSelect } = useActivityStore();
   const [msgCount, setMsgCount] = useState(0);
   useDidShow(() => {
@@ -28,8 +28,8 @@ const Index = () => {
   });
 
   useDidShow(() => {
-    get('/post/all').then((res) => {
-      setBlogList(res.data);
+    getPostList().then((res) => {
+      setPostList(res.data);
       console.log(res.data);
     });
     get('/feed/total').then((res) => {
@@ -39,11 +39,11 @@ const Index = () => {
   });
 
   useEffect(() => {
-    if (blogList === null) return;
-    if (blogList.length > 0) {
+    if (PostList === null) return;
+    if (PostList.length > 0) {
       handleScroll(windowHeight);
     }
-  }, [blogList]);
+  }, [PostList]);
 
   Taro.useReady(() => {
     const newwindowHeight = Taro.getWindowInfo().windowHeight;
@@ -56,7 +56,7 @@ const Index = () => {
       tempHeight = newwindowHeight;
     }
     const query = Taro.createSelectorQuery();
-    blogList.forEach((_, index) => {
+    PostList.forEach((_, index) => {
       query.select(`#post-item-${index}`).boundingClientRect();
     });
     query.exec((res) => {
@@ -81,9 +81,9 @@ const Index = () => {
 
   const handleSearch = () => {
     if (searchValue === '') {
-      get(`/post/all`).then((res) => {
+      getPostList().then((res) => {
         if (res.msg === 'success') {
-          setBlogList(res.data);
+          setPostList(res.data);
         } else {
           Taro.showToast({
             title: `${res.msg}`,
@@ -93,9 +93,9 @@ const Index = () => {
         }
       });
     } else {
-      post('/post/find', { name: searchValue }).then((res) => {
+      searchPostList({ name: searchValue }).then((res) => {
         if (res.msg === 'success') {
-          setBlogList(res.data);
+          setPostList(res.data);
         } else {
           Taro.showToast({
             title: `${res.msg}`,
@@ -110,76 +110,82 @@ const Index = () => {
   useDidShow(() => {
     get('/feed/total')
       .then((res) => {
-        setMsgCount(res.data.total);
+        setMsgCount(res?.data?.total);
       })
       .catch((err) => {
         console.log(err);
       });
   });
 
-const onRefresh = () => {
-  console.log('refresh');
-  setRefreshing(true);
-  
-  const timeoutId = setTimeout(() => {
-    if (refreshing) {
-      setRefreshing(false);
-      console.log('刷新失败');
-    }
-  }, 3000);
-  
-  const clearTimeoutSafely = () => {
-    clearTimeout(timeoutId);
-  };
-  
-  try {
-    if (searchValue === '') {
-      get('/post/all').then((res) => {
-        clearTimeoutSafely();
-        setBlogList(res.data);
-        get('/feed/total').then((res) => {
-          setMsgCount(res.data.total);
-          setRefreshing(false);
-        }).catch((err) => {
-          clearTimeoutSafely();
-          setRefreshing(false);
-          console.error(err);
-        });
-      }).catch((err) => {
-        clearTimeoutSafely();
+  const onRefresh = () => {
+    console.log('refresh');
+    setRefreshing(true);
+
+    const timeoutId = setTimeout(() => {
+      if (refreshing) {
         setRefreshing(false);
-        console.error(err);
-      });
-    } else {
-      post('/post/find', { name: searchValue }).then((res) => {
-        clearTimeoutSafely();
-        if (res.msg === 'success') {
-          setBlogList(res.data);
-        } else {
-          Taro.showToast({
-            title: `${res.msg}`,
-            icon: 'none',
-            duration: 1000,
+        console.log('刷新失败');
+      }
+    }, 3000);
+
+    const clearTimeoutSafely = () => {
+      clearTimeout(timeoutId);
+    };
+
+    try {
+      if (searchValue === '') {
+        getPostList()
+          .then((res) => {
+            clearTimeoutSafely();
+            setPostList(res.data);
+            get('/feed/total')
+              .then((res) => {
+                setMsgCount(res.data.total);
+                setRefreshing(false);
+              })
+              .catch((err) => {
+                clearTimeoutSafely();
+                setRefreshing(false);
+                console.error(err);
+              });
+          })
+          .catch((err) => {
+            clearTimeoutSafely();
+            setRefreshing(false);
+            console.error(err);
           });
-        }
-        setRefreshing(false);
-      }).catch((err) => {
-        clearTimeoutSafely();
-        setRefreshing(false);
-        console.error(err);
+      } else {
+        searchPostList({ name: searchValue })
+          .then((res) => {
+            clearTimeoutSafely();
+            if (res.msg === 'success') {
+              setPostList(res.data);
+            } else {
+              Taro.showToast({
+                title: `${res.msg}`,
+                icon: 'none',
+                duration: 1000,
+              });
+            }
+            setRefreshing(false);
+          })
+          .catch((err) => {
+            clearTimeoutSafely();
+            setRefreshing(false);
+            console.error(err);
+          });
+      }
+    } catch (error) {
+      clearTimeoutSafely();
+      setRefreshing(false);
+      console.error('刷新过程发生错误:', error);
+      Taro.showToast({
+        title: '刷新失败，请稍后重试',
+        icon: 'none',
+        duration: 1000,
       });
     }
-  } catch (error) {
-    clearTimeoutSafely();
-    setRefreshing(false);
-    console.error('刷新过程发生错误:', error);
-    Taro.showToast({
-      title: "刷新失败，请稍后重试",
-      icon: 'none',
-      duration: 1000,
-    });
-  }
-};
+  };
 
   return (
     <>
@@ -238,14 +244,14 @@ const onRefresh = () => {
           refresherBackground="#f9f8fc"
         >
           <GridView type="masonry" crossAxisGap={5} mainAxisGap={5}>
-            {blogList === null
+            {PostList === null
               ? null
-              : blogList.map((item, index) => (
+              : PostList.map((item, index) => (
                   <View
                     key={index}
                     id={`post-item-${index}`}
                     onClick={() => {
-                      setBlogIndex(item.bid);
+                      setPostIndex(item.bid);
                       setBackPage('postHome');
                     }}
                   >

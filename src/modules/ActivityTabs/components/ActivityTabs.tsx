@@ -4,9 +4,9 @@ import { useState, memo } from 'react';
 import Taro, { navigateTo } from '@tarojs/taro';
 import classnames from 'classnames';
 import searchpic from '@/common/assets/Postlist/搜索.png';
-import post from '@/common/api/post';
 import useActivityStore from '@/store/ActivityStore';
-import get from '@/common/api/get';
+import { post, get } from '@/common/api';
+import { getActivityList, searchActivityList } from '@/common/api';
 
 const datelist = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 const typelist = ['文艺', '体育', '竞赛', '游戏', '学术'];
@@ -49,7 +49,7 @@ const ActivityTabs: React.FC<{
   };
   const handleSearch = () => {
     if (searchValue === '') {
-      get(`/act/all`).then((res) => {
+      getActivityList().then((res) => {
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {
@@ -61,7 +61,7 @@ const ActivityTabs: React.FC<{
         }
       });
     } else {
-      post('/act/name', { name: searchValue }).then((res) => {
+      searchActivityList({ name: searchValue }).then((res) => {
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {

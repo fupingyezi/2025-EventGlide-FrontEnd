@@ -6,11 +6,10 @@ import { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import arrowheadw from '@/common/assets/arrowhead/引导箭头-白.png';
 import check from '@/common/assets/Postlist/check.png';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
+import { getMyPostList, getUserInfo } from '@/common/api';
 import useUserStore from '@/store/userStore';
 import useActivityStore from '@/store/ActivityStore';
-import { blogType } from '@/store/PostStore';
+import { PostType } from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import PostCard from '@/modules/PostCard';
 import usePostStore from '@/store/PostStore';
@@ -22,8 +21,8 @@ const Index = () => {
   const [activeIndex, setActiveIndex] = useState<'release' | 'like' | 'favourite'>('release');
   const [isShowActivityWindow, setIsShowActivityWindow] = useState(false);
   const [isShowList, setIsShowList] = useState<number[]>([0, 1, 2, 3]);
-  const { setBlogIndex, setBackPage } = usePostStore();
-  const [minePostList, setMinePostList] = useState<blogType[]>([]);
+  const { setPostIndex, setBackPage } = usePostStore();
+  const [minePostList, setMinePostList] = useState<PostType[]>([]);
   const { avatar, username, school, setAvatar, setUsername, setSchool } = useUserStore();
   const sid = Taro.getStorageSync('sid');
   const { setIsSelect } = useActivityStore();
@@ -33,13 +32,11 @@ const Index = () => {
   });
 
   useDidShow(() => {
-    get(`/user/info/${sid}`)
+    getUserInfo(sid)
       .then((res) => {
-        console.log(res.data);
         setAvatar(res.data.avatar);
-        setUsername(res.data.name);
+        setUsername(res.data.username);
         setSchool(res.data.school);
-        console.log('avatar', avatar);
       })
       .catch((err) => {
         console.log(err);
@@ -48,65 +45,23 @@ const Index = () => {
 
   useEffect(() => {
     if (activePage === 'post') {
-      if (activeIndex === 'release') {
-        get(`/post/own`)
-          .then((res) => {
-            console.log('发布：', res.data);
-            if (res.data === null) {
-              setMinePostList([]);
-              return;
-            }
-            const newPostList: blogType[] = [];
-            res.data.forEach((item) => {
-              newPostList.push(item as blogType);
-            });
-            setMinePostList(newPostList);
-            handleScroll();
-          })
-          .catch((err) => {
-            console.log(err);
+      getMyPostList(activeIndex)
+        .then((res) => {
+          console.log(`${activeIndex}:`, res.data);
+          if (res.data === null) {
+            setMinePostList([]);
+            return;
+          }
+          const newPostList: PostType[] = [];
+          res.data.forEach((item: unknown) => {
+            newPostList.push(item as PostType);
           });
-      } else if (activeIndex === 'favourite') {
-        post('/user/collect/post', { sid })
-          .then((res) => {
-            console.log('收藏：', res);
-            if (res.data === null) {
-              setMinePostList([]);
-              return;
-            }
-            const newPostList: blogType[] = [];
-            if (res.msg === 'success') {
-              res.data.forEach((item) => {
-                newPostList.push(item as blogType);
-              });
-              setMinePostList(newPostList);
-            }
-            handleScroll();
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else if (activeIndex === 'like') {
-        post('/user/like/post', { sid })
-          .then((res) => {
-            console.log('点赞：', res);
-            if (res.data === null) {
-              setMinePostList([]);
-              return;
-            }
-            const newPostList: blogType[] = [];
-            if (res.msg === 'success') {
-              res.data.forEach((item) => {
-                newPostList.push(item as blogType);
-              });
-              setMinePostList(newPostList);
-            }
-            handleScroll();
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+          setMinePostList(newPostList);
+          handleScroll();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [activeIndex, activePage]);
 
@@ -240,7 +195,7 @@ const Index = () => {
                     style={{ padding: '10rpx' }}
                     id={`post-item-${index}`}
                     onClick={() => {
-                      setBlogIndex(item.bid);
+                      setPostIndex(item.bid);
                       setBackPage('mineHome');
                     }}
                   >
@@ -257,12 +212,11 @@ const Index = () => {
           )}
         </View>
       </ScrollView>
-      {isShowActivityWindow && (
-        <ActivityModal
-          WindowType="active"
-          setShowPostWindow={setIsShowActivityWindow}
-        ></ActivityModal>
-      )}
+      <ActivityModal
+        isShowActivityWindow={isShowActivityWindow}
+        WindowType="active"
+        setShowPostWindow={setIsShowActivityWindow}
+      ></ActivityModal>
     </>
   );
 };

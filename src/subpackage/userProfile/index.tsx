@@ -1,15 +1,14 @@
-import { View, Image, Input } from '@tarojs/components';
+import { View, Image } from '@tarojs/components';
 import { reLaunch } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import './index.scss';
-// import avatar from "@/common/assets/Postlist/波奇.jpg";
 import schoolSrc from '@/common/assets/mineInfo/学校.png';
 import departmentSrc from '@/common/assets/mineInfo/院系.png';
 import cardSrc from '@/common/assets/mineInfo/一卡通号.png';
 import useUserStore from '@/store/userStore';
 import ImagePicker from '@/modules/ImagePicker';
-import post from '@/common/api/post';
+import { post } from '@/common/api/request';
 import { NavigationBarBack } from '@/common/components/NavigationBar';
 import PictureCut from '@/modules/picturecut/components/picturecut';
 import Modal from '@/common/components/Modal';

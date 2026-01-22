@@ -3,7 +3,7 @@ import { memo, useState } from 'react';
 import './index.scss';
 import { LetterType } from '@/common/types';
 import classnames from 'classnames';
-import get from '@/common/api/get';
+import { get } from '@/common/api/request';
 import { useDidShow } from '@tarojs/taro';
 import NoticePageNull from '@/modules/EmptyComponent/components/noticepagenull';
 
@@ -45,7 +45,7 @@ const Index = () => {
 
   useDidShow(() => {
     get('/feed/list')
-      .then((res) => {
+      .then((res: any) => {
         console.log(res.data);
         const likes = res.data?.likes || [];
         const collects = res.data.collects || [];

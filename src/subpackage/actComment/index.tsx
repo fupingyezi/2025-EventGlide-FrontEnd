@@ -10,8 +10,8 @@ import comment from '@/common/assets/Postlist/comment.png';
 import icon from '@/common/assets/Postlist/inputIcon.png';
 import collectActive from '@/common/svg/post/starAct.svg';
 import favorActive from '@/common/svg/post/heartAct.svg';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
+import { getCommentsBySubject, createComment, replyComment } from '@/common/api/Comment';
+import { get, post } from '@/common/api/request';
 import { ResponseType } from '@/common/types';
 import useActivityStore from '@/store/ActivityStore';
 import useUserStore from '@/store/userStore';
@@ -144,7 +144,7 @@ const Index = () => {
   });
 
   useEffect(() => {
-    get(`/comment/load/${selectedItem.bid}`).then((res) => {
+    getCommentsBySubject(selectedItem.bid).then((res) => {
       if (res.data === null) {
         setResponse([]);
         return;
@@ -163,10 +163,10 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/answer', params).then((res) => {
+      replyComment(params).then((res) => {
         console.log(res, params);
-        if (res.msg === 'success') {
-          get(`/comment/load/${selectedItem.bid}`).then((res) => {
+        if (res.message === 'success') {
+          getCommentsBySubject(selectedItem.bid).then((res) => {
             if (res.data === null) {
               setResponse([]);
               return;
@@ -298,9 +298,9 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/create', params).then((res) => {
+      createComment(params).then((res) => {
         console.log(res, params);
-        if (res.msg === 'success') {
+        if (res.message === 'success') {
           setResponse([...response, res.data]);
           setSelectedItem({
             ...selectedItem,

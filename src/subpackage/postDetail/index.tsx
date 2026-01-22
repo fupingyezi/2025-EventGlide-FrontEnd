@@ -13,8 +13,7 @@ import { ResponseType, CreatorType } from '@/common/types';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import handleInteraction from '@/common/utils/Interaction';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
+import { getCommentsBySubject, createComment } from '@/common/api/Comment';
 import BlogComment from '@/modules/BlogComment/components';
 import ReplyInput from '@/modules/ReplyInput';
 import CommentActionSheet from '@/modules/CommentActionSheet';
@@ -28,7 +27,7 @@ const Index = () => {
   const [inputValue, setInputValue] = useState('');
   const { avatar } = useUserStore((state) => state);
   const studentid = Taro.getStorageSync('sid');
-  const { blogList, blogIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
+  const { PostList, PostIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRequest, setIsRequest] = useState(true);
   const [reply_id, setReply_id] = useState('');
@@ -47,7 +46,7 @@ const Index = () => {
   const { setLikeNumChange, setCollectNumChange } = usePostStore((state) => state);
   const windowWidth = Taro.getWindowInfo().windowWidth;
   const windowHeight = Taro.getWindowInfo().windowHeight;
-  const Item = blogList[blogIndex];
+  const Item = PostList[PostIndex];
   console.log(Item);
   const params = {
     subject: 'post',
@@ -189,7 +188,7 @@ const Index = () => {
   }, [clickTimer]);
 
   useDidShow(() => {
-    get(`/comment/load/${Item.bid}`).then((res) => {
+    getCommentsBySubject(Item.bid).then((res) => {
       console.log(res);
       if (res.data === null) {
         setResponse([]);
@@ -207,11 +206,11 @@ const Index = () => {
       setMarginTop(res[0].height + 100);
     });
     loadImageRatios();
-  }, [blogIndex]);
+  }, [PostIndex]);
 
   useEffect(() => {
     if (isRequest) {
-      get(`/comment/load/${Item.bid}`)
+      getCommentsBySubject(Item.bid)
         .then((res) => {
           setResponse(res.data);
           setIsRequest(false);
@@ -279,7 +278,7 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/create', params).then((res) => {
+      createComment(params).then((res) => {
         console.log(res);
         if (res.msg === 'success') {
           setResponse([...response, res.data]);
@@ -299,13 +298,13 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/answer', params).then((res) => {
-        console.log(res,params);
-        
-        if (res.msg === 'success') {
+      replyComment(params).then((res) => {
+        console.log(res, params);
+
+        if (res.message === 'success') {
           console.log(res);
 
-          get(`/comment/load/${Item.bid}`).then((res) => {
+          getCommentsBySubject(Item.bid).then((res) => {
             console.log(res);
             if (res.data === null) {
               setResponse([]);
@@ -318,10 +317,10 @@ const Index = () => {
     }
   };
 
-  const replyComment=() => {
-    setCommentInput(true)
-    setReplytype('reply')
-  }
+  const replyComment = () => {
+    setCommentInput(true);
+    setReplytype('reply');
+  };
 
   return (
     <>
@@ -362,11 +361,13 @@ const Index = () => {
               mode="scaleToFill"
               src={avatar}
             ></Image>
-            <View className="postDetail-comment-input-text"          
-            onClick={() => {
-            setCommentInput(true)
-            setReplytype('create')
-            }}>
+            <View
+              className="postDetail-comment-input-text"
+              onClick={() => {
+                setCommentInput(true);
+                setReplytype('create');
+              }}
+            >
               {inputValue ? inputValue : '让大家听到你的声音'}
             </View>
           </View>
@@ -396,11 +397,13 @@ const Index = () => {
           </View>
         </View>
         <View className="postDetail-footer">
-          <View className="postDetail-footer-input" 
-          onClick={() => {
-            setCommentInput(true)
-            setReplytype('create')
-            }}>
+          <View
+            className="postDetail-footer-input"
+            onClick={() => {
+              setCommentInput(true);
+              setReplytype('create');
+            }}
+          >
             <Image className="postDetail-footer-input-icon" mode="widthFix" src={icon}></Image>
             <View className="postDetail-footer-input-text">
               {inputValue ? inputValue : '说点什么'}
@@ -426,7 +429,9 @@ const Index = () => {
           </View>
         </View>
         {commentInput && (
-          <SetBlogComment.Provider value={replytype === 'create' ? setBlogComment : setBlogReponseContext}>
+          <SetBlogComment.Provider
+            value={replytype === 'create' ? setBlogComment : setBlogReponseContext}
+          >
             <ReplyInput
               isVisible={commentInput}
               setIsVisible={setCommentInput}
