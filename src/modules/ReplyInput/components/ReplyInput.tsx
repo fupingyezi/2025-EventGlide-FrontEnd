@@ -1,6 +1,6 @@
 import { memo, useState, useContext } from 'react';
-import { View} from '@tarojs/components';
-import { SetReponseContext, SetActivityComment } from '@/subpackage/actComment';
+import { View } from '@tarojs/components';
+import { SetReponseContext } from '@/subpackage/actComment';
 import { SetBlogComment } from '@/subpackage/postDetail';
 import './style.scss';
 import Drawer from '@/common/components/Drawer';
@@ -10,57 +10,56 @@ import { ReplyInputProps } from '@/common/types';
 const ReplyInput: React.FC<ReplyInputProps> = memo(({ ...props }) => {
   const [replyText, setReplyText] = useState('');
   const setResponse = useContext(SetReponseContext);
-  const setActivityComment = useContext(SetActivityComment);
   const setBlogComment = useContext(SetBlogComment);
   const { comment } = props;
   const handleSubmit = () => {
     if (replyText.length === 0) {
       return;
-    }else{
-    console.log(replyText, comment, props);
-    const { params, page } = props;
-    if (!comment) {
-      const data = {
-        ...params,
-        content: replyText,
-        parent_id: props.reply_id ?? params.parent_id,
-      };
-      if (page === 'activity') {
-        setResponse(data);
-      } else if (page === 'post') {
-        console.log(setBlogComment);
-        setBlogComment(data);
-      }
     } else {
-      const data = {
-        ...params,
-        content: replyText,
-      };
-      if (page === 'activity') {
-        setActivityComment(data);
-      } else if (page === 'post') {
-        setBlogComment(data);
+      console.log(replyText, comment, props);
+      const { params, page } = props;
+      if (!comment) {
+        const data = {
+          ...params,
+          content: replyText,
+          parentId: props.replyId ?? params.parentId,
+        };
+        if (page === 'activity') {
+          setResponse(data);
+        } else if (page === 'post') {
+          setBlogComment(data);
+        }
+      } else {
+        const data = {
+          ...params,
+          content: replyText,
+        };
+        if (page === 'activity') {
+          setResponse(data);
+        } else if (page === 'post') {
+          setBlogComment(data);
+        }
       }
-    }
-    setReplyText('');
-    props.setIsVisible(false);
+      setReplyText('');
+      props.setIsVisible(false);
     }
   };
 
-  return(
+  return (
     <Drawer
       visible={props.isVisible}
-      onClose={() => props.setIsVisible(false)}  
+      onClose={() => props.setIsVisible(false)}
       placement="bottom"
       showHeader={false}
     >
       <View className="reply-window">
         <View className="reply-window-input">
           <CustomInput
-            type='textarea'
+            type="textarea"
             placeholder={comment ? '请输入评论内容' : '请输入回复内容'}
             value={replyText}
-            onInput={(e) => setReplyText(e)}
+            onInput={(e: any) => setReplyText(e?.detail?.value ?? '')}
+            wrapperStyle={{ border: 'none' }}
             focus={true}
             onConfirm={() => handleSubmit()}
             autoHeight={true}
@@ -78,7 +77,7 @@ const ReplyInput: React.FC<ReplyInputProps> = memo(({ ...props }) => {
         </View>
       </View>
     </Drawer>
-  )
+  );
 });
 
 export default ReplyInput;

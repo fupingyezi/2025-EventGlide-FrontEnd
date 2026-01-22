@@ -2,7 +2,8 @@ import { View, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { memo, useEffect, useState } from 'react';
 import { CreatorType } from '@/common/types';
-import deleteComment from '@/common/const/DeleteComment';
+import { deleteComment } from '@/common/api/Comment';
+import { DeleteCommentRequest } from '@/common/types';
 import './style.scss';
 import ConfirmModal from '@/modules/ConfirmModal';
 import Drawer from '@/common/components/Drawer';
@@ -21,6 +22,9 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
   ({ visible, setVisible, studentId, commentItems, commentCreator, commentid }) => {
     const [isDelete, setIsDelete] = useState(false);
     const [commentContent, setCommentContent] = useState(commentItems);
+    const param: DeleteCommentRequest = {
+      targetId: commentid || '',
+    };
     useEffect(() => {
       if (commentItems.length > 18) {
         setCommentContent(commentItems.slice(0, 18) + '...');
@@ -28,10 +32,6 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
         setCommentContent(commentItems);
       }
     }, [commentItems]);
-    const param = {
-      target_id: commentid || '',
-      studentId: commentCreator?.studentId || '',
-    };
     const deleteCommentClick = async () => {
       if (studentId == commentCreator?.studentId) {
         try {

@@ -1,0 +1,30 @@
+.CommentList {
+  // 评论列表容器样式
+  padding: 0 20px;
+
+  // 评论项之间的间距
+  > .CommentItem {
+    // 最后一个评论项不需要底边框
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  }
+}
+
+.CommentList-empty {
+  // 空状态样式
+  text-align: center;
+  padding: 40px 0;
+  color: #999;
+  font-size: 24px;
+}
+
+.CommentList-empty-text {
+  // 空状态文字样式
+  background-color: #fafafa;
+  padding: 10px 20px;
+  border-radius: 20px;
+  display: inline-block;
+}

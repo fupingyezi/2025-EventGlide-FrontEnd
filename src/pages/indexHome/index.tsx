@@ -11,6 +11,7 @@ import usePostStore from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import IndexPageNull from '@/modules/EmptyComponent/components/indexpagenull';
 import { getPostList, filterActivity, getActivityList } from '@/common/api';
+import ScrollTop from '@/modules/ScrollTop/components/ScrollTop';
 
 const Index = () => {
   const [showPostWindow, setShowPostWindow] = useState(false);
@@ -18,6 +19,8 @@ const Index = () => {
   const [approximateTime, setApproximateTime] = useState<string>('');
   const [type, setType] = useState<string>('');
   const { setPostList } = usePostStore();
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
 
   useLoad(async () => {
     try {
@@ -49,6 +52,15 @@ const Index = () => {
     }
   });
 
+  const handleScroll = (e: any) => {
+    const { scrollTop } = e.detail;
+    if (scrollTop > 200) {
+      setShowScrollTop(true);
+    } else {
+      setShowScrollTop(false);
+    }
+  };
+
   const filteredActivities =
     activeList?.filter((activeItem) => {
       const isMatch =
@@ -60,12 +72,15 @@ const Index = () => {
   return (
     <>
       <NavigationBarTabBar backgroundColor="#F8F9FC" title="首页"></NavigationBarTabBar>
+      <ScrollTop setScrollTop={setScrollTop} isVisible={showScrollTop} bottom={30}></ScrollTop>
       <ScrollView
         className="indexHome"
         scrollY={true}
         usingSticky={true}
         enhanced={true}
         showScrollbar={false}
+        scrollTop={scrollTop}
+        onScroll={(e) => handleScroll(e)}
       >
         <View className="sticky-header">
           <ActivityTabs setApproximateTime={setApproximateTime} setType={setType}></ActivityTabs>

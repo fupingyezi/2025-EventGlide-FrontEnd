@@ -13,6 +13,7 @@ import useActivityStore from '@/store/ActivityStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import { getPostList, searchPostList } from '@/common/api';
 import { GetNotificationCountResponse } from '@/common/types';
+import ScrollTop from '@/modules/ScrollTop';
 
 const Index = () => {
   const [isAlbumVisiable, setIsAlbumVisiable] = useState(false);
@@ -24,6 +25,8 @@ const Index = () => {
   const { PostList, setPostList, setBackPage, setPostIndex } = usePostStore();
   const { setIsSelect } = useActivityStore();
   const [msgCount, setMsgCount] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
   useDidShow(() => {
     setIsSelect(false);
   });
@@ -52,7 +55,10 @@ const Index = () => {
     setWindowHeight(newwindowHeight);
   });
 
-  const handleScroll = (newwindowHeight?: number) => {
+  const handleScroll = (e: any, newwindowHeight?: number) => {
+    if (e && e.detail) {
+      setShowScrollTop(e.detail.scrollTop > 300);
+    }
     let tempHeight = windowHeight;
     if (newwindowHeight) {
       tempHeight = newwindowHeight;
@@ -200,6 +206,7 @@ const Index = () => {
     <>
       <NavigationBarTabBar backgroundColor="#FFFFFF" title="发现" />
       <View className="blog-page">
+        <ScrollTop setScrollTop={setScrollTop} isVisible={showScrollTop} />
         <AddPostButton setIsVisiable={setIsAlbumVisiable} />
         <ImagePicker
           isVisiable={isAlbumVisiable}
@@ -243,7 +250,8 @@ const Index = () => {
           type="custom"
           style={{ height: 'calc(100vh - 270rpx)' }}
           scrollY={true}
-          onScroll={() => handleScroll()}
+          scrollTop={scrollTop}
+          onScroll={(e) => handleScroll(e)}
           enhanced={true}
           showScrollbar={false}
           refresherEnabled={true}

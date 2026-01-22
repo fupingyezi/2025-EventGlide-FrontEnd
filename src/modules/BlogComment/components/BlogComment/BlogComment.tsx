@@ -35,7 +35,7 @@ const BlogComment: React.FC<ResponseType | any> = memo((props) => {
             className="BlogComment-info"
             onClick={() => {
               props.replycomment(true);
-              props.setReply_id(props.bid);
+              props.setReplyId(props.bid);
             }}
             onLongPress={() => {
               props.setCommentItems(props.content || defaultContent);
@@ -71,7 +71,7 @@ const BlogComment: React.FC<ResponseType | any> = memo((props) => {
                 reply_pos={item.reply_pos}
                 parentUserName={item.parentUserName}
                 setIsVisible={props.setIsVisible}
-                setReply_id={props.setReply_id}
+                setReplyId={props.setReplyId}
                 isLike={item.isLike}
                 likeNum={item.likeNum}
               />

@@ -9,28 +9,29 @@ import collectActive from '@/common/svg/post/starAct.svg';
 import favorActive from '@/common/svg/post/heartAct.svg';
 import comment from '@/common/assets/Postlist/comment.png';
 import icon from '@/common/assets/Postlist/inputIcon.png';
-import { ResponseType, CreatorType } from '@/common/types';
+import { CreatorType } from '@/common/types';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import handleInteraction from '@/common/utils/Interaction';
-import { getCommentsBySubject, createComment } from '@/common/api/Comment';
-import BlogComment from '@/modules/BlogComment/components';
+import { CommentResponse } from '@/common/types';
+import { getCommentsBySubject, createComment, replyComment } from '@/common/api/Comment';
 import ReplyInput from '@/modules/ReplyInput';
 import CommentActionSheet from '@/modules/CommentActionSheet';
+import CommentList from '@/modules/Comment';
 
 export const SetBlogReponseContext = createContext<(params: any) => void>(() => {});
 export const SetBlogComment = createContext<(params: any) => void>(() => {});
 
 const Index = () => {
   const [marginTop, setMarginTop] = useState(0);
-  const [response, setResponse] = useState<ResponseType[]>([]);
+  const [response, setResponse] = useState<CommentResponse[]>([]);
   const [inputValue, setInputValue] = useState('');
   const { avatar } = useUserStore((state) => state);
   const studentId = Taro.getStorageSync('sid');
   const { PostList, PostIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRequest, setIsRequest] = useState(true);
-  const [reply_id, setReply_id] = useState('');
+  const [replyId, setReplyId] = useState('');
   const [commentInput, setCommentInput] = useState(false);
   const [replytype, setReplytype] = useState('create');
   const [showpicture, setShowpicture] = useState(false);
@@ -51,17 +52,16 @@ const Index = () => {
   const params = {
     subject: 'post',
     studentId: studentId,
-    targetid: Item.bid,
+    targetId: Item.bid,
     receiver: Item.userInfo.studentId,
   };
 
   const reply_params = {
-    parent_id: reply_id,
-    subject: 'post',
-    receiver: Item.userInfo.studentId,
+    parentId: replyId,
+    subject: 'comment',
   };
   const comment_reply_params = {
-    parent_id: Item.bid,
+    parentId: Item.bid,
     subject: 'post',
     receiver: Item.userInfo.studentId,
   };
@@ -104,49 +104,6 @@ const Index = () => {
         }
       }
       handlepic(ratios);
-    }
-  };
-
-  const handleLikeComment = async (bid: string, receiver: string) => {
-    const action =
-      response.find((item) => item.bid === bid)?.isLike === 'true' ? 'dislike' : 'like';
-    const tag = handleInteraction(action, {
-      studentId: studentId,
-      subject: 'comment',
-      targetid: bid,
-      receiver: receiver,
-    });
-
-    try {
-      const res = await tag;
-      if (res.msg === 'success') {
-        const updatedResponse = response.map((item) => {
-          if (item.bid === bid) {
-            const newIsLike = item.isLike === 'true' ? 'false' : 'true';
-            const newLikeNum = newIsLike === 'true' ? item.likeNum + 1 : item.likeNum - 1;
-            return {
-              ...item,
-              isLike: newIsLike,
-              likeNum: newLikeNum,
-            };
-          }
-          return item;
-        });
-        setResponse(updatedResponse);
-      } else {
-        Taro.showToast({
-          title: '点赞失败',
-          icon: 'none',
-          duration: 1000,
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      Taro.showToast({
-        title: '点赞失败',
-        icon: 'none',
-        duration: 1000,
-      });
     }
   };
 
@@ -195,8 +152,8 @@ const Index = () => {
         return;
       }
       setResponse(res.data);
-    } catch (error) {
-      console.error('获取评论失败:', error);
+    } catch (err) {
+      console.log(err);
       setResponse([]);
     }
   });
@@ -310,12 +267,9 @@ const Index = () => {
       });
     } else {
       try {
-        const res = await replyComment();
-        console.log(res, params);
-
+        const res = await replyComment(params);
         console.log(res);
-
-        try {
+        if (res.msg === 'success') {
           const commentRes = await getCommentsBySubject(Item.bid);
           console.log(commentRes);
           if (commentRes.data === null) {
@@ -323,8 +277,6 @@ const Index = () => {
             return;
           }
           setResponse(commentRes.data);
-        } catch (error) {
-          console.error('重新获取评论失败:', error);
         }
       } catch (error) {
         console.error('回复评论失败:', error);
@@ -337,7 +289,7 @@ const Index = () => {
     }
   };
 
-  const replyComment = () => {
+  const replyCom = () => {
     setCommentInput(true);
     setReplytype('reply');
   };
@@ -392,28 +344,17 @@ const Index = () => {
             </View>
           </View>
           <View className="postDetail-comment-list">
-            {response &&
-              response.map((item, index) => (
-                <BlogComment
-                  key={index}
-                  bid={item.bid}
-                  creator={item.creator}
-                  content={item.content}
-                  commented_time={item.commentedTime}
-                  commented_pos={item.commentedPos}
-                  reply={item.reply ?? []}
-                  likeNum={item.likeNum}
-                  isLike={item.isLike}
-                  replyNum={item.replyNum}
-                  replycomment={replyComment}
-                  setReply_id={setReply_id}
-                  handleLikeComment={handleLikeComment}
-                  longClick={() => setCommentOperation(true)}
-                  setCommentItems={setCommentItems}
-                  setCommentCreator={setCommentCreator}
-                  setCommentid={setCommentid}
-                ></BlogComment>
-              ))}
+            {response && (
+              <CommentList
+                comments={response}
+                replycomment={replyCom}
+                setReplyId={setReplyId}
+                longClick={() => setCommentOperation(true)}
+                setCommentItems={setCommentItems}
+                setCommentCreator={setCommentCreator}
+                setCommentid={setCommentid}
+              ></CommentList>
+            )}
           </View>
         </View>
         <View className="postDetail-footer">
