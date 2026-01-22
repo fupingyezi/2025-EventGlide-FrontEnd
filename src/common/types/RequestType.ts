@@ -84,3 +84,100 @@ export interface SaveDraftRequest {
   studentid?: string;
   [key: string]: any;
 }
+
+/** 用户消息相关请求/响应接口类型 */
+export interface GetNotificationCountResponse {
+  commentandat: number;
+  likeandcollect: number;
+  total: number;
+  [property: string]: any;
+}
+
+export interface GetNotificationListReponse {
+  ats?: RespFeedAtResp[];
+  collects?: RespFeedCollectResp[];
+  comments?: RespFeedCommentResp[];
+  invitations?: RespFeedInvitationResp[];
+  likes?: RespFeedLikeResp[];
+  [property: string]: any;
+}
+
+/**
+ * resp.FeedAtResp
+ */
+export interface RespFeedAtResp {
+  first_pic?: string;
+  id?: number;
+  message?: string;
+  published_at?: string;
+  status?: string;
+  target_bid?: string;
+  userInfo?: RespUserInfo;
+  [property: string]: any;
+}
+
+/**
+ * resp.UserInfo
+ */
+export interface RespUserInfo {
+  avatar?: string;
+  studentid?: string;
+  username?: string;
+  [property: string]: any;
+}
+
+/**
+ * resp.FeedCollectResp
+ */
+export interface RespFeedCollectResp {
+  first_pic?: string;
+  id?: number;
+  message?: string;
+  published_at?: string;
+  status?: string;
+  target_bid?: string;
+  userInfo?: RespUserInfo;
+  [property: string]: any;
+}
+
+/**
+ * resp.FeedCommentResp
+ */
+export interface RespFeedCommentResp {
+  first_pic?: string;
+  id?: number;
+  message?: string;
+  published_at?: string;
+  status?: string;
+  target_bid?: string;
+  userInfo?: RespUserInfo;
+  [property: string]: any;
+}
+
+/**
+ * resp.FeedInvitationResp
+ */
+export interface RespFeedInvitationResp {
+  first_pic?: string;
+  id?: number;
+  message?: string;
+  published_at?: string;
+  status?: string;
+  target_bid?: string;
+  userInfo?: RespUserInfo;
+  [property: string]: any;
+}
+
+/**
+ * resp.FeedLikeResp
+ */
+export interface RespFeedLikeResp {
+  first_pic?: string;
+  id?: number;
+  message?: string;
+  published_at?: string;
+  status?: string;
+  target_bid?: string;
+  userInfo?: RespUserInfo;
+  [property: string]: any;
+}

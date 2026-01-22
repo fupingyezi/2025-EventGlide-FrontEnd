@@ -59,6 +59,8 @@ export type {
   CreatePostRequest,
   GetPostDraftResonse,
   SaveDraftRequest,
+  GetNotificationCountResponse,
+  GetNotificationListReponse,
 } from './RequestType';
 
 // 导入资源模块声明

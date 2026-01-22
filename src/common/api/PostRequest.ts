@@ -32,66 +32,6 @@ export const getMyPostList = (type: 'release' | 'like' | 'favourite') => {
   throw new Error('Invalid type for post list');
 };
 
-// 收藏/取消收藏帖子
-export const togglePostCollection = (
-  postId: string,
-  studentid: string,
-  action: 'collect' | 'cancel'
-) => {
-  if (action === 'collect') {
-    return apiClient.post<{}>('/user/collect/post', {
-      targetid: postId,
-      studentid,
-    });
-  } else {
-    return apiClient.post<{}>('/user/cancel/collect/post', {
-      targetid: postId,
-      studentid,
-    });
-  }
-};
-
-// 点赞/取消点赞帖子
-export const togglePostLike = (postId: string, studentid: string, action: 'like' | 'cancel') => {
-  if (action === 'like') {
-    return apiClient.post<{}>('/user/like/post', {
-      targetid: postId,
-      studentid,
-    });
-  } else {
-    return apiClient.post<{}>('/user/cancel/like/post', {
-      targetid: postId,
-      studentid,
-    });
-  }
-};
-
-// 评论帖子
-export const commentPost = (
-  postId: string,
-  commentData: {
-    studentid: string;
-    content: string;
-    parentCommentId?: string;
-  }
-) => {
-  return apiClient.post<{}>('/post/comment', {
-    bid: postId,
-    ...commentData,
-  });
-};
-
-// 获取帖子评论
-export const getPostComments = (
-  postId: string,
-  params?: {
-    page?: number;
-    size?: number;
-  }
-) => {
-  return apiClient.get<any>(`/post/comments/${postId}`, params); // 使用any类型，因为没有具体的评论类型定义
-};
-
 // 加载帖子草稿
 export const loadPostDraft = () => {
   return apiClient.get<GetPostDraftResonse>('/post/load'); // 返回类型待定，根据实际API响应确定

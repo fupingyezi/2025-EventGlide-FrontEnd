@@ -60,12 +60,3 @@ export const getActivityComments = (activityId: string) => {
 export const getPostCommentsFromComment = (postId: string) => {
   return apiClient.get<ResponseType[]>(`/post/comment/load/${postId}`);
 };
-
-// 举报评论
-export const reportComment = (commentId: string, reportReason: string, reporter: string) => {
-  return apiClient.post<{}>('/comment/report', {
-    commentId,
-    reportReason,
-    reporter,
-  });
-};

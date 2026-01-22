@@ -1,7 +1,7 @@
 import { View, Image } from '@tarojs/components';
 import { memo, useState } from 'react';
 import './index.scss';
-import { LetterType } from '@/common/types';
+import { GetNotificationListReponse, LetterType } from '@/common/types';
 import classnames from 'classnames';
 import { get } from '@/common/api/request';
 import { useDidShow } from '@tarojs/taro';
@@ -45,7 +45,7 @@ const Index = () => {
 
   useDidShow(async () => {
     try {
-      const res: any = await get('/feed/list');
+      const res: any = await get<GetNotificationListReponse>('/feed/list');
       console.log(res.data);
       const likes = res.data?.likes || [];
       const collects = res.data.collects || [];
@@ -102,7 +102,7 @@ const Index = () => {
     for (let i = 0; i < notices.length; i++) {
       if (notices[i].status === '未读') {
         try {
-          const res = await get(`/feed/read/detail/${notices[i].id}`);
+          const res = await get<GetNotificationListReponse>(`/feed/read/detail/${notices[i].id}`);
           console.log(res.data);
         } catch (error) {
           console.error('更新通知状态失败:', error);

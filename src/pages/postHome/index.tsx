@@ -12,6 +12,7 @@ import { get } from '@/common/api/request';
 import useActivityStore from '@/store/ActivityStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import { getPostList, searchPostList } from '@/common/api';
+import { GetNotificationCountResponse } from '@/common/types';
 
 const Index = () => {
   const [isAlbumVisiable, setIsAlbumVisiable] = useState(false);
@@ -34,13 +35,6 @@ const Index = () => {
       console.log(postListRes.data);
     } catch (error) {
       console.error('获取帖子列表失败:', error);
-    }
-
-    try {
-      const feedTotalRes = await get('/feed/total');
-      console.log(feedTotalRes.data);
-    } catch (error) {
-      console.error('获取通知总数失败:', error);
     }
 
     setImgUrl([]);
@@ -133,7 +127,7 @@ const Index = () => {
 
   useDidShow(async () => {
     try {
-      const res = await get('/feed/total');
+      const res = await get<GetNotificationCountResponse>('/feed/total');
       setMsgCount(res?.data?.total || 0);
     } catch (err) {
       console.log(err);
@@ -162,7 +156,7 @@ const Index = () => {
           clearTimeoutSafely();
           setPostList(res.data);
 
-          const feedRes = await get('/feed/total');
+          const feedRes = await get<GetNotificationCountResponse>('/feed/total');
           setMsgCount(feedRes.data.total);
           setRefreshing(false);
         } catch (err) {
