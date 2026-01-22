@@ -19,7 +19,7 @@ const useActivityStore = create<ActivityStoreState>((set) => ({
     holderType: [],
     type: [],
     position: [],
-    if_register: '',
+    ifRegister: '',
     detailTime: {
       startTime: '',
       endTime: '',

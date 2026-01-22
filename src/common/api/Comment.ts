@@ -32,9 +32,9 @@ export const deleteComment = (commentId: string) => {
 };
 
 // 点赞评论
-export const likeComment = (commentId: string, studentid: string, receiver: string) => {
+export const likeComment = (commentId: string, studentId: string, receiver: string) => {
   return apiClient.post<{}>('/interaction/like', {
-    studentid,
+    studentId,
     subject: 'comment',
     targetid: commentId,
     receiver,
@@ -42,9 +42,9 @@ export const likeComment = (commentId: string, studentid: string, receiver: stri
 };
 
 // 取消点赞评论
-export const unlikeComment = (commentId: string, studentid: string, receiver: string) => {
+export const unlikeComment = (commentId: string, studentId: string, receiver: string) => {
   return apiClient.post<{}>('/interaction/dislike', {
-    studentid,
+    studentId,
     subject: 'comment',
     targetid: commentId,
     receiver,

@@ -26,7 +26,7 @@ const Index = () => {
   const [response, setResponse] = useState<ResponseType[]>([]);
   const [inputValue, setInputValue] = useState('');
   const { avatar } = useUserStore((state) => state);
-  const studentid = Taro.getStorageSync('sid');
+  const studentId = Taro.getStorageSync('sid');
   const { PostList, PostIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRequest, setIsRequest] = useState(true);
@@ -50,20 +50,20 @@ const Index = () => {
   console.log(Item);
   const params = {
     subject: 'post',
-    studentid: studentid,
+    studentId: studentId,
     targetid: Item.bid,
-    receiver: Item.userInfo.studentid,
+    receiver: Item.userInfo.studentId,
   };
 
   const reply_params = {
     parent_id: reply_id,
     subject: 'post',
-    receiver: Item.userInfo.studentid,
+    receiver: Item.userInfo.studentId,
   };
   const comment_reply_params = {
     parent_id: Item.bid,
     subject: 'post',
-    receiver: Item.userInfo.studentid,
+    receiver: Item.userInfo.studentId,
   };
 
   const handlepic = (pictures) => {
@@ -111,7 +111,7 @@ const Index = () => {
     const action =
       response.find((item) => item.bid === bid)?.isLike === 'true' ? 'dislike' : 'like';
     const tag = handleInteraction(action, {
-      studentid: studentid,
+      studentId: studentId,
       subject: 'comment',
       targetid: bid,
       receiver: receiver,
@@ -399,8 +399,8 @@ const Index = () => {
                   bid={item.bid}
                   creator={item.creator}
                   content={item.content}
-                  commented_time={item.commented_time}
-                  commented_pos={item.commented_pos}
+                  commented_time={item.commentedTime}
+                  commented_pos={item.commentedPos}
                   reply={item.reply ?? []}
                   likeNum={item.likeNum}
                   isLike={item.isLike}
@@ -482,7 +482,7 @@ const Index = () => {
           <CommentActionSheet
             visible={commentOperation}
             setVisible={setCommentOperation}
-            studentid={studentid}
+            studentId={studentId}
             commentItems={commentItems}
             commentCreator={commentCreator}
             commentid={commentid}

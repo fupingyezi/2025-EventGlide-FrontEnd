@@ -16,7 +16,7 @@ export interface ActiveItem {
   type: string;
   isChecking: string;
   holderType: string;
-  if_register: string;
+  ifRegister: string;
   showImg: string[];
 }
 
@@ -27,7 +27,7 @@ const Label: React.FC<{ text: string }> = memo(({ text }) => {
 const Index = () => {
   const { labelform } = useActiveInfoStore((state) => state);
   let signText = '无需报名';
-  if (labelform.if_register === '是') signText = '需要报名';
+  if (labelform.ifRegister === '是') signText = '需要报名';
 
   const [activeList, setActiveList] = useState<ActiveItem[]>([]);
   useEffect(() => {
@@ -69,7 +69,7 @@ const Index = () => {
                 <View className="reviewPage-label">
                   <Label text={item.type}></Label>
                   <Label text={item.holderType}></Label>
-                  <Label text={item.if_register === '是' ? '需要报名' : '无需报名'}></Label>
+                  <Label text={item.ifRegister === '是' ? '需要报名' : '无需报名'}></Label>
                 </View>
                 <View className="reviewPage-pic">
                   {(item.showImg || []).map((item, index) => (

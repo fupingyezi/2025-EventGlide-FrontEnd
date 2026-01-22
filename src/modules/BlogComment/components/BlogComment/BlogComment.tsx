@@ -53,7 +53,7 @@ const BlogComment: React.FC<ResponseType | any> = memo((props) => {
           </View>
           <Image
             className="BlogComment-favor"
-            onClick={() => props.handleLikeComment(props.bid, props.creator.studentid)}
+            onClick={() => props.handleLikeComment(props.bid, props.creator.studentId)}
             src={props.isLike === 'true' ? favorAct : favor}
             mode="widthFix"
           />

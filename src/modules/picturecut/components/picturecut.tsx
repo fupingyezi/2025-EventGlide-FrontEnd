@@ -403,8 +403,8 @@ const PictureCut: React.FC<PictureCutProps> = ({
                   let response;
                   try {
                     response = await post('/user/avatar', {
-                      avatar_url: url,
-                      studentid: studentId,
+                      avatarUrl: url,
+                      studentId: studentId,
                     });
                   } catch (apiError) {
                     console.error('头像更新API失败:', apiError);

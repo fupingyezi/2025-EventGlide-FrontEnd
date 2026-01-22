@@ -5,7 +5,7 @@ interface PostStoreType {
   showImg: string[];
   title: string;
   introduce: string;
-  studentid: string;
+  studentId: string;
   PostList: PostDetailInfo[];
   PostIndex: number;
   backPage: string;
@@ -15,7 +15,7 @@ interface PostStoreType {
   setLikeNumChange: (blog: PostDetailInfo, type: number) => void;
   setCollectNumChange: (blog: PostDetailInfo, type: number) => void;
   setImgUrl: (url: string[]) => void;
-  setPostStudentId: (id: string) => void;
+  setPoststudentId: (id: string) => void;
   setCommentNumChange: (blog: PostDetailInfo) => void;
   setContent: (title: string, description: string, imgUrl: string[]) => void;
 }
@@ -24,7 +24,7 @@ const usePostStore = create<PostStoreType>((set, get) => ({
   showImg: [],
   title: '',
   introduce: '',
-  studentid: '',
+  studentId: '',
   PostList: [],
   PostIndex: -1,
   backPage: '',
@@ -63,7 +63,7 @@ const usePostStore = create<PostStoreType>((set, get) => ({
     });
     set(() => ({ PostList: updatedPostList }));
   },
-  setPostStudentId: (id) => set(() => ({ studentid: id })),
+  setPoststudentId: (id) => set(() => ({ studentId: id })),
   setImgUrl: (url) => set(() => ({ showImg: url })),
   setContent: (title, description, imgUrl) =>
     set(() => ({ title, introduce: description, showImg: imgUrl })),

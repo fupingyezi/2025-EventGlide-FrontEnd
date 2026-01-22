@@ -10,14 +10,14 @@ import Message from '@/common/components/Message';
 
 const Index = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [studentid, setStudentid] = useState('');
+  const [studentId, setStudentId] = useState('');
   const [password, setPassword] = useState('');
   const [isCheck, setIsCheck] = useState(true);
   const [showPolicyWindow, setShowPolicyWindow] = useState(false);
 
   const handleLogin = () => {
     if (isCheck) {
-      handleUserLogin({ studentid, password });
+      handleUserLogin({ studentId, password });
     } else {
       Message.error({ content: '请先阅读并同意隐私政策' });
     }
@@ -49,9 +49,9 @@ const Index = () => {
               placeholderTextColor={'color: #5E5064;'}
               placeholderClass={'login-page-form-input-text'}
               type="text"
-              value={studentid}
+              value={studentId}
               onInput={(e) => {
-                setStudentid(e.detail.value);
+                setStudentId(e.detail.value);
               }}
             />
           </View>

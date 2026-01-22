@@ -22,7 +22,7 @@ const PostComment: React.FC<ResponseType | any> = memo((props) => {
     '为了让大家更好地了解该活动， 请介绍一下活动亮点，活动流程 和注意事项等内容......';
 
   const handleCommentLike = () => {
-    props.onLikeComment(props.bid, props.creator.studentid);
+    props.onLikeComment(props.bid, props.creator.studentId);
   };
 
   return (

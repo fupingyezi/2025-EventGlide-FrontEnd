@@ -11,14 +11,14 @@ import Message from '@/common/components/Message';
 interface CommentOperationProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  studentid: string;
+  studentId: string;
   commentItems: string;
   commentCreator: CreatorType | undefined;
   commentid: string;
 }
 
 const CommentActionSheet: React.FC<CommentOperationProps> = memo(
-  ({ visible, setVisible, studentid, commentItems, commentCreator, commentid }) => {
+  ({ visible, setVisible, studentId, commentItems, commentCreator, commentid }) => {
     const [isDelete, setIsDelete] = useState(false);
     const [commentContent, setCommentContent] = useState(commentItems);
     useEffect(() => {
@@ -30,10 +30,10 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
     }, [commentItems]);
     const param = {
       target_id: commentid || '',
-      studentid: commentCreator?.studentid || '',
+      studentId: commentCreator?.studentId || '',
     };
     const deleteCommentClick = async () => {
-      if (studentid == commentCreator?.studentid) {
+      if (studentId == commentCreator?.studentId) {
         try {
           console.log(param);
           const res = await deleteComment(param);
@@ -94,7 +94,7 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
               <View className="commentOperation-btn-icon"></View>
               <View className="commentOperation-btn-text">复制</View>
             </View>
-            {studentid == commentCreator?.studentid && (
+            {studentId == commentCreator?.studentId && (
               <View className="commentOperation-btn-item" onClick={() => setIsDelete(true)}>
                 <View className="commentOperation-btn-icon"></View>
                 <View className="commentOperation-btn-text">删除</View>

@@ -36,12 +36,12 @@ const Index = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const windowWidth = Taro.getWindowInfo().windowWidth;
   const windowHeight = Taro.getWindowInfo().windowHeight;
-  const studentid = Taro.getStorageSync('sid');
+  const studentId = Taro.getStorageSync('sid');
   const params = {
-    studentid: studentid,
+    studentId: studentId,
     subject: 'activity',
     targetid: selectedItem.bid,
-    receiver: selectedItem.userInfo.studentid,
+    receiver: selectedItem.userInfo.studentId,
   };
 
   console.log(selectedItem);
@@ -56,12 +56,12 @@ const Index = () => {
   const reply_params = {
     parent_id: reply_id,
     subject: 'comment',
-    receiver: selectedItem.userInfo.studentid,
+    receiver: selectedItem.userInfo.studentId,
   };
   const comment_params = {
     parent_id: selectedItem.bid,
     subject: 'activity',
-    receiver: selectedItem.userInfo.studentid,
+    receiver: selectedItem.userInfo.studentId,
   };
 
   const handlepic = (pictures) => {
@@ -197,7 +197,7 @@ const Index = () => {
     const action =
       response.find((item) => item.bid === bid)?.isLike === 'true' ? 'dislike' : 'like';
     const tag = handleInteraction(action, {
-      studentid: studentid,
+      studentId: studentId,
       subject: 'comment',
       targetid: bid,
       receiver: receiver,
@@ -463,8 +463,8 @@ const Index = () => {
                   bid={item.bid}
                   creator={item.creator}
                   content={item.content}
-                  commented_time={item.commented_time}
-                  commented_pos={item.commented_pos}
+                  commented_time={item.commentedTime}
+                  commented_pos={item.commentedPos}
                   reply={item.reply ?? []}
                   isLike={item.isLike}
                   likeNum={item.likeNum}

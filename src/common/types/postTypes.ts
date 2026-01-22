@@ -30,26 +30,26 @@ export interface PostCommentProp {
 export interface CreatorType {
   username: string;
   avatar: string;
-  studentid: string;
+  studentId: string;
 }
 
 export interface ReplyType {
   bid: string;
-  reply_content: string;
+  replyContent: string;
   parentUserName: string;
-  reply_creator: {
+  replyCreator: {
     avatar: string;
-    studentid: string;
+    studentId: string;
     username: string;
   };
-  reply_pos: string;
-  reply_time: string;
+  replyPos: string;
+  replyTime: string;
 }
 
 export interface ResponseType {
   bid: string;
-  commented_pos: string;
-  commented_time: string;
+  commentedPos: string;
+  commentedTime: string;
   content: string;
   creator: CreatorType;
   isLike: string;

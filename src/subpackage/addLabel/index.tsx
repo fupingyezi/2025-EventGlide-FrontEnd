@@ -44,9 +44,9 @@ const Index = () => {
     startTime: '',
     endTime: '',
     position: '',
-    if_register: '',
+    ifRegister: '',
     activeForm: '',
-    register_method: '',
+    registerMethod: '',
     signer: [],
   });
 
@@ -70,12 +70,12 @@ const Index = () => {
           startTime: formValue.startTime || res.data.StartTime,
           endTime: formValue.endTime || res.data.EndTime,
           position: formValue.position || res.data.Position,
-          if_register: formValue.if_register || res.data.IfRegister,
+          ifRegister: formValue.ifRegister || res.data.IfRegister,
           activeForm: formValue.activeForm || res.data.ActiveForm || '',
-          register_method: formValue.register_method || res.data.RegisterMethod || '',
+          registerMethod: formValue.registerMethod || res.data.RegisterMethod || '',
           signer: (signers || res.data.Signer).map((signer) => ({
             name: signer.name,
-            studentid: signer.studentid,
+            studentId: signer.studentId,
           })),
         };
         console.log('newLabelForm', newLabelForm);
@@ -98,7 +98,7 @@ const Index = () => {
   };
 
   const handleFormSubmit = () => {
-    const { type, holderType, startTime, endTime, position, if_register, register_method } =
+    const { type, holderType, startTime, endTime, position, ifRegister, registerMethod } =
       formValue;
     const start = new Date(startTime).getTime();
     const end = new Date(endTime).getTime();
@@ -111,7 +111,7 @@ const Index = () => {
       });
       return;
     }
-    if (!type || !holderType || !startTime || !endTime || !position || !if_register) {
+    if (!type || !holderType || !startTime || !endTime || !position || !ifRegister) {
       Taro.showToast({
         title: '还有必填项未选择，请检查',
         icon: 'none',
@@ -119,7 +119,7 @@ const Index = () => {
       });
       return;
     }
-    if (if_register === '是' && !register_method) {
+    if (ifRegister === '是' && !registerMethod) {
       Taro.showToast({
         title: '请填写报名方式',
         icon: 'none',

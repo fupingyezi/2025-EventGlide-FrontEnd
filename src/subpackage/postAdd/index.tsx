@@ -20,7 +20,7 @@ const Index = () => {
   const [pageImgUrl, setPageImgUrl] = useState<string[]>(imgUrl);
   const [title, setTitle] = useState('');
   const [introduce, setIntroduce] = useState('');
-  const studentid = Taro.getStorageSync('sid');
+  const studentId = Taro.getStorageSync('sid');
   const [count, setCount] = useState(0);
   const [load, setLoad] = useState(false);
 
@@ -40,13 +40,14 @@ const Index = () => {
       console.log(res);
       if (res.data === null) return;
       if (res.msg === 'success') {
-        setTitle(res.data.Title || title);
-        setIntroduce(res.data.Introduce || introduce);
-        setCount(res.data.Introduce ? res.data.Introduce.length : 0);
-        if (Array.isArray(res.data.ShowImg)) {
-          setPageImgUrl(res.data.ShowImg);
-        } else if (res.data.ShowImg !== '') {
-          setPageImgUrl([res.data.ShowImg]);
+        setTitle(res.data.title || title);
+        setIntroduce(res.data.introduce || introduce);
+        setCount(res.data.introduce ? res.data.introduce.length : 0);
+        if (Array.isArray(res.data.showImg)) {
+          const imgUrls = res.data.showImg.filter((item) => item !== '');
+          setPageImgUrl(imgUrls);
+        } else if (res.data.showImg !== '') {
+          setPageImgUrl([res.data.showImg]);
         } else {
           setPageImgUrl([]);
         }
@@ -70,7 +71,7 @@ const Index = () => {
         icon: 'none',
       });
     } else {
-      const postInfo = { introduce, showImg: pageImgUrl, studentid, title };
+      const postInfo = { introduce, showImg: pageImgUrl, studentId, title };
       console.log(postInfo);
 
       try {
@@ -78,7 +79,7 @@ const Index = () => {
           title: postInfo.title,
           introduce: postInfo.introduce,
           showImg: postInfo.showImg,
-          studentid: postInfo.studentid,
+          studentId: postInfo.studentId,
         });
         console.log(res);
         switchTab({ url: '/pages/postHome/index' });
@@ -169,7 +170,7 @@ const Index = () => {
             title: title,
             introduce,
             showImg: pageImgUrl,
-            studentid: studentid,
+            studentId: studentId,
             labelform: {} as LabelForm,
           })
         }

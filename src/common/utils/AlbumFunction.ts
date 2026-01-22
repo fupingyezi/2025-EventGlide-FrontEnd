@@ -20,7 +20,6 @@ const handleChooseImage = ({
   isAlbum,
   isRequest = false,
 }: AlbumFunctionProps) => {
-  //const { studentid: studentId, setAvatar } = useUserStore.getState();
   Taro.chooseImage({
     count: count,
     sizeType: ['original', 'compressed'],
@@ -44,15 +43,6 @@ const handleChooseImage = ({
 
       if (isRequest) {
         newImgUrl = newImgUrl.filter((item) => !imgUrl.includes(item));
-        console.log(newImgUrl[0]);
-        /*const response = await post('/user/avatar', {
-          avatar_url: newImgUrl[0],
-          studentid: studentId,
-        });
-        if (response.msg === 'success') {
-          setImgUrl(newImgUrl);
-          setAvatar(newImgUrl[0]);
-        }*/
         setImgUrl(newImgUrl);
       } else setImgUrl(newImgUrl);
       setIsVisiable(false);
