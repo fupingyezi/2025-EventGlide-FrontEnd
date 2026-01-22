@@ -14,7 +14,7 @@ export interface LoginResponse {
   avatar: string;
   username: string;
   school: string;
-  sid: string;
+  studentId: string;
   token: string;
 }
 

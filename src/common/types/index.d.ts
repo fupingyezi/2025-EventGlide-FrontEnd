@@ -12,6 +12,7 @@ export type {
   ReplyType,
   ResponseType,
   PostCommentProps,
+  PostDetailInfo,
 } from './PostTypes';
 
 export type {
@@ -28,6 +29,8 @@ export type {
   InputType,
   FormItemType,
   LabelForm,
+  DateItem,
+  CalendarDay,
 } from './FormTypes';
 
 export type {
@@ -41,8 +44,6 @@ export type {
   AddPeopleProps,
   PictureCutProps,
   ReplyInputProps,
-  DateItem,
-  CalendarDay,
 } from './UIProps';
 
 export type {

@@ -20,14 +20,14 @@ const handleUserLogin = async ({ studentId, password }: LoginRequest) => {
   const responseData = result.data;
 
   Taro.setStorageSync('token', responseData.token);
-  Taro.setStorageSync('sid', responseData.sid);
+  Taro.setStorageSync('sid', responseData.studentId);
 
-  setStudentId(responseData.sid);
+  setStudentId(responseData.studentId);
   setId(responseData.id);
   setAvatar(responseData.avatar);
   setUsername(responseData.username);
   setSchool(responseData.school);
-  setPoststudentId(responseData.sid);
+  setPoststudentId(responseData.studentId);
 
   switchTab({ url: '/pages/indexHome/index' });
 };
