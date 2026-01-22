@@ -1,4 +1,4 @@
-import { View, Image, Input, Span, Swiper, SwiperItem } from '@tarojs/components';
+import { View, Image, Span, Swiper, SwiperItem } from '@tarojs/components';
 import Taro, { useDidShow } from '@tarojs/taro';
 import { useState, useEffect, createContext, useRef } from 'react';
 import './index.scss';
@@ -10,17 +10,17 @@ import comment from '@/common/assets/Postlist/comment.png';
 import icon from '@/common/assets/Postlist/inputIcon.png';
 import collectActive from '@/common/svg/post/starAct.svg';
 import favorActive from '@/common/svg/post/heartAct.svg';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
+import { getCommentsBySubject, createComment, replyComment } from '@/common/api/Comment';
 import { ResponseType } from '@/common/types';
 import useActivityStore from '@/store/ActivityStore';
-import useUserStore from '@/store/userStore';
+
 import handleInteraction from '@/common/utils/Interaction';
 import ReplyInput from '@/modules/ReplyInput';
 import { ScrollView } from '@tarojs/components';
 
 export const SetReponseContext = createContext<(params: any) => void>(() => {});
 export const SetActivityComment = createContext<(params: any) => void>(() => {});
+
 const Index = () => {
   const { selectedItem, setSelectedItem, setLikeNumChange, setCollectNumChange, setIsSelect } =
     useActivityStore();
@@ -93,7 +93,7 @@ const Index = () => {
     }
   };
 
-  const handleImageClick = () => {
+  const handleImageClick = async () => {
     setClickCount((prev) => prev + 1);
 
     if (clickCount === 1) {
@@ -102,20 +102,19 @@ const Index = () => {
         setClickTimer(null);
       }
       if (selectedItem.isLike === 'false') {
-        handleInteraction('like', params)
-          .then((res) => {
-            if (res.msg === 'success') {
-              setLikeNumChange(selectedItem.bid, 'add');
-              setSelectedItem({
-                ...selectedItem,
-                isLike: 'true',
-                likeNum: selectedItem.likeNum + 1,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        try {
+          const res = await handleInteraction('like', params);
+          if (res.msg === 'success') {
+            setLikeNumChange(selectedItem.bid, 'add');
+            setSelectedItem({
+              ...selectedItem,
+              isLike: 'true',
+              likeNum: selectedItem.likeNum + 1,
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
       }
       setClickCount(0);
     } else {
@@ -135,27 +134,31 @@ const Index = () => {
     };
   }, [clickTimer]);
 
-  const handleInput = (e: any) => {
-    setInputValue(e.detail.value);
-  };
-
   useDidShow(() => {
     setIsSelect(false);
   });
 
   useEffect(() => {
-    get(`/comment/load/${selectedItem.bid}`).then((res) => {
-      if (res.data === null) {
+    const fetchComments = async () => {
+      try {
+        const res = await getCommentsBySubject(selectedItem.bid);
+        if (res.data === null) {
+          setResponse([]);
+          return;
+        }
+        console.log(res.data);
+        setResponse(res.data);
+      } catch (error) {
+        console.error('获取评论失败:', error);
         setResponse([]);
-        return;
       }
-      console.log(res.data);
-      setResponse(res.data);
-    });
+    };
+
+    fetchComments();
     loadImageRatios();
   }, []);
 
-  const setReponseContext = (params: any) => {
+  const setReponseContext = async (params: any) => {
     if (params.content === '') {
       Taro.showToast({
         title: '评论不能为空',
@@ -163,19 +166,30 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/answer', params).then((res) => {
+      try {
+        const res = await replyComment(params);
         console.log(res, params);
         if (res.msg === 'success') {
-          get(`/comment/load/${selectedItem.bid}`).then((res) => {
-            if (res.data === null) {
+          try {
+            const commentRes = await getCommentsBySubject(selectedItem.bid);
+            if (commentRes.data === null) {
               setResponse([]);
               return;
             }
-            console.log(res.data);
-            setResponse(res.data);
-          });
+            console.log(commentRes.data);
+            setResponse(commentRes.data);
+          } catch (error) {
+            console.error('重新获取评论失败:', error);
+          }
         }
-      });
+      } catch (error) {
+        console.error('回复评论失败:', error);
+        Taro.showToast({
+          title: '回复评论失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 
@@ -222,75 +236,71 @@ const Index = () => {
     }
   };
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (selectedItem.isLike === 'true') {
-      handleInteraction('dislike', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setLikeNumChange(selectedItem.bid, 'reduce');
-            setSelectedItem({
-              ...selectedItem,
-              isLike: 'false',
-              likeNum: selectedItem.likeNum - 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('dislike', params);
+        if (res.msg === 'success') {
+          setLikeNumChange(selectedItem.bid, 'reduce');
+          setSelectedItem({
+            ...selectedItem,
+            isLike: 'false',
+            likeNum: selectedItem.likeNum - 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (selectedItem.isLike === 'false') {
-      handleInteraction('like', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setLikeNumChange(selectedItem.bid, 'add');
-            setSelectedItem({
-              ...selectedItem,
-              isLike: 'true',
-              likeNum: selectedItem.likeNum + 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('like', params);
+        if (res.msg === 'success') {
+          setLikeNumChange(selectedItem.bid, 'add');
+          setSelectedItem({
+            ...selectedItem,
+            isLike: 'true',
+            likeNum: selectedItem.likeNum + 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const handleCollect = () => {
+  const handleCollect = async () => {
     if (selectedItem.isCollect === 'true') {
-      handleInteraction('discollect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(selectedItem.bid, 'reduce');
-            setSelectedItem({
-              ...selectedItem,
-              isCollect: 'false',
-              collectNum: selectedItem.collectNum - 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('discollect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(selectedItem.bid, 'reduce');
+          setSelectedItem({
+            ...selectedItem,
+            isCollect: 'false',
+            collectNum: selectedItem.collectNum - 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (selectedItem.isCollect === 'false') {
-      handleInteraction('collect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(selectedItem.bid, 'add');
-            setSelectedItem({
-              ...selectedItem,
-              isCollect: 'true',
-              collectNum: selectedItem.collectNum + 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('collect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(selectedItem.bid, 'add');
+          setSelectedItem({
+            ...selectedItem,
+            isCollect: 'true',
+            collectNum: selectedItem.collectNum + 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const setActivityComment = (params: any) => {
+  const setActivityComment = async (params: any) => {
     if (params.content === '') {
       Taro.showToast({
         title: '评论不能为空',
@@ -298,7 +308,8 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/create', params).then((res) => {
+      try {
+        const res = await createComment(params);
         console.log(res, params);
         if (res.msg === 'success') {
           setResponse([...response, res.data]);
@@ -308,7 +319,14 @@ const Index = () => {
           });
           setInputValue('');
         }
-      });
+      } catch (error) {
+        console.error('创建评论失败:', error);
+        Taro.showToast({
+          title: '评论发送失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 

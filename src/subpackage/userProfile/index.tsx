@@ -1,15 +1,14 @@
-import { View, Image, Input } from '@tarojs/components';
+import { View, Image } from '@tarojs/components';
 import { reLaunch } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import './index.scss';
-// import avatar from "@/common/assets/Postlist/波奇.jpg";
 import schoolSrc from '@/common/assets/mineInfo/学校.png';
 import departmentSrc from '@/common/assets/mineInfo/院系.png';
 import cardSrc from '@/common/assets/mineInfo/一卡通号.png';
 import useUserStore from '@/store/userStore';
 import ImagePicker from '@/modules/ImagePicker';
-import post from '@/common/api/post';
+import { post } from '@/common/api/request';
 import { NavigationBarBack } from '@/common/components/NavigationBar';
 import PictureCut from '@/modules/picturecut/components/picturecut';
 import Modal from '@/common/components/Modal';
@@ -35,30 +34,37 @@ const Index = () => {
     setInputValue(e.detail.value);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!inputValue) {
       Taro.showToast({ title: '昵称不能为空', icon: 'none' });
       return;
     } else {
-      post('/user/username', { new_name: inputValue, studentid: studentId }).then((res) => {
+      try {
+        const res = await post('/user/username', { new_name: inputValue, studentid: studentId });
         console.log(res);
         setUsername(inputValue);
-      });
-      setUsername(inputValue);
+      } catch (error) {
+        console.error('更新昵称失败:', error);
+        Taro.showToast({ title: '更新昵称失败', icon: 'none' });
+      }
       setIsRenameVisible(false);
       setInputValue('');
     }
   };
 
-  const handleLogOut = () => {
-    post('/user/logout').then((res) => {
+  const handleLogOut = async () => {
+    try {
+      const res = await post('/user/logout');
       console.log(res);
       if (res.msg === 'success') {
         Taro.showToast({ title: '退出成功', icon: 'success' });
         Taro.removeStorageSync('token');
         reLaunch({ url: '/pages/login/index' });
       }
-    });
+    } catch (error) {
+      console.error('退出登录失败:', error);
+      Taro.showToast({ title: '退出登录失败', icon: 'none' });
+    }
   };
 
   useEffect(() => {
@@ -125,7 +131,6 @@ const Index = () => {
       <ImagePicker
         isVisiable={isVisiable}
         setIsVisiable={setIsVisiable}
-        isOverlay={true}
         imgUrl={imgUrl}
         setImgUrl={setCutImgUrl}
         type="event"

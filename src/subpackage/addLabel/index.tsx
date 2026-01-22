@@ -12,8 +12,8 @@ import { navigateTo, useDidShow } from '@tarojs/taro';
 import { LabelForm } from '@/common/types';
 import useActiveInfoStore from '@/store/activeInfoStore';
 import useSignersStore from '@/store/SignersStore';
-import get from '@/common/api/get';
-import { useDraft } from '@/common/hooks/useDraft';
+import { useSaveDraft } from '@/common/hooks/useSaveDraft';
+import { getActivityDraft } from '@/common/api';
 
 const Index = () => {
   const { setLabelForm } = useActiveInfoStore();
@@ -29,6 +29,15 @@ const Index = () => {
   const [showFormWindow, setShowFormWindow] = useState(false);
   const [showFormIndex, setShowFormIndex] = useState<number>(0);
   const [activeForm, setActiveForm] = useState<string[]>([]);
+
+  const updateActiveForm = (values: string[]) => {
+    setActiveForm(values);
+    setFormValue((prev) => ({
+      ...prev,
+      activeForm: values.join(','), // 将数组转换为字符串存储
+    }));
+  };
+
   const [formValue, setFormValue] = useState<LabelForm>({
     type: '',
     holderType: '',
@@ -41,7 +50,7 @@ const Index = () => {
     signer: [],
   });
 
-  const { saveDraft } = useDraft({
+  const { saveDraft } = useSaveDraft({
     onSaveSuccess: () => {
       setShowDraftWindow(false);
     },
@@ -50,8 +59,9 @@ const Index = () => {
     },
   });
 
-  useDidShow(() => {
-    get('/act/load').then((res) => {
+  useDidShow(async () => {
+    try {
+      const res = await getActivityDraft();
       console.log('label', res);
       if (res.msg === 'success') {
         const newLabelForm: LabelForm = {
@@ -71,7 +81,9 @@ const Index = () => {
         console.log('newLabelForm', newLabelForm);
         setFormValue(newLabelForm);
       }
-    });
+    } catch (error) {
+      console.error('获取活动草稿失败:', error);
+    }
   });
 
   const typeChoice = (showFormIndex: number) => {
@@ -146,7 +158,7 @@ const Index = () => {
                 required={item.required}
                 disabled={item.disabled}
                 activeForm={activeForm}
-                setActiveForm={setActiveForm}
+                setActiveForm={updateActiveForm}
                 value={Object.values(formValue).filter((value) => typeof value === 'string')[index]}
                 formValue={formValue}
                 setFormValue={setFormValue}
@@ -187,9 +199,12 @@ const Index = () => {
         }
         headerClassName="textmid"
       />
-      {showPostWindow && (
-        <ActivityModal WindowType="add" setShowPostWindow={setShowPostWindow}></ActivityModal>
-      )}
+      <ActivityModal
+        isShowActivityWindow={showPostWindow}
+        WindowType="add"
+        setShowPostWindow={setShowPostWindow}
+      ></ActivityModal>
+
       {showFormWindow && (
         <FormPicker
           type={typeChoice(showFormIndex)}
@@ -200,7 +215,7 @@ const Index = () => {
           formValue={formValue}
           setFormValue={setFormValue}
           activeForm={activeForm}
-          setActiveForm={setActiveForm}
+          setActiveForm={updateActiveForm}
         ></FormPicker>
       )}
     </View>

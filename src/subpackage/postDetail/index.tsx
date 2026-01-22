@@ -13,8 +13,7 @@ import { ResponseType, CreatorType } from '@/common/types';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import handleInteraction from '@/common/utils/Interaction';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
+import { getCommentsBySubject, createComment } from '@/common/api/Comment';
 import BlogComment from '@/modules/BlogComment/components';
 import ReplyInput from '@/modules/ReplyInput';
 import CommentActionSheet from '@/modules/CommentActionSheet';
@@ -28,7 +27,7 @@ const Index = () => {
   const [inputValue, setInputValue] = useState('');
   const { avatar } = useUserStore((state) => state);
   const studentid = Taro.getStorageSync('sid');
-  const { blogList, blogIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
+  const { PostList, PostIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRequest, setIsRequest] = useState(true);
   const [reply_id, setReply_id] = useState('');
@@ -47,7 +46,7 @@ const Index = () => {
   const { setLikeNumChange, setCollectNumChange } = usePostStore((state) => state);
   const windowWidth = Taro.getWindowInfo().windowWidth;
   const windowHeight = Taro.getWindowInfo().windowHeight;
-  const Item = blogList[blogIndex];
+  const Item = PostList[PostIndex];
   console.log(Item);
   const params = {
     subject: 'post',
@@ -151,7 +150,7 @@ const Index = () => {
     }
   };
 
-  const handleImageClick = () => {
+  const handleImageClick = async () => {
     setClickCount((prev) => prev + 1);
 
     if (clickCount === 1) {
@@ -160,15 +159,14 @@ const Index = () => {
         setClickTimer(null);
       }
       if (Item.isLike === 'false') {
-        handleInteraction('like', params)
-          .then((res) => {
-            if (res.msg === 'success') {
-              setLikeNumChange(Item, 1);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        try {
+          const res = await handleInteraction('like', params);
+          if (res.msg === 'success') {
+            setLikeNumChange(Item, 1);
+          }
+        } catch (err) {
+          console.log(err);
+        }
       }
       setClickCount(0);
     } else {
@@ -188,15 +186,19 @@ const Index = () => {
     };
   }, [clickTimer]);
 
-  useDidShow(() => {
-    get(`/comment/load/${Item.bid}`).then((res) => {
+  useDidShow(async () => {
+    try {
+      const res = await getCommentsBySubject(Item.bid);
       console.log(res);
       if (res.data === null) {
         setResponse([]);
         return;
       }
       setResponse(res.data);
-    });
+    } catch (error) {
+      console.error('获取评论失败:', error);
+      setResponse([]);
+    }
   });
 
   useEffect(() => {
@@ -207,71 +209,71 @@ const Index = () => {
       setMarginTop(res[0].height + 100);
     });
     loadImageRatios();
-  }, [blogIndex]);
+  }, [PostIndex]);
 
   useEffect(() => {
     if (isRequest) {
-      get(`/comment/load/${Item.bid}`)
-        .then((res) => {
+      const fetchComments = async () => {
+        try {
+          const res = await getCommentsBySubject(Item.bid);
           setResponse(res.data);
           setIsRequest(false);
-        })
-        .catch((err) => {
+        } catch (err) {
           console.log(err);
-        });
+          setIsRequest(false);
+        }
+      };
+
+      fetchComments();
     }
   }, [isRequest]);
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (Item.isLike === 'true') {
-      handleInteraction('dislike', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setLikeNumChange(Item, 0);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('dislike', params);
+        if (res.msg === 'success') {
+          setLikeNumChange(Item, 0);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (Item.isLike === 'false') {
-      handleInteraction('like', params)
-        .then((res) => {
-          console.log(res);
-          if (res.msg === 'success') {
-            setLikeNumChange(Item, 1);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('like', params);
+        console.log(res);
+        if (res.msg === 'success') {
+          setLikeNumChange(Item, 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const handleCollect = () => {
+  const handleCollect = async () => {
     if (Item.isCollect === 'true') {
-      handleInteraction('discollect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(Item, 0);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('discollect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(Item, 0);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (Item.isCollect === 'false') {
-      handleInteraction('collect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(Item, 1);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('collect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(Item, 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const setBlogComment = (params: any) => {
+  const setBlogComment = async (params: any) => {
     if (params.content === '') {
       Taro.showToast({
         title: '评论不能为空',
@@ -279,18 +281,26 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/create', params).then((res) => {
+      try {
+        const res = await createComment(params);
         console.log(res);
         if (res.msg === 'success') {
           setResponse([...response, res.data]);
           setCommentNumChange(Item);
           setInputValue('');
         }
-      });
+      } catch (error) {
+        console.error('创建评论失败:', error);
+        Taro.showToast({
+          title: '评论发送失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 
-  const setBlogReponseContext = (params: any) => {
+  const setBlogReponseContext = async (params: any) => {
     console.log('你干嘛', response);
     if (params.content === '') {
       Taro.showToast({
@@ -299,29 +309,38 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/answer', params).then((res) => {
-        console.log(res,params);
-        
-        if (res.msg === 'success') {
-          console.log(res);
+      try {
+        const res = await replyComment();
+        console.log(res, params);
 
-          get(`/comment/load/${Item.bid}`).then((res) => {
-            console.log(res);
-            if (res.data === null) {
-              setResponse([]);
-              return;
-            }
-            setResponse(res.data);
-          });
+        console.log(res);
+
+        try {
+          const commentRes = await getCommentsBySubject(Item.bid);
+          console.log(commentRes);
+          if (commentRes.data === null) {
+            setResponse([]);
+            return;
+          }
+          setResponse(commentRes.data);
+        } catch (error) {
+          console.error('重新获取评论失败:', error);
         }
-      });
+      } catch (error) {
+        console.error('回复评论失败:', error);
+        Taro.showToast({
+          title: '回复评论失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 
-  const replyComment=() => {
-    setCommentInput(true)
-    setReplytype('reply')
-  }
+  const replyComment = () => {
+    setCommentInput(true);
+    setReplytype('reply');
+  };
 
   return (
     <>
@@ -362,11 +381,13 @@ const Index = () => {
               mode="scaleToFill"
               src={avatar}
             ></Image>
-            <View className="postDetail-comment-input-text"          
-            onClick={() => {
-            setCommentInput(true)
-            setReplytype('create')
-            }}>
+            <View
+              className="postDetail-comment-input-text"
+              onClick={() => {
+                setCommentInput(true);
+                setReplytype('create');
+              }}
+            >
               {inputValue ? inputValue : '让大家听到你的声音'}
             </View>
           </View>
@@ -396,11 +417,13 @@ const Index = () => {
           </View>
         </View>
         <View className="postDetail-footer">
-          <View className="postDetail-footer-input" 
-          onClick={() => {
-            setCommentInput(true)
-            setReplytype('create')
-            }}>
+          <View
+            className="postDetail-footer-input"
+            onClick={() => {
+              setCommentInput(true);
+              setReplytype('create');
+            }}
+          >
             <Image className="postDetail-footer-input-icon" mode="widthFix" src={icon}></Image>
             <View className="postDetail-footer-input-text">
               {inputValue ? inputValue : '说点什么'}
@@ -426,7 +449,9 @@ const Index = () => {
           </View>
         </View>
         {commentInput && (
-          <SetBlogComment.Provider value={replytype === 'create' ? setBlogComment : setBlogReponseContext}>
+          <SetBlogComment.Provider
+            value={replytype === 'create' ? setBlogComment : setBlogReponseContext}
+          >
             <ReplyInput
               isVisible={commentInput}
               setIsVisible={setCommentInput}

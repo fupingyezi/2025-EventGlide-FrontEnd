@@ -1,58 +1,52 @@
 import Taro from '@tarojs/taro';
 import { switchTab } from '@tarojs/taro';
-const preUrl = 'https://api.inside-me.top';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
-import { log } from 'console';
+import { apiClient } from './request';
+import { LoginRequest, LoginResponse, CheckLoginResponse, UserInfo } from '../types';
 
-const handleUserLogin = async ({ params }) => {
+const handleUserLogin = async ({ studentid, password }: LoginRequest) => {
   const { setId, setStudentId, setAvatar, setUsername, setSchool } = useUserStore.getState();
   const { setPostStudentId } = usePostStore.getState();
-  const header = {
-    'Content-Type': 'application/json;charset=utf-8',
-  };
-  const { studentid, password, setShowError, setErrortext } = params;
-  const url = `${preUrl}/user/login`;
-  const data = {
+
+  const data: LoginRequest = {
     studentid,
     password,
   };
-  const response = await Taro.request({
-    method: 'POST',
-    url: url,
-    header: header,
-    data: JSON.stringify(data),
+
+  const result = await apiClient.post<LoginResponse>('/user/login', data, {
+    skipAuth: true,
   });
-  console.log(response);
-  
-  if (response.data.msg === "处理成功"||response.data.msg === 'success') {
-    console.log(response.data.data.token);
-    Taro.setStorageSync('token', response.data.data.token);
-    Taro.setStorageSync('sid', response.data.data.sid);
-    setStudentId(response.data.data.sid);
-    setId(response.data.data.Id);
-    setAvatar(response.data.data.avatar);
-    setUsername(response.data.data.username);
-    setSchool(response.data.data.school);
-    setPostStudentId(response.data.data.sid);
+  const responseData = result.data;
+
+  Taro.setStorageSync('token', responseData.token);
+  Taro.setStorageSync('sid', responseData.sid);
+
+  setStudentId(responseData.sid);
+  setId(responseData.Id);
+  setAvatar(responseData.avatar);
+  setUsername(responseData.username);
+  setSchool(responseData.school);
+  setPostStudentId(responseData.sid);
+
+  switchTab({ url: '/pages/indexHome/index' });
+};
+
+const handleCheckLogin = async () => {
+  const { setId, setStudentId, setAvatar, setUsername, setSchool } = useUserStore.getState();
+  const { setPostStudentId } = usePostStore.getState();
+  if (Taro.getStorageSync('token') && Taro.getStorageSync('sid')) {
+    const sid = Taro.getStorageSync('sid');
+    const result = await apiClient.get<CheckLoginResponse>(`/user/info/${sid}`);
+    const responseData = result.data;
+    setId(responseData.id);
+    setStudentId(responseData.student_id);
+    setAvatar(responseData.avatar);
+    setUsername(responseData.name);
+    setSchool(responseData.school);
+    setPostStudentId(sid);
     switchTab({ url: '/pages/indexHome/index' });
-  } else if (response.data.msg === "学号或密码错误") {
-    Taro.showToast({
-      title: response.data.msg,
-      icon: 'none',
-      duration: 2000,
-    });
-    setErrortext('账号或密码错误，请重新输入');
-    setShowError(true);
-  }else {
-    Taro.showToast({
-      title: '登录失败，请稍后重试',
-      icon: 'none',
-      duration: 2000,
-    });
-    setErrortext('登录失败，请稍后重试');
-    setShowError(true);
   }
 };
 
-export default handleUserLogin;
+export { handleCheckLogin, handleUserLogin };

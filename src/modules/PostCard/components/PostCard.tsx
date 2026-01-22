@@ -10,7 +10,7 @@ import handleInteraction from '@/common/utils/Interaction';
 
 const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
   const [isVisiable, setIsVisiable] = useState(isShowImg);
-  const { setBlogIndex } = usePostStore();
+  const { setPostIndex } = usePostStore();
   const [islike, setIsLike] = useState(item.isLike === 'true');
   const [likeNum, setLikeNum] = useState(item.likeNum);
   const studentid = Taro.getStorageSync('sid');
@@ -23,7 +23,7 @@ const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
     setLikeNum(item.likeNum);
   }, [item]);
 
-  const handleFavorite = () => {
+  const handleFavorite = async () => {
     const params = {
       subject: 'post',
       studentid: studentid,
@@ -31,27 +31,25 @@ const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
       receiver: item.userInfo.studentid,
     };
     if (islike) {
-      handleInteraction('dislike', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setIsLike(false);
-            setLikeNum(likeNum - 1);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('dislike', params);
+        if (res.msg === 'success') {
+          setIsLike(false);
+          setLikeNum(likeNum - 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else {
-      handleInteraction('like', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setIsLike(true);
-            setLikeNum(likeNum + 1);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('like', params);
+        if (res.msg === 'success') {
+          setIsLike(true);
+          setLikeNum(likeNum + 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -65,7 +63,7 @@ const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
           src={isVisiable ? item.showImg[0] : ''}
           onClick={() => {
             navigateTo({ url: '/subpackage/postDetail/index' });
-            setBlogIndex(index);
+            setPostIndex(index);
           }}
         ></Image>
       </View>

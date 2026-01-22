@@ -7,46 +7,45 @@ import ActivityModal from '@/modules/ActivityModal';
 import { useState } from 'react';
 import useActivityStore from '@/store/ActivityStore';
 import { judgeDate } from '@/common/utils/DateList';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
 import usePostStore from '@/store/PostStore';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
 import IndexPageNull from '@/modules/EmptyComponent/components/indexpagenull';
-import Taro from '@tarojs/taro';
+import { getPostList, filterActivity, getActivityList } from '@/common/api';
 
 const Index = () => {
   const [showPostWindow, setShowPostWindow] = useState(false);
   const { activeList, setActiveList, setSelectedItem, selectedInfo, isSelect } = useActivityStore();
   const [approximateTime, setApproximateTime] = useState<string>('');
   const [type, setType] = useState<string>('');
-  const { setBlogList } = usePostStore();
+  const { setPostList } = usePostStore();
 
-  useLoad(() => {
-    get('/post/all').then((res) => {
-      setBlogList(res.data);
-    });
+  useLoad(async () => {
+    try {
+      const res = await getPostList();
+      setPostList(res.data);
+    } catch (error) {
+      console.error('获取帖子列表失败:', error);
+      setPostList([]);
+    }
   });
 
-  useDidShow(() => {
+  useDidShow(async () => {
     if (isSelect) {
-      console.log('selectedInfo:', selectedInfo);
-      post('/act/search', selectedInfo)
-        .then((res) => {
-          console.log(res.data);
-          setActiveList(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await filterActivity(selectedInfo);
+        console.log(res.data);
+        setActiveList(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     } else {
-      get(`/act/all`)
-        .then((res) => {
-          console.log(res);
-          setActiveList(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await getActivityList();
+        console.log(res);
+        setActiveList(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     }
   });
 
@@ -57,6 +56,7 @@ const Index = () => {
         (type === '' || activeItem.type === type);
       return isMatch;
     }) || [];
+
   return (
     <>
       <NavigationBarTabBar backgroundColor="#F8F9FC" title="首页"></NavigationBarTabBar>
@@ -92,9 +92,11 @@ const Index = () => {
           )}
         </View>
       </ScrollView>
-      {showPostWindow && (
-        <ActivityModal WindowType="active" setShowPostWindow={setShowPostWindow}></ActivityModal>
-      )}
+      <ActivityModal
+        isShowActivityWindow={showPostWindow}
+        WindowType="active"
+        setShowPostWindow={setShowPostWindow}
+      ></ActivityModal>
     </>
   );
 };

@@ -7,7 +7,7 @@ import isChecking from '@/common/assets/isChecking/isChecking1.png';
 import alPost from '@/common/assets/isChecking/alPost.png';
 import falPost from '@/common/assets/isChecking/falPost.png';
 import { ScrollView } from '@tarojs/components';
-import get from '@/common/api/get';
+import { get } from '@/common/api/request';
 import NoticePageNull from '@/modules/EmptyComponent/components/noticepagenull';
 
 export interface ActiveItem {
@@ -31,15 +31,18 @@ const Index = () => {
 
   const [activeList, setActiveList] = useState<ActiveItem[]>([]);
   useEffect(() => {
-    get('/act/own')
-      .then((res) => {
+    const fetchActivities = async () => {
+      try {
+        const res = await get('/act/own');
         console.log(res.data);
         setActiveList(Array.isArray(res.data) ? res.data : []);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.log(err);
         setActiveList([]);
-      });
+      }
+    };
+
+    fetchActivities();
   }, []);
   function getImg(items: String) {
     if (items === 'pending') return isChecking;

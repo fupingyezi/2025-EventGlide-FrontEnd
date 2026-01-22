@@ -8,10 +8,10 @@ import draft from '@/common/svg/add/draft.svg';
 import ConfirmModal from '@/modules/ConfirmModal';
 import ImagePicker from '@/modules/ImagePicker';
 import usePostStore from '@/store/PostStore';
-import post from '@/common/api/post';
-import get from '@/common/api/get';
+import { createPost, loadPostDraft } from '@/common/api/PostRequest';
 import Taro from '@tarojs/taro';
-import { useDraft } from '@/common/hooks/useDraft';
+import { useSaveDraft } from '@/common/hooks/useSaveDraft';
+import { LabelForm } from '@/common/types';
 
 const Index = () => {
   const { showImg: imgUrl } = usePostStore();
@@ -24,7 +24,8 @@ const Index = () => {
   const [count, setCount] = useState(0);
   const [load, setLoad] = useState(false);
 
-  const { saveDraft } = useDraft({
+  const { saveDraft } = useSaveDraft({
+    endpoint: '/post/draft',
     onSaveSuccess: () => {
       setIsShowDraft(false);
     },
@@ -33,27 +34,28 @@ const Index = () => {
     },
   });
 
-  useDidShow(() => {
-    get('/post/load')
-      .then((res) => {
-        console.log(res);
-        if (res.data === null) return;
-        if (res.msg === 'success') {
-          setTitle(res.data.Title || title);
-          setIntroduce(res.data.Introduce || introduce);
-          setCount(res.data.Introduce ? res.data.Introduce.length : 0);
-          if (Array.isArray(res.data.ShowImg)) {
-            setPageImgUrl(res.data.ShowImg);
-          } else {
-            setPageImgUrl([]);
-          }
+  useDidShow(async () => {
+    try {
+      const res = await loadPostDraft();
+      console.log(res);
+      if (res.data === null) return;
+      if (res.msg === 'success') {
+        setTitle(res.data.Title || title);
+        setIntroduce(res.data.Introduce || introduce);
+        setCount(res.data.Introduce ? res.data.Introduce.length : 0);
+        if (Array.isArray(res.data.ShowImg)) {
+          setPageImgUrl(res.data.ShowImg);
+        } else if (res.data.ShowImg !== '') {
+          setPageImgUrl([res.data.ShowImg]);
+        } else {
+          setPageImgUrl([]);
         }
-        setLoad(true);
-      })
-      .catch((err) => {
-        console.log('Error loading post:', err);
-        setLoad(true);
-      });
+      }
+    } catch (err) {
+      console.log('Error loading post:', err);
+    } finally {
+      setLoad(true);
+    }
   });
 
   const handleConfirm = async () => {
@@ -71,14 +73,18 @@ const Index = () => {
       const postInfo = { introduce, showImg: pageImgUrl, studentid, title };
       console.log(postInfo);
 
-      post('/post/create', postInfo)
-        .then((res) => {
-          console.log(res);
-          switchTab({ url: '/pages/postHome/index' });
-        })
-        .catch((err) => {
-          console.log(err);
+      try {
+        const res = await createPost({
+          title: postInfo.title,
+          introduce: postInfo.introduce,
+          showImg: postInfo.showImg,
+          studentid: postInfo.studentid,
         });
+        console.log(res);
+        switchTab({ url: '/pages/postHome/index' });
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -164,22 +170,19 @@ const Index = () => {
             introduce,
             showImg: pageImgUrl,
             studentid: studentid,
-            labelform: {},
+            labelform: {} as LabelForm,
           })
         }
         headerClassName="textmid"
       />
 
-      {isShowAlbum && (
-        <ImagePicker
-          isVisiable={isShowAlbum}
-          setIsVisiable={setIsShowAlbum}
-          isOverlay={true}
-          imgUrl={pageImgUrl}
-          setImgUrl={setPageImgUrl}
-          type={'event'}
-        />
-      )}
+      <ImagePicker
+        isVisiable={isShowAlbum}
+        setIsVisiable={setIsShowAlbum}
+        imgUrl={pageImgUrl}
+        setImgUrl={setPageImgUrl}
+        type={'event'}
+      />
     </>
   );
 };

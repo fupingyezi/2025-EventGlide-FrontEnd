@@ -1,15 +1,7 @@
 import { useState, useCallback } from 'react';
 import Taro from '@tarojs/taro';
-import post from '@/common/api/post';
-
-interface DraftData {
-  title: string;
-  introduce: string;
-  showImg: string[];
-  studentid?: string;
-  labelform?: any;
-  [key: string]: any;
-}
+import { post } from '@/common/api/request';
+import { SaveDraftRequest } from '../types';
 
 interface UseDraftOptions {
   endpoint?: string; // API端点，默认为 '/act/draft'
@@ -18,12 +10,12 @@ interface UseDraftOptions {
   onSaveError?: (error: any) => void;
 }
 
-export const useDraft = (options: UseDraftOptions = {}) => {
+export const useSaveDraft = (options: UseDraftOptions = {}) => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const saveDraft = useCallback(
-    async (draftData: DraftData) => {
+    async (draftData: SaveDraftRequest) => {
       setIsSaving(true);
       setSaveError(null);
 
