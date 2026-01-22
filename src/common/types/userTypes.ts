@@ -11,5 +11,5 @@ export interface UserInfo {
   /** 学院 */
   college?: string;
   /** 学号 */
-  studentid: string;
+  studentId: string;
 }

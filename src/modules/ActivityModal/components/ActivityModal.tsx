@@ -28,7 +28,7 @@ const ActivityModal: React.FC<{
         title={title}
         onClose={handleModalClose}
         onConfirm={() => {
-          const { studentid } = useUserStore.getState
+          const { studentId } = useUserStore.getState
             ? useUserStore.getState()
             : useUserStore((state) => state);
           const { introduce, title, showImg, labelform } = useActiveInfoStore.getState
@@ -38,7 +38,7 @@ const ActivityModal: React.FC<{
             introduce,
             labelform,
             showImg,
-            studentid,
+            studentId,
             title,
           };
 
@@ -72,7 +72,7 @@ const ActivityModal: React.FC<{
             showImg: state.showImg,
             type: state.labelform.type,
             holderType: state.labelform.holderType,
-            if_register: state.labelform.if_register,
+            ifRegister: state.labelform.ifRegister,
           }))}
           canDeleteImages={true}
           isDraftMode={true}

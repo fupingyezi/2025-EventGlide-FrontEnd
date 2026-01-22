@@ -35,22 +35,21 @@ export interface CreatorType {
 
 export interface ReplyType {
   bid: string;
-  content: string;
-  creator: CreatorType;
-  parentUserName?: string;
-  reply_creator: {
+  replyContent: string;
+  parentUserName: string;
+  replyCreator: {
     avatar: string;
-    studentid: string;
+    studentId: string;
     username: string;
   };
-  reply_pos: string;
-  reply_time: string;
+  replyPos: string;
+  replyTime: string;
 }
 
 export interface ResponseType {
   bid: string;
-  commented_pos: string;
-  commented_time: string;
+  commentedPos: string;
+  commentedTime: string;
   content: string;
   creator: CreatorType;
   isLike: string;

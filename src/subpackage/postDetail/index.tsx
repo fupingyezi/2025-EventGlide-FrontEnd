@@ -27,7 +27,7 @@ const Index = () => {
   const [response, setResponse] = useState<CommentResponse[]>([]);
   const [inputValue, setInputValue] = useState('');
   const { avatar } = useUserStore((state) => state);
-  const studentid = Taro.getStorageSync('sid');
+  const studentId = Taro.getStorageSync('sid');
   const { PostList, PostIndex, setCommentNumChange, backPage } = usePostStore((state) => state);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRequest, setIsRequest] = useState(true);
@@ -51,9 +51,9 @@ const Index = () => {
   console.log(Item);
   const params = {
     subject: 'post',
-    studentId: studentid,
-    targetid: Item.bid,
-    receiver: Item.userInfo.studentid,
+    studentId: studentId,
+    targetId: Item.bid,
+    receiver: Item.userInfo.studentId,
   };
 
   const reply_params = {
@@ -63,7 +63,7 @@ const Index = () => {
   const comment_reply_params = {
     parentId: Item.bid,
     subject: 'post',
-    receiver: Item.userInfo.studentid,
+    receiver: Item.userInfo.studentId,
   };
 
   const handlepic = (pictures) => {
@@ -423,7 +423,7 @@ const Index = () => {
           <CommentActionSheet
             visible={commentOperation}
             setVisible={setCommentOperation}
-            studentid={studentid}
+            studentId={studentId}
             commentItems={commentItems}
             commentCreator={commentCreator}
             commentid={commentid}

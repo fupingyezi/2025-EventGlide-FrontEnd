@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
 interface SignersStoreType {
-  signers: { id: number; name: string; studentid: string }[];
-  setAddSigner: (signer: { id: number; name: string; studentid: string }) => void;
+  signers: { id: number; name: string; studentId: string }[];
+  setAddSigner: (signer: { id: number; name: string; studentId: string }) => void;
   setRemoveSigner: (signerId: number) => void;
 }
 

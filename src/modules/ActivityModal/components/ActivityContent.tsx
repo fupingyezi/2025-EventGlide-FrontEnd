@@ -9,7 +9,7 @@ interface ActivityData {
   showImg?: string[] | null;
   type?: string;
   holderType?: string;
-  if_register?: boolean | string;
+  ifRegister?: boolean | string;
 }
 
 interface ActivityContentProps {
@@ -24,11 +24,11 @@ const Label: React.FC<{ text: string }> = memo(({ text }) => {
 
 const ActivityContent: React.FC<ActivityContentProps> = memo(
   ({ activityData, canDeleteImages = false, isDraftMode = false }) => {
-    const { introduce: description, showImg, type, holderType, if_register } = activityData;
+    const { introduce: description, showImg, type, holderType, ifRegister } = activityData;
 
     // 处理报名状态文本
     let registerText = '无需报名';
-    if (if_register === '是' || if_register === true) registerText = '需要报名';
+    if (ifRegister === '是' || ifRegister === true) registerText = '需要报名';
 
     // 标签列表
     const labelList = [type || '', holderType || '', registerText].filter((item) => item !== ''); // 过滤空字符串

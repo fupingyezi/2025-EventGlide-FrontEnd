@@ -17,13 +17,13 @@ const useUserStore = create<userStoreType>((set) => ({
   username: '',
   school: '',
   college: '',
-  studentid: '',
+  studentId: '',
   setId: (id) => set(() => ({ id })),
   setAvatar: (avatar) => set(() => ({ avatar })),
   setUsername: (username) => set(() => ({ username })),
   setSchool: (school) => set(() => ({ school })),
   setCollege: (college) => set(() => ({ college })),
-  setStudentId: (studentId) => set(() => ({ studentid: studentId })),
+  setStudentId: (studentId) => set(() => ({ studentId: studentId })),
 }));
 
 export default useUserStore;

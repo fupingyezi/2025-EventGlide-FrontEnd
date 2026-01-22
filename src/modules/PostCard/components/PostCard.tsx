@@ -13,7 +13,7 @@ const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
   const { setPostIndex } = usePostStore();
   const [islike, setIsLike] = useState(item.isLike === 'true');
   const [likeNum, setLikeNum] = useState(item.likeNum);
-  const studentid = Taro.getStorageSync('sid');
+  const studentId = Taro.getStorageSync('sid');
 
   useEffect(() => {
     setIsVisiable(isShowImg);
@@ -26,9 +26,9 @@ const PostCard: React.FC<any> = memo(function ({ item, index, isShowImg }) {
   const handleFavorite = async () => {
     const params = {
       subject: 'post',
-      studentid: studentid,
+      studentId: studentId,
       targetid: item.bid,
-      receiver: item.userInfo.studentid,
+      receiver: item.userInfo.studentId,
     };
     if (islike) {
       try {

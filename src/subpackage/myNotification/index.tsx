@@ -20,7 +20,7 @@ const LetterListItem: React.FC<LetterType> = memo(({ ...props }) => {
         <View className="letter-list-item-content-username">{props.userInfo.username}</View>
         <View className="letter-list-item-content-message">{props.message}</View>
         {/*<View className="letter-list-item-content-message">
-          {props.published_at}
+          {props.publishedAt}
         </View>*/}
       </View>
       <Image
@@ -71,8 +71,8 @@ const Index = () => {
     let j = 0;
 
     while (i < arr1.length && j < arr2.length) {
-      const date1 = parseDateSafely(arr1[i].published_at);
-      const date2 = parseDateSafely(arr2[j].published_at);
+      const date1 = parseDateSafely(arr1[i].publishedAt);
+      const date2 = parseDateSafely(arr2[j].publishedAt);
 
       if (date1 <= date2) {
         result.push(arr1[i]);

@@ -15,13 +15,13 @@ const ActivityFooter: React.FC<{
   isCollect: string;
   setShowPostWindow: (show: boolean) => void;
 }> = memo(({ ...props }) => {
-  const { studentid } = useUserStore((state) => state);
+  const { studentId } = useUserStore((state) => state);
   const { setCollectNumChange, selectedItem, setSelectedItem } = useActivityStore();
   const params = {
-    studentid: studentid,
+    studentId: studentId,
     subject: 'activity',
     targetid: selectedItem.bid,
-    receiver: selectedItem.userInfo.studentid,
+    receiver: selectedItem.userInfo.studentId,
   };
   const handleCollect = async () => {
     if (selectedItem.isCollect === 'true') {

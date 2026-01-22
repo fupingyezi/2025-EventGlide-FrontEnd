@@ -11,10 +11,10 @@ const ReplyComment: React.FC<ReplyType | any> = memo(({ ...props }) => {
   const [islike, setIslike] = useState(props.isLike);
   const [nums, setNums] = useState(props.likeNum);
   const param = {
-    studentid: props.studentid,
+    studentId: props.studentId,
     subject: 'comment',
     targetid: props.bid,
-    receiver: props.reply_creator.studentid,
+    receiver: props.reply_creator.studentId,
   };
   const clickLove = async () => {
     const action = islike === 'true' ? 'dislike' : 'like';

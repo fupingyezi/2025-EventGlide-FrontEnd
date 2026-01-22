@@ -41,12 +41,12 @@ const Index = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const windowWidth = Taro.getWindowInfo().windowWidth;
   const windowHeight = Taro.getWindowInfo().windowHeight;
-  const studentid = Taro.getStorageSync('sid');
+  const studentId = Taro.getStorageSync('sid');
   const params = {
-    studentId: studentid,
+    studentId: studentId,
     subject: 'activity',
     targetid: selectedItem.bid,
-    receiver: selectedItem.userInfo.studentid,
+    receiver: selectedItem.userInfo.studentId,
   };
 
   console.log(selectedItem);
@@ -65,7 +65,7 @@ const Index = () => {
   const comment_params = {
     parentId: selectedItem.bid,
     subject: 'activity',
-    receiver: selectedItem.userInfo.studentid,
+    receiver: selectedItem.userInfo.studentId,
   };
 
   const handlepic = (pictures) => {

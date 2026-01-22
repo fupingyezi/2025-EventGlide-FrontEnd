@@ -50,8 +50,8 @@ const Index = () => {
       setActiveSite(siteIndexes.length > 0 ? siteIndexes : [0]);
       setActiveSiteAll(siteIndexes.length === activeSiteOption.length);
 
-      setSignText(selectedInfo.if_register);
-      if (selectedInfo.if_register === '否') {
+      setSignText(selectedInfo.ifRegister);
+      if (selectedInfo.ifRegister === '否') {
         setNeedSign(false);
         setNotSign(true);
       } else {
@@ -70,7 +70,7 @@ const Index = () => {
       holderType: activeOrganizerOption.filter((_, index) => activeOrganizer.includes(index)),
       type: activeTypeOption.filter((_, index) => activeType.includes(index)),
       position: activeSiteOption.filter((_, index) => activeSite.includes(index)),
-      if_register: signText,
+      ifRegister: signText,
       detailTime: {
         startTime: startTime,
         endTime: endTime,
@@ -144,7 +144,7 @@ const Index = () => {
       holderType: activeOrganizerOption.filter((_, index) => activeOrganizer.includes(index)),
       type: activeTypeOption.filter((_, index) => activeType.includes(index)),
       position: activeSiteOption.filter((_, index) => activeSite.includes(index)),
-      if_register: signText,
+      ifRegister: signText,
       detailTime: {
         startTime: startTime,
         endTime: endTime,

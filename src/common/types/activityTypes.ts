@@ -24,7 +24,7 @@ export interface SelectedInfo {
   type: string[];
   detailTime: { startTime: string; endTime: string };
   position: string[];
-  if_register: string;
+  ifRegister: string;
 }
 
 export interface ActivityDetailInfo {
@@ -36,7 +36,7 @@ export interface ActivityDetailInfo {
   introduce: string;
   holderType: string;
   type: string;
-  if_register: boolean;
+  ifRegister: boolean;
   showImg: string[];
   collectNum: number;
   likeNum: number;
@@ -48,12 +48,12 @@ export interface ActivityDetailInfo {
 
 export interface LetterType {
   message: string;
-  published_at: string;
+  publishedAt: string;
   status: string;
-  target_bid: string;
+  targetBid: string;
   userInfo: {
     avatar: string;
-    studentid: string;
+    studentId: string;
     username: string;
   };
 }

@@ -61,7 +61,7 @@ const Index = () => {
             key={index}
             id={index + 1}
             name={item.name}
-            number={item.studentid}
+            number={item.studentId}
             isEditormode={isEditormode}
             setSelectedId={setSelectedId}
             setIsVisible={setIsVisible}
