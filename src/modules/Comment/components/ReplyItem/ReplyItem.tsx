@@ -1,21 +1,28 @@
 import './style.scss';
 import { View, Image } from '@tarojs/components';
-import { ReplyType } from '@/common/types';
+import { ReplyItemProps } from '@/common/types';
 import { memo } from 'react';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 import favor from '@/common/svg/post/heart.svg';
 import favorAct from '@/common/svg/post/heartAct.svg';
 import { useState } from 'react';
 import handleInteraction from '@/common/utils/Interaction';
-const ReplyComment: React.FC<ReplyType | any> = memo(({ ...props }) => {
+
+const ReplyItem: React.FC<ReplyItemProps> = memo(({ ...props }) => {
   const [islike, setIslike] = useState(props.isLike);
   const [nums, setNums] = useState(props.likeNum);
+
+  // 使用可选链操作符处理可能不存在的属性
+  const creator = props.creator || props.replyCreator;
+  const studentId = creator?.studentId || '';
+
   const param = {
-    studentid: props.studentid,
+    studentId: studentId,
     subject: 'comment',
     targetid: props.bid,
-    receiver: props.reply_creator.studentid,
+    receiver: studentId,
   };
+
   const clickLove = async () => {
     const action = islike === 'true' ? 'dislike' : 'like';
     const tag = handleInteraction(action, param);
@@ -35,28 +42,40 @@ const ReplyComment: React.FC<ReplyType | any> = memo(({ ...props }) => {
       return;
     }
   };
+
   return (
     <View className="ReplyComment">
       <View className="ReplyComment-content">
-        <Image
-          className="ReplyComment-avatar"
-          src={props.reply_creator.avatar}
-          mode="scaleToFill"
-        />
+        <Image className="ReplyComment-avatar" src={creator?.avatar || ''} mode="scaleToFill" />
         <View
           className="ReplyComment-info"
           onClick={() => {
-            props.setIsVisible(true);
-            props.setReplyId(props.bid);
+            if (props.replycomment) {
+              props.replycomment(true);
+              props.setReplyId(props.bid);
+            }
+          }}
+          onLongPress={() => {
+            if (
+              props.setCommentItems &&
+              props.setCommentCreator &&
+              props.setCommentid &&
+              props.longClick
+            ) {
+              props.setCommentItems(props.content || props.replyContent || '');
+              props.setCommentCreator(creator || { username: '', avatar: '', studentId: '' });
+              props.setCommentid(props.bid);
+              props.longClick();
+            }
           }}
         >
-          <View className="ReplyComment-info-name">{props.reply_creator.username ?? '校灵通'}</View>
+          <View className="ReplyComment-info-name">{creator?.username || '校灵通'}</View>
           <View className="ReplyComment-info-content">
             {props.parentUserName && `@${props.parentUserName}:`}
-            {props.reply_content}
+            {props.content || props.replyContent}
           </View>
           <View className="ReplyComment-info-timesite">
-            {TimeTranslation(props.reply_time)}&nbsp;&nbsp;
+            {TimeTranslation(props.replyTime || props.commentedTime || '')}&nbsp;&nbsp;
             <View style={' color: #5E5064;'}>回复</View>
           </View>
         </View>
@@ -72,4 +91,4 @@ const ReplyComment: React.FC<ReplyType | any> = memo(({ ...props }) => {
   );
 });
 
-export default ReplyComment;
+export default ReplyItem;

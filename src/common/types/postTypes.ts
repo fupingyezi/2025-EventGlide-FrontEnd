@@ -30,13 +30,14 @@ export interface PostCommentProp {
 export interface CreatorType {
   username: string;
   avatar: string;
-  studentid: string;
+  studentId: string;
 }
 
 export interface ReplyType {
   bid: string;
-  reply_content: string;
-  parentUserName: string;
+  content: string;
+  creator: CreatorType;
+  parentUserName?: string;
   reply_creator: {
     avatar: string;
     studentid: string;

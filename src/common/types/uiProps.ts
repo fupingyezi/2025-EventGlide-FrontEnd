@@ -147,10 +147,8 @@ export interface ImagePickerProps {
   isRequest?: boolean;
 }
 
-export interface ConfirmModalProps extends Pick<
-  ModalProps,
-  'visible' | 'onClose' | 'onConfirm' | 'title'
-> {
+export interface ConfirmModalProps
+  extends Pick<ModalProps, 'visible' | 'onClose' | 'onConfirm' | 'title'> {
   headerClassName?: string;
 }
 
@@ -175,11 +173,33 @@ export interface ReplyInputProps {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   params: {
-    parent_id: string;
+    parentId: string;
     subject: string;
-    receiver: string;
+    receiver?: string;
   };
-  reply_id?: string;
+  replyId?: string;
   page: string;
   comment?: boolean;
+}
+
+export interface DateItem {
+  label: string;
+  subLabel: string;
+  value: string;
+  isToday?: boolean;
+  isAll?: boolean;
+}
+export interface CalendarDay {
+  date: Date;
+  day: number;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+  dateString: string;
+}
+
+export interface ScrollTopProps {
+  setScrollTop: (scrollTop: number) => void;
+  isVisible: boolean;
+  bottom?: number;
 }

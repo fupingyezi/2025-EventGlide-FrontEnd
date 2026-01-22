@@ -38,7 +38,7 @@ const PostComment: React.FC<ResponseType | any> = memo((props) => {
             className="postComment-info"
             onClick={() => {
               props.setIsVisible(true);
-              props.setReply_id(props.bid);
+              props.setReplyId(props.bid);
             }}
           >
             <View className="postComment-info-name">{props.creator.username ?? '校灵通'}</View>
@@ -68,7 +68,7 @@ const PostComment: React.FC<ResponseType | any> = memo((props) => {
                 reply_pos={item.reply_pos}
                 setIsVisible={props.setIsVisible}
                 parentUserName={item.parentUserName}
-                setReply_id={props.setReply_id}
+                setReplyId={props.setReplyId}
                 isLike={item.isLike}
                 likeNum={item.likeNum}
               />

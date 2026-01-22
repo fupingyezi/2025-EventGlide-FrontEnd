@@ -7,7 +7,6 @@ export type {
 export type {
   // 帖子相关类型
   PostList,
-  PostDetailInfo,
   PostCommentProp,
   CreatorType,
   ReplyType,
@@ -29,8 +28,6 @@ export type {
   InputType,
   FormItemType,
   LabelForm,
-  DateItem,
-  CalendarDay,
 } from './FormTypes';
 
 export type {
@@ -44,24 +41,36 @@ export type {
   AddPeopleProps,
   PictureCutProps,
   ReplyInputProps,
+  DateItem,
+  CalendarDay,
 } from './UIProps';
 
-// 二级请求函数的接口/响应类型
 export type {
   LoginRequest,
   LoginResponse,
   CheckLoginResponse,
-  CreateActivityRequest,
-  GetActivityResponse,
   GetActivityDrafytResponse,
   FilteAcitivityRequest,
-  GetPostReponse,
+  CreateActivityRequest,
+  GetActivityResponse,
   CreatePostRequest,
-  GetPostDraftResonse,
-  SaveDraftRequest,
   GetNotificationCountResponse,
   GetNotificationListReponse,
+  GetPostDraftResonse,
+  GetPostReponse,
+  SaveDraftRequest,
+  CommentRequest,
+  DeleteCommentRequest,
+  CommentResponse,
+  LikeCommentRequest,
 } from './RequestType';
+
+export type {
+  ReplyItemProps,
+  ReplyListProps,
+  CommentItemProps,
+  CommentListProps,
+} from './CommentTypes';
 
 // 导入资源模块声明
 import './global/';

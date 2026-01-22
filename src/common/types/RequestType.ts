@@ -1,6 +1,7 @@
 import { ActivityDetailInfo, SelectedInfo } from './ActivityTypes';
 import { PostDetailInfo } from './PostTypes';
 import { LabelForm } from './FormTypes';
+import { ResponseType } from './CommentTypes';
 
 /** 登录相关请求/响应接口类型 */
 export interface LoginRequest {
@@ -181,3 +182,22 @@ export interface RespFeedLikeResp {
   userInfo?: RespUserInfo;
   [property: string]: any;
 }
+
+export interface CommentRequest {
+  content: string;
+  parentId: string;
+  subject: string;
+  [property: string]: any;
+}
+
+export interface DeleteCommentRequest {
+  targetId: string;
+}
+
+export interface LikeCommentRequest {
+  subject: string;
+  targetId: string;
+  [property: string]: any;
+}
+
+export interface CommentResponse extends ResponseType {}
