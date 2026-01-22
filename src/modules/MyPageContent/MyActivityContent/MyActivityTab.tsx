@@ -15,8 +15,9 @@ const MyActivityTab: React.FC<{
   const { setSelectedItem } = useActivityStore();
 
   useEffect(() => {
-    getMyActivityList(activeIndex)
-      .then((res) => {
+    const fetchActivities = async () => {
+      try {
+        const res = await getMyActivityList(activeIndex);
         console.log(`${activeIndex}:`, res.data);
 
         if (res.data === null) {
@@ -31,10 +32,12 @@ const MyActivityTab: React.FC<{
             });
         });
         setActiveList(newActiveList);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.log(err);
-      });
+      }
+    };
+
+    fetchActivities();
   }, [activeIndex]);
 
   return (

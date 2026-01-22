@@ -32,24 +32,23 @@ const CommentActionSheet: React.FC<CommentOperationProps> = memo(
       target_id: commentid || '',
       studentid: commentCreator?.studentid || '',
     };
-    const deleteCommentClick = () => {
+    const deleteCommentClick = async () => {
       if (studentid == commentCreator?.studentid) {
-        console.log(param);
-        deleteComment(param)
-          .then((res) => {
-            console.log(res);
-            if (res.msg === 'success') {
-              setIsDelete(false);
-              setVisible(false);
-              Message.success({
-                content: '删除成功',
-                duration: 2000,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        try {
+          console.log(param);
+          const res = await deleteComment(param);
+          console.log(res);
+          if (res.msg === 'success') {
+            setIsDelete(false);
+            setVisible(false);
+            Message.success({
+              content: '删除成功',
+              duration: 2000,
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
       } else {
         console.log('非评论者，不能删除');
       }

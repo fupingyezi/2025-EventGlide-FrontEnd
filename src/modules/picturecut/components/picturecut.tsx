@@ -386,13 +386,35 @@ const PictureCut: React.FC<PictureCutProps> = ({
                 try {
                   console.log('裁剪成功，临时文件路径:', tempRes.tempFilePath);
 
-                  const url = await fetchToQiniu(tempRes.tempFilePath);
-                  console.log('七牛云返回URL:', url);
+                  let url;
+                  try {
+                    url = await fetchToQiniu(tempRes.tempFilePath);
+                    console.log('七牛云返回URL:', url);
+                  } catch (uploadError) {
+                    console.error('上传到七牛云失败:', uploadError);
+                    Taro.showToast({
+                      title: '图片上传失败',
+                      icon: 'none',
+                      duration: 2000,
+                    });
+                    return;
+                  }
 
-                  const response = await post('/user/avatar', {
-                    avatar_url: url,
-                    studentid: studentId,
-                  });
+                  let response;
+                  try {
+                    response = await post('/user/avatar', {
+                      avatar_url: url,
+                      studentid: studentId,
+                    });
+                  } catch (apiError) {
+                    console.error('头像更新API失败:', apiError);
+                    Taro.showToast({
+                      title: '头像更新失败',
+                      icon: 'none',
+                      duration: 2000,
+                    });
+                    return;
+                  }
 
                   if (response.msg === 'success') {
                     setImgUrl([tempRes.tempFilePath]);

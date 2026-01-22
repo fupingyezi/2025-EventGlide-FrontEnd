@@ -42,10 +42,11 @@ const ActivityModal: React.FC<{
             title,
           };
 
-          createActivity({
-            ...activeInfo,
-          })
-            .then((res) => {
+          (async () => {
+            try {
+              const res = await createActivity({
+                ...activeInfo,
+              });
               if (res.msg !== 'success') {
                 Taro.showToast({
                   title: `${res.msg}`,
@@ -56,10 +57,10 @@ const ActivityModal: React.FC<{
               if (res.msg === 'success') {
                 navigateTo({ url: '/subpackage/addSuccess/index' });
               }
-            })
-            .catch((err) => {
+            } catch (err) {
               console.log(err);
-            });
+            }
+          })();
         }}
         confirmText="确定"
         cancelText="取消"

@@ -31,22 +31,22 @@ const Index = () => {
     setIsSelect(false);
   });
 
-  useDidShow(() => {
-    getUserInfo(sid)
-      .then((res) => {
-        setAvatar(res.data.avatar);
-        setUsername(res.data.username);
-        setSchool(res.data.school);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  useDidShow(async () => {
+    try {
+      const res = await getUserInfo(sid);
+      setAvatar(res.data.avatar);
+      setUsername(res.data.username);
+      setSchool(res.data.school);
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   useEffect(() => {
     if (activePage === 'post') {
-      getMyPostList(activeIndex)
-        .then((res) => {
+      const fetchPosts = async () => {
+        try {
+          const res = await getMyPostList(activeIndex);
           console.log(`${activeIndex}:`, res.data);
           if (res.data === null) {
             setMinePostList([]);
@@ -58,10 +58,12 @@ const Index = () => {
           });
           setMinePostList(newPostList);
           handleScroll();
-        })
-        .catch((err) => {
+        } catch (err) {
           console.log(err);
-        });
+        }
+      };
+
+      fetchPosts();
     }
   }, [activeIndex, activePage]);
 

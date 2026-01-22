@@ -34,30 +34,37 @@ const Index = () => {
     setInputValue(e.detail.value);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!inputValue) {
       Taro.showToast({ title: '昵称不能为空', icon: 'none' });
       return;
     } else {
-      post('/user/username', { new_name: inputValue, studentid: studentId }).then((res) => {
+      try {
+        const res = await post('/user/username', { new_name: inputValue, studentid: studentId });
         console.log(res);
         setUsername(inputValue);
-      });
-      setUsername(inputValue);
+      } catch (error) {
+        console.error('更新昵称失败:', error);
+        Taro.showToast({ title: '更新昵称失败', icon: 'none' });
+      }
       setIsRenameVisible(false);
       setInputValue('');
     }
   };
 
-  const handleLogOut = () => {
-    post('/user/logout').then((res) => {
+  const handleLogOut = async () => {
+    try {
+      const res = await post('/user/logout');
       console.log(res);
       if (res.msg === 'success') {
         Taro.showToast({ title: '退出成功', icon: 'success' });
         Taro.removeStorageSync('token');
         reLaunch({ url: '/pages/login/index' });
       }
-    });
+    } catch (error) {
+      console.error('退出登录失败:', error);
+      Taro.showToast({ title: '退出登录失败', icon: 'none' });
+    }
   };
 
   useEffect(() => {
@@ -124,7 +131,6 @@ const Index = () => {
       <ImagePicker
         isVisiable={isVisiable}
         setIsVisiable={setIsVisiable}
-        isOverlay={true}
         imgUrl={imgUrl}
         setImgUrl={setCutImgUrl}
         type="event"

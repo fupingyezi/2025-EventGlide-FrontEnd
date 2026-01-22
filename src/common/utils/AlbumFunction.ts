@@ -29,8 +29,17 @@ const handleChooseImage = ({
       let newImgUrl: string[] = [...imgUrl];
 
       for (const filePath of res.tempFilePaths) {
-        const qiniuUrl = await fetchToQiniu(filePath);
-        if (qiniuUrl) newImgUrl.push(qiniuUrl as string);
+        try {
+          const qiniuUrl = await fetchToQiniu(filePath);
+          if (qiniuUrl) newImgUrl.push(qiniuUrl as string);
+        } catch (error) {
+          console.error('上传到七牛云失败:', error);
+          Taro.showToast({
+            title: '图片上传失败',
+            icon: 'none',
+            duration: 2000,
+          });
+        }
       }
 
       if (isRequest) {

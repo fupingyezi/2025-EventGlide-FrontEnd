@@ -47,9 +47,10 @@ const ActivityTabs: React.FC<{
   const handleInputChange = (e: any) => {
     setSearchValue(e.detail.value);
   };
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchValue === '') {
-      getActivityList().then((res) => {
+      try {
+        const res = await getActivityList();
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {
@@ -59,9 +60,17 @@ const ActivityTabs: React.FC<{
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('获取活动列表失败:', error);
+        Taro.showToast({
+          title: '获取活动列表失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     } else {
-      searchActivityList({ name: searchValue }).then((res) => {
+      try {
+        const res = await searchActivityList({ name: searchValue });
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {
@@ -71,7 +80,14 @@ const ActivityTabs: React.FC<{
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('搜索活动失败:', error);
+        Taro.showToast({
+          title: '搜索活动失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
   return (

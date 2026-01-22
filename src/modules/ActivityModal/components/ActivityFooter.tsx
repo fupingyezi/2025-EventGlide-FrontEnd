@@ -23,37 +23,35 @@ const ActivityFooter: React.FC<{
     targetid: selectedItem.bid,
     receiver: selectedItem.userInfo.studentid,
   };
-  const handleCollect = () => {
+  const handleCollect = async () => {
     if (selectedItem.isCollect === 'true') {
-      handleInteraction('discollect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(selectedItem.bid, 'reduce');
-            setSelectedItem({
-              ...selectedItem,
-              isCollect: 'false',
-              collectNum: selectedItem.collectNum - 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('discollect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(selectedItem.bid, 'reduce');
+          setSelectedItem({
+            ...selectedItem,
+            isCollect: 'false',
+            collectNum: selectedItem.collectNum - 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (selectedItem.isCollect === 'false') {
-      handleInteraction('collect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(selectedItem.bid, 'add');
-            setSelectedItem({
-              ...selectedItem,
-              isCollect: 'true',
-              collectNum: selectedItem.collectNum + 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('collect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(selectedItem.bid, 'add');
+          setSelectedItem({
+            ...selectedItem,
+            isCollect: 'true',
+            collectNum: selectedItem.collectNum + 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 

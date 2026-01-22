@@ -150,7 +150,7 @@ const Index = () => {
     }
   };
 
-  const handleImageClick = () => {
+  const handleImageClick = async () => {
     setClickCount((prev) => prev + 1);
 
     if (clickCount === 1) {
@@ -159,15 +159,14 @@ const Index = () => {
         setClickTimer(null);
       }
       if (Item.isLike === 'false') {
-        handleInteraction('like', params)
-          .then((res) => {
-            if (res.msg === 'success') {
-              setLikeNumChange(Item, 1);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        try {
+          const res = await handleInteraction('like', params);
+          if (res.msg === 'success') {
+            setLikeNumChange(Item, 1);
+          }
+        } catch (err) {
+          console.log(err);
+        }
       }
       setClickCount(0);
     } else {
@@ -187,15 +186,19 @@ const Index = () => {
     };
   }, [clickTimer]);
 
-  useDidShow(() => {
-    getCommentsBySubject(Item.bid).then((res) => {
+  useDidShow(async () => {
+    try {
+      const res = await getCommentsBySubject(Item.bid);
       console.log(res);
       if (res.data === null) {
         setResponse([]);
         return;
       }
       setResponse(res.data);
-    });
+    } catch (error) {
+      console.error('获取评论失败:', error);
+      setResponse([]);
+    }
   });
 
   useEffect(() => {
@@ -210,67 +213,67 @@ const Index = () => {
 
   useEffect(() => {
     if (isRequest) {
-      getCommentsBySubject(Item.bid)
-        .then((res) => {
+      const fetchComments = async () => {
+        try {
+          const res = await getCommentsBySubject(Item.bid);
           setResponse(res.data);
           setIsRequest(false);
-        })
-        .catch((err) => {
+        } catch (err) {
           console.log(err);
-        });
+          setIsRequest(false);
+        }
+      };
+
+      fetchComments();
     }
   }, [isRequest]);
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (Item.isLike === 'true') {
-      handleInteraction('dislike', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setLikeNumChange(Item, 0);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('dislike', params);
+        if (res.msg === 'success') {
+          setLikeNumChange(Item, 0);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (Item.isLike === 'false') {
-      handleInteraction('like', params)
-        .then((res) => {
-          console.log(res);
-          if (res.msg === 'success') {
-            setLikeNumChange(Item, 1);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('like', params);
+        console.log(res);
+        if (res.msg === 'success') {
+          setLikeNumChange(Item, 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const handleCollect = () => {
+  const handleCollect = async () => {
     if (Item.isCollect === 'true') {
-      handleInteraction('discollect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(Item, 0);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('discollect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(Item, 0);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (Item.isCollect === 'false') {
-      handleInteraction('collect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(Item, 1);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('collect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(Item, 1);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const setBlogComment = (params: any) => {
+  const setBlogComment = async (params: any) => {
     if (params.content === '') {
       Taro.showToast({
         title: '评论不能为空',
@@ -278,18 +281,26 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      createComment(params).then((res) => {
+      try {
+        const res = await createComment(params);
         console.log(res);
         if (res.msg === 'success') {
           setResponse([...response, res.data]);
           setCommentNumChange(Item);
           setInputValue('');
         }
-      });
+      } catch (error) {
+        console.error('创建评论失败:', error);
+        Taro.showToast({
+          title: '评论发送失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 
-  const setBlogReponseContext = (params: any) => {
+  const setBlogReponseContext = async (params: any) => {
     console.log('你干嘛', response);
     if (params.content === '') {
       Taro.showToast({
@@ -298,22 +309,31 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      replyComment(params).then((res) => {
+      try {
+        const res = await replyComment();
         console.log(res, params);
 
-        if (res.message === 'success') {
-          console.log(res);
+        console.log(res);
 
-          getCommentsBySubject(Item.bid).then((res) => {
-            console.log(res);
-            if (res.data === null) {
-              setResponse([]);
-              return;
-            }
-            setResponse(res.data);
-          });
+        try {
+          const commentRes = await getCommentsBySubject(Item.bid);
+          console.log(commentRes);
+          if (commentRes.data === null) {
+            setResponse([]);
+            return;
+          }
+          setResponse(commentRes.data);
+        } catch (error) {
+          console.error('重新获取评论失败:', error);
         }
-      });
+      } catch (error) {
+        console.error('回复评论失败:', error);
+        Taro.showToast({
+          title: '回复评论失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 

@@ -31,15 +31,18 @@ const Index = () => {
 
   const [activeList, setActiveList] = useState<ActiveItem[]>([]);
   useEffect(() => {
-    get('/act/own')
-      .then((res) => {
+    const fetchActivities = async () => {
+      try {
+        const res = await get('/act/own');
         console.log(res.data);
         setActiveList(Array.isArray(res.data) ? res.data : []);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.log(err);
         setActiveList([]);
-      });
+      }
+    };
+
+    fetchActivities();
   }, []);
   function getImg(items: String) {
     if (items === 'pending') return isChecking;

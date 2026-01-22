@@ -19,31 +19,33 @@ const Index = () => {
   const [type, setType] = useState<string>('');
   const { setPostList } = usePostStore();
 
-  useLoad(() => {
-    getPostList().then((res) => {
+  useLoad(async () => {
+    try {
+      const res = await getPostList();
       setPostList(res.data);
-    });
+    } catch (error) {
+      console.error('获取帖子列表失败:', error);
+      setPostList([]);
+    }
   });
 
-  useDidShow(() => {
+  useDidShow(async () => {
     if (isSelect) {
-      filterActivity(selectedInfo)
-        .then((res) => {
-          console.log(res.data);
-          setActiveList(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await filterActivity(selectedInfo);
+        console.log(res.data);
+        setActiveList(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     } else {
-      getActivityList()
-        .then((res) => {
-          console.log(res);
-          setActiveList(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await getActivityList();
+        console.log(res);
+        setActiveList(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     }
   });
 

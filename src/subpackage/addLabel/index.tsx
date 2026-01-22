@@ -59,8 +59,9 @@ const Index = () => {
     },
   });
 
-  useDidShow(() => {
-    getActivityDraft().then((res) => {
+  useDidShow(async () => {
+    try {
+      const res = await getActivityDraft();
       console.log('label', res);
       if (res.msg === 'success') {
         const newLabelForm: LabelForm = {
@@ -80,7 +81,9 @@ const Index = () => {
         console.log('newLabelForm', newLabelForm);
         setFormValue(newLabelForm);
       }
-    });
+    } catch (error) {
+      console.error('获取活动草稿失败:', error);
+    }
   });
 
   const typeChoice = (showFormIndex: number) => {

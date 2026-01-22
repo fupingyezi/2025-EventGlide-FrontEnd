@@ -27,14 +27,22 @@ const Index = () => {
     setIsSelect(false);
   });
 
-  useDidShow(() => {
-    getPostList().then((res) => {
-      setPostList(res.data);
-      console.log(res.data);
-    });
-    get('/feed/total').then((res) => {
-      console.log(res.data);
-    });
+  useDidShow(async () => {
+    try {
+      const postListRes = await getPostList();
+      setPostList(postListRes.data);
+      console.log(postListRes.data);
+    } catch (error) {
+      console.error('获取帖子列表失败:', error);
+    }
+
+    try {
+      const feedTotalRes = await get('/feed/total');
+      console.log(feedTotalRes.data);
+    } catch (error) {
+      console.error('获取通知总数失败:', error);
+    }
+
     setImgUrl([]);
   });
 
@@ -79,9 +87,10 @@ const Index = () => {
     });
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchValue === '') {
-      getPostList().then((res) => {
+      try {
+        const res = await getPostList();
         if (res.msg === 'success') {
           setPostList(res.data);
         } else {
@@ -91,9 +100,17 @@ const Index = () => {
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('获取帖子列表失败:', error);
+        Taro.showToast({
+          title: '获取帖子列表失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     } else {
-      searchPostList({ name: searchValue }).then((res) => {
+      try {
+        const res = await searchPostList({ name: searchValue });
         if (res.msg === 'success') {
           setPostList(res.data);
         } else {
@@ -103,21 +120,27 @@ const Index = () => {
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('搜索帖子失败:', error);
+        Taro.showToast({
+          title: '搜索帖子失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 
-  useDidShow(() => {
-    get('/feed/total')
-      .then((res) => {
-        setMsgCount(res?.data?.total);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  useDidShow(async () => {
+    try {
+      const res = await get('/feed/total');
+      setMsgCount(res?.data?.total || 0);
+    } catch (err) {
+      console.log(err);
+    }
   });
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     console.log('refresh');
     setRefreshing(true);
 
@@ -134,46 +157,38 @@ const Index = () => {
 
     try {
       if (searchValue === '') {
-        getPostList()
-          .then((res) => {
-            clearTimeoutSafely();
-            setPostList(res.data);
-            get('/feed/total')
-              .then((res) => {
-                setMsgCount(res.data.total);
-                setRefreshing(false);
-              })
-              .catch((err) => {
-                clearTimeoutSafely();
-                setRefreshing(false);
-                console.error(err);
-              });
-          })
-          .catch((err) => {
-            clearTimeoutSafely();
-            setRefreshing(false);
-            console.error(err);
-          });
+        try {
+          const res = await getPostList();
+          clearTimeoutSafely();
+          setPostList(res.data);
+
+          const feedRes = await get('/feed/total');
+          setMsgCount(feedRes.data.total);
+          setRefreshing(false);
+        } catch (err) {
+          clearTimeoutSafely();
+          setRefreshing(false);
+          console.error(err);
+        }
       } else {
-        searchPostList({ name: searchValue })
-          .then((res) => {
-            clearTimeoutSafely();
-            if (res.msg === 'success') {
-              setPostList(res.data);
-            } else {
-              Taro.showToast({
-                title: `${res.msg}`,
-                icon: 'none',
-                duration: 1000,
-              });
-            }
-            setRefreshing(false);
-          })
-          .catch((err) => {
-            clearTimeoutSafely();
-            setRefreshing(false);
-            console.error(err);
-          });
+        try {
+          const res = await searchPostList({ name: searchValue });
+          clearTimeoutSafely();
+          if (res.msg === 'success') {
+            setPostList(res.data);
+          } else {
+            Taro.showToast({
+              title: `${res.msg}`,
+              icon: 'none',
+              duration: 1000,
+            });
+          }
+          setRefreshing(false);
+        } catch (err) {
+          clearTimeoutSafely();
+          setRefreshing(false);
+          console.error(err);
+        }
       }
     } catch (error) {
       clearTimeoutSafely();
@@ -195,7 +210,6 @@ const Index = () => {
         <ImagePicker
           isVisiable={isAlbumVisiable}
           setIsVisiable={setIsAlbumVisiable}
-          isOverlay={true}
           imgUrl={imgUrl}
           setImgUrl={setImgUrl}
           type={'blog'}

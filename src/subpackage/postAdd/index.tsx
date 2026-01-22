@@ -34,27 +34,28 @@ const Index = () => {
     },
   });
 
-  useDidShow(() => {
-    loadPostDraft()
-      .then((res) => {
-        console.log(res);
-        if (res.data === null) return;
-        if (res.msg === 'success') {
-          setTitle(res.data.Title || title);
-          setIntroduce(res.data.Introduce || introduce);
-          setCount(res.data.Introduce ? res.data.Introduce.length : 0);
-          if (Array.isArray(res.data.ShowImg)) {
-            setPageImgUrl(res.data.ShowImg);
-          } else {
-            setPageImgUrl([res.data.ShowImg]);
-          }
+  useDidShow(async () => {
+    try {
+      const res = await loadPostDraft();
+      console.log(res);
+      if (res.data === null) return;
+      if (res.msg === 'success') {
+        setTitle(res.data.Title || title);
+        setIntroduce(res.data.Introduce || introduce);
+        setCount(res.data.Introduce ? res.data.Introduce.length : 0);
+        if (Array.isArray(res.data.ShowImg)) {
+          setPageImgUrl(res.data.ShowImg);
+        } else if (res.data.ShowImg !== '') {
+          setPageImgUrl([res.data.ShowImg]);
+        } else {
+          setPageImgUrl([]);
         }
-        setLoad(true);
-      })
-      .catch((err) => {
-        console.log('Error loading post:', err);
-        setLoad(true);
-      });
+      }
+    } catch (err) {
+      console.log('Error loading post:', err);
+    } finally {
+      setLoad(true);
+    }
   });
 
   const handleConfirm = async () => {
@@ -72,19 +73,18 @@ const Index = () => {
       const postInfo = { introduce, showImg: pageImgUrl, studentid, title };
       console.log(postInfo);
 
-      createPost({
-        title: postInfo.title,
-        introduce: postInfo.introduce,
-        showImg: postInfo.showImg,
-        studentid: postInfo.studentid,
-      })
-        .then((res) => {
-          console.log(res);
-          switchTab({ url: '/pages/postHome/index' });
-        })
-        .catch((err) => {
-          console.log(err);
+      try {
+        const res = await createPost({
+          title: postInfo.title,
+          introduce: postInfo.introduce,
+          showImg: postInfo.showImg,
+          studentid: postInfo.studentid,
         });
+        console.log(res);
+        switchTab({ url: '/pages/postHome/index' });
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 

@@ -31,8 +31,9 @@ const Index = () => {
     },
   });
 
-  useDidShow(() => {
-    getActivityDraft().then((res) => {
+  useDidShow(async () => {
+    try {
+      const res = await getActivityDraft();
       if (res.msg === 'success') {
         console.log(res.data);
         setTitle(title || res.data.Title);
@@ -46,7 +47,9 @@ const Index = () => {
         }
         setCount(res.data.Introduce?.length || 0);
       }
-    });
+    } catch (error) {
+      console.error('获取活动草稿失败:', error);
+    }
   });
 
   const btn = {
