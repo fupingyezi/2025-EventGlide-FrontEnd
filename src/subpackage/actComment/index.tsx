@@ -45,7 +45,7 @@ const Index = () => {
   const params = {
     studentId: studentId,
     subject: 'activity',
-    targetid: selectedItem.bid,
+    targetId: selectedItem.bid,
     receiver: selectedItem.userInfo.studentId,
   };
 
@@ -497,7 +497,7 @@ const Index = () => {
         <CommentActionSheet
           visible={commentOperation}
           setVisible={setCommentOperation}
-          studentid={studentid}
+          studentId={studentId}
           commentItems={commentItems}
           commentCreator={commentCreator}
           commentid={commentid}

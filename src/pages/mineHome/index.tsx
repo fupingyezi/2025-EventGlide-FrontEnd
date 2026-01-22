@@ -150,7 +150,7 @@ const Index = () => {
             </View>
             <View
               className="mine-order-title-choice-check"
-              onClick={() => navigateTo({ url: '/subpackage/isChecking/index' })}
+              onClick={() => navigateTo({ url: '/subpackage/review/index' })}
             >
               审核
             </View>
