@@ -17,10 +17,10 @@ export interface LabelForm {
   startTime: string;
   endTime: string;
   position: string;
-  if_register: string;
+  ifRegister: string;
   activeForm?: string;
-  register_method?: string;
-  signer: { name: string; studentid: string }[];
+  registerMethod?: string;
+  signer: { name: string; studentId: string }[];
 }
 
 export interface DateItem {

@@ -16,7 +16,7 @@ import CustomInput from '@/common/components/CustomInput';
 
 const Index = () => {
   const {
-    studentid: studentId,
+    studentId: studentId,
     username,
     school,
     college,
@@ -40,7 +40,7 @@ const Index = () => {
       return;
     } else {
       try {
-        const res = await post('/user/username', { new_name: inputValue, studentid: studentId });
+        const res = await post('/user/username', { newName: inputValue, studentId: studentId });
         console.log(res);
         setUsername(inputValue);
       } catch (error) {

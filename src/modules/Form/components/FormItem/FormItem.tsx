@@ -20,7 +20,7 @@ const FormItem: React.FC<FormItemProps> = memo(function ({ ...props }) {
   const handleInput = (e: any) => {
     if (props.id === 4) props.setFormValue({ ...props.formValue, position: e.detail.value });
     else if (props.id === 7)
-      props.setFormValue({ ...props.formValue, register_method: e.detail.value });
+      props.setFormValue({ ...props.formValue, registerMethod: e.detail.value });
   };
   return (
     <>

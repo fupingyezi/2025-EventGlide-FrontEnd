@@ -4,12 +4,12 @@ import { LabelForm } from './FormTypes';
 
 /** 登录相关请求/响应接口类型 */
 export interface LoginRequest {
-  studentid: string;
+  studentId: string;
   password: string;
 }
 
 export interface LoginResponse {
-  Id: number;
+  id: number;
   avatar: string;
   username: string;
   school: string;
@@ -22,7 +22,7 @@ export interface CheckLoginResponse {
   avatar: string;
   name: string;
   school: string;
-  student_id: string;
+  studentId: string;
   token: string;
 }
 
@@ -51,7 +51,7 @@ export interface GetActivityDrafytResponse {
   showImg?: string;
   signer?: string;
   startTime?: string;
-  studentID?: string;
+  studentId?: string;
   title?: string;
   type?: string;
 }
@@ -61,18 +61,18 @@ export interface CreatePostRequest {
   title: string;
   introduce: string;
   showImg: string[];
-  studentid?: string;
+  studentId?: string;
 }
 
 export interface GetPostReponse extends PostDetailInfo {}
 
 export interface GetPostDraftResonse {
-  Bid: string;
-  Title: string;
-  ShowImg: string[];
-  Introduce: string;
-  CreateAt: string;
-  StudentID: string;
+  bid: string;
+  title: string;
+  showImg: string[];
+  introduce: string;
+  createAt: string;
+  studentId: string;
 }
 
 /** 草稿相关请求 */
@@ -81,14 +81,14 @@ export interface SaveDraftRequest {
   introduce: string;
   showImg: string[];
   labelform?: LabelForm;
-  studentid?: string;
+  studentId?: string;
   [key: string]: any;
 }
 
 /** 用户消息相关请求/响应接口类型 */
 export interface GetNotificationCountResponse {
-  commentandat: number;
-  likeandcollect: number;
+  commentAndAt: number;
+  likeAndCollect: number;
   total: number;
   [property: string]: any;
 }
@@ -106,12 +106,12 @@ export interface GetNotificationListReponse {
  * resp.FeedAtResp
  */
 export interface RespFeedAtResp {
-  first_pic?: string;
+  firstPic?: string;
   id?: number;
   message?: string;
-  published_at?: string;
+  publishedAt?: string;
   status?: string;
-  target_bid?: string;
+  targetBid?: string;
   userInfo?: RespUserInfo;
   [property: string]: any;
 }
@@ -121,7 +121,7 @@ export interface RespFeedAtResp {
  */
 export interface RespUserInfo {
   avatar?: string;
-  studentid?: string;
+  studentId?: string;
   username?: string;
   [property: string]: any;
 }
@@ -130,12 +130,12 @@ export interface RespUserInfo {
  * resp.FeedCollectResp
  */
 export interface RespFeedCollectResp {
-  first_pic?: string;
+  firstPic?: string;
   id?: number;
   message?: string;
-  published_at?: string;
+  publishedAt?: string;
   status?: string;
-  target_bid?: string;
+  targetBid?: string;
   userInfo?: RespUserInfo;
   [property: string]: any;
 }
@@ -144,12 +144,12 @@ export interface RespFeedCollectResp {
  * resp.FeedCommentResp
  */
 export interface RespFeedCommentResp {
-  first_pic?: string;
+  firstPic?: string;
   id?: number;
   message?: string;
-  published_at?: string;
+  publishedAt?: string;
   status?: string;
-  target_bid?: string;
+  targetBid?: string;
   userInfo?: RespUserInfo;
   [property: string]: any;
 }
@@ -158,12 +158,12 @@ export interface RespFeedCommentResp {
  * resp.FeedInvitationResp
  */
 export interface RespFeedInvitationResp {
-  first_pic?: string;
+  firstPic?: string;
   id?: number;
   message?: string;
-  published_at?: string;
+  publishedAt?: string;
   status?: string;
-  target_bid?: string;
+  targetBid?: string;
   userInfo?: RespUserInfo;
   [property: string]: any;
 }
@@ -172,12 +172,12 @@ export interface RespFeedInvitationResp {
  * resp.FeedLikeResp
  */
 export interface RespFeedLikeResp {
-  first_pic?: string;
+  firstPic?: string;
   id?: number;
   message?: string;
-  published_at?: string;
+  publishedAt?: string;
   status?: string;
-  target_bid?: string;
+  targetBid?: string;
   userInfo?: RespUserInfo;
   [property: string]: any;
 }

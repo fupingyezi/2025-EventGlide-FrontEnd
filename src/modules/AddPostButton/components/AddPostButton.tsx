@@ -7,6 +7,7 @@ import { Image } from '@tarojs/components';
 import { loadPostDraft } from '@/common/api';
 const AddPostButton: React.FC<{ setIsVisiable: (value: boolean) => void }> = (props) => {
   const { setImgUrl } = usePostStore();
+
   const handleClick = async () => {
     try {
       const res = await loadPostDraft();
@@ -16,8 +17,8 @@ const AddPostButton: React.FC<{ setIsVisiable: (value: boolean) => void }> = (pr
         return;
       } else if (res.msg === 'success') {
         if (res.data !== null) {
-          console.log(res.data.ShowImg);
-          setImgUrl(res.data.ShowImg);
+          console.log(res.data.showImg);
+          setImgUrl(res.data.showImg);
         }
         navigateTo({ url: '/subpackage/postAdd/index' });
       } else {

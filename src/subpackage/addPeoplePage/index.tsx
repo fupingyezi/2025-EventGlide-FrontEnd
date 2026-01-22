@@ -9,7 +9,7 @@ const Index = () => {
   const [name, setName] = useState('');
   const [idCard, setIdCard] = useState('');
   const handleClick = () => {
-    setAddSigner({ id: signers.length + 1, name, studentid: idCard });
+    setAddSigner({ id: signers.length + 1, name, studentId: idCard });
     navigateBack();
   };
   return (

@@ -20,9 +20,9 @@ const useActiveInfoStore = create<activeInfoState>((set) => ({
     startTime: '',
     endTime: '',
     position: '',
-    if_register: '',
+    ifRegister: '',
     activeForm: '111',
-    register_method: '',
+    registerMethod: '',
     signer: [],
   },
   setBasicInfo: (title: string, description: string, imgUrl?: string[]) => {

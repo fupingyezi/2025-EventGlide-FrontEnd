@@ -3,14 +3,14 @@ import { switchTab } from '@tarojs/taro';
 import useUserStore from '@/store/userStore';
 import usePostStore from '@/store/PostStore';
 import { apiClient } from './request';
-import { LoginRequest, LoginResponse, CheckLoginResponse, UserInfo } from '../types';
+import { LoginRequest, LoginResponse, CheckLoginResponse } from '../types';
 
-const handleUserLogin = async ({ studentid, password }: LoginRequest) => {
+const handleUserLogin = async ({ studentId, password }: LoginRequest) => {
   const { setId, setStudentId, setAvatar, setUsername, setSchool } = useUserStore.getState();
-  const { setPostStudentId } = usePostStore.getState();
+  const { setPoststudentId } = usePostStore.getState();
 
   const data: LoginRequest = {
-    studentid,
+    studentId,
     password,
   };
 
@@ -23,28 +23,28 @@ const handleUserLogin = async ({ studentid, password }: LoginRequest) => {
   Taro.setStorageSync('sid', responseData.sid);
 
   setStudentId(responseData.sid);
-  setId(responseData.Id);
+  setId(responseData.id);
   setAvatar(responseData.avatar);
   setUsername(responseData.username);
   setSchool(responseData.school);
-  setPostStudentId(responseData.sid);
+  setPoststudentId(responseData.sid);
 
   switchTab({ url: '/pages/indexHome/index' });
 };
 
 const handleCheckLogin = async () => {
   const { setId, setStudentId, setAvatar, setUsername, setSchool } = useUserStore.getState();
-  const { setPostStudentId } = usePostStore.getState();
+  const { setPoststudentId } = usePostStore.getState();
   if (Taro.getStorageSync('token') && Taro.getStorageSync('sid')) {
     const sid = Taro.getStorageSync('sid');
     const result = await apiClient.get<CheckLoginResponse>(`/user/info/${sid}`);
     const responseData = result.data;
     setId(responseData.id);
-    setStudentId(responseData.student_id);
+    setStudentId(responseData.studentId);
     setAvatar(responseData.avatar);
     setUsername(responseData.name);
     setSchool(responseData.school);
-    setPostStudentId(sid);
+    setPoststudentId(sid);
     switchTab({ url: '/pages/indexHome/index' });
   }
 };

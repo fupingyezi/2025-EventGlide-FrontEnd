@@ -5,7 +5,6 @@ import Taro, { navigateTo } from '@tarojs/taro';
 import classnames from 'classnames';
 import searchpic from '@/common/assets/Postlist/搜索.png';
 import useActivityStore from '@/store/ActivityStore';
-import { post, get } from '@/common/api';
 import { getActivityList, searchActivityList } from '@/common/api';
 
 const datelist = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];

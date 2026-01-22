@@ -29,11 +29,11 @@ export const getMyActivityList = (type: 'release' | 'like' | 'favourite') => {
     return apiClient.get<GetActivityResponse[]>('/act/own');
   } else if (type === 'like') {
     return apiClient.post<GetActivityResponse[]>('/user/like/act', {
-      studentid: Taro.getStorageSync('sid'),
+      studentId: Taro.getStorageSync('sid'),
     });
   } else if (type === 'favourite') {
     return apiClient.post<GetActivityResponse[]>('/user/collect/act', {
-      studentid: Taro.getStorageSync('sid'),
+      studentId: Taro.getStorageSync('sid'),
     });
   }
   throw new Error('Invalid type for activity list');
