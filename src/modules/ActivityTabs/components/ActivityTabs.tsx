@@ -4,9 +4,8 @@ import { useState, memo } from 'react';
 import Taro, { navigateTo } from '@tarojs/taro';
 import classnames from 'classnames';
 import searchpic from '@/common/assets/Postlist/搜索.png';
-import post from '@/common/api/post';
 import useActivityStore from '@/store/ActivityStore';
-import get from '@/common/api/get';
+import { getActivityList, searchActivityList } from '@/common/api';
 
 const datelist = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 const typelist = ['文艺', '体育', '竞赛', '游戏', '学术'];
@@ -47,9 +46,10 @@ const ActivityTabs: React.FC<{
   const handleInputChange = (e: any) => {
     setSearchValue(e.detail.value);
   };
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchValue === '') {
-      get(`/act/all`).then((res) => {
+      try {
+        const res = await getActivityList();
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {
@@ -59,9 +59,17 @@ const ActivityTabs: React.FC<{
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('获取活动列表失败:', error);
+        Taro.showToast({
+          title: '获取活动列表失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     } else {
-      post('/act/name', { name: searchValue }).then((res) => {
+      try {
+        const res = await searchActivityList({ name: searchValue });
         if (res.msg === 'success') {
           setActiveList(res.data);
         } else {
@@ -71,7 +79,14 @@ const ActivityTabs: React.FC<{
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('搜索活动失败:', error);
+        Taro.showToast({
+          title: '搜索活动失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
   return (

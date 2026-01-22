@@ -1,9 +1,9 @@
 import { View, Image } from '@tarojs/components';
 import { memo, useState } from 'react';
 import './index.scss';
-import LetterType from '@/common/types/LetterType';
+import { GetNotificationListReponse, LetterType } from '@/common/types';
 import classnames from 'classnames';
-import get from '@/common/api/get';
+import { get } from '@/common/api/request';
 import { useDidShow } from '@tarojs/taro';
 import NoticePageNull from '@/modules/EmptyComponent/components/noticepagenull';
 
@@ -20,7 +20,7 @@ const LetterListItem: React.FC<LetterType> = memo(({ ...props }) => {
         <View className="letter-list-item-content-username">{props.userInfo.username}</View>
         <View className="letter-list-item-content-message">{props.message}</View>
         {/*<View className="letter-list-item-content-message">
-          {props.published_at}
+          {props.publishedAt}
         </View>*/}
       </View>
       <Image
@@ -43,27 +43,26 @@ const Index = () => {
   const [letter, setLetter] = useState<LetterType[]>([]);
   const [notice, setNotice] = useState(false);
 
-  useDidShow(() => {
-    get('/feed/list')
-      .then((res) => {
-        console.log(res.data);
-        const likes = res.data?.likes || [];
-        const collects = res.data.collects || [];
-        const mergedFavor = mergeSortedArrays(likes, collects);
-        setFavor(mergedFavor);
-        readnotice(mergedFavor);
+  useDidShow(async () => {
+    try {
+      const res: any = await get<GetNotificationListReponse>('/feed/list');
+      console.log(res.data);
+      const likes = res.data?.likes || [];
+      const collects = res.data.collects || [];
+      const mergedFavor = mergeSortedArrays(likes, collects);
+      setFavor(mergedFavor);
+      readnotice(mergedFavor);
 
-        const comments = res.data?.comments || [];
-        const ats = res.data.ats || [];
-        const mergedLetter = mergeSortedArrays(comments, ats);
-        setLetter(mergedLetter);
-        if (mergedLetter[0] && mergedLetter[0].status === '未读') {
-          setNotice(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      const comments = res.data?.comments || [];
+      const ats = res.data.ats || [];
+      const mergedLetter = mergeSortedArrays(comments, ats);
+      setLetter(mergedLetter);
+      if (mergedLetter[0] && mergedLetter[0].status === '未读') {
+        setNotice(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   });
 
   const mergeSortedArrays = (arr1: LetterType[], arr2: LetterType[]) => {
@@ -72,8 +71,8 @@ const Index = () => {
     let j = 0;
 
     while (i < arr1.length && j < arr2.length) {
-      const date1 = parseDateSafely(arr1[i].published_at);
-      const date2 = parseDateSafely(arr2[j].published_at);
+      const date1 = parseDateSafely(arr1[i].publishedAt);
+      const date2 = parseDateSafely(arr2[j].publishedAt);
 
       if (date1 <= date2) {
         result.push(arr1[i]);
@@ -99,12 +98,15 @@ const Index = () => {
     return new Date(dateString).getTime();
   };
 
-  const readnotice = (notices: string | any[]) => {
+  const readnotice = async (notices: string | any[]) => {
     for (let i = 0; i < notices.length; i++) {
       if (notices[i].status === '未读') {
-        get(`/feed/read/detail/${notices[i].id}`).then((res) => {
+        try {
+          const res = await get<GetNotificationListReponse>(`/feed/read/detail/${notices[i].id}`);
           console.log(res.data);
-        });
+        } catch (error) {
+          console.error('更新通知状态失败:', error);
+        }
       } else {
         break;
       }

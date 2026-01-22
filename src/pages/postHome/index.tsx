@@ -8,10 +8,12 @@ import ImagePicker from '@/modules/ImagePicker';
 import searchpic from '@/common/assets/Postlist/搜索.png';
 import Info from '@/common/assets/Postlist/info.png';
 import usePostStore from '@/store/PostStore';
-import get from '@/common/api/get';
+import { get } from '@/common/api/request';
 import useActivityStore from '@/store/ActivityStore';
-import post from '@/common/api/post';
 import { NavigationBarTabBar } from '@/common/components/NavigationBar';
+import { getPostList, searchPostList } from '@/common/api';
+import { GetNotificationCountResponse } from '@/common/types';
+import ScrollTop from '@/modules/ScrollTop';
 
 const Index = () => {
   const [isAlbumVisiable, setIsAlbumVisiable] = useState(false);
@@ -20,43 +22,49 @@ const Index = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
   const { showImg: imgUrl, setImgUrl } = usePostStore();
-  const { blogList, setBlogList, setBackPage, setBlogIndex } = usePostStore();
+  const { PostList, setPostList, setBackPage, setPostIndex } = usePostStore();
   const { setIsSelect } = useActivityStore();
   const [msgCount, setMsgCount] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
   useDidShow(() => {
     setIsSelect(false);
   });
 
-  useDidShow(() => {
-    get('/post/all').then((res) => {
-      setBlogList(res.data);
-      console.log(res.data);
-    });
-    get('/feed/total').then((res) => {
-      console.log(res.data);
-    });
+  useDidShow(async () => {
+    try {
+      const postListRes = await getPostList();
+      setPostList(postListRes.data);
+      console.log(postListRes.data);
+    } catch (error) {
+      console.error('获取帖子列表失败:', error);
+    }
+
     setImgUrl([]);
   });
 
   useEffect(() => {
-    if (blogList === null) return;
-    if (blogList.length > 0) {
+    if (PostList === null) return;
+    if (PostList.length > 0) {
       handleScroll(windowHeight);
     }
-  }, [blogList]);
+  }, [PostList]);
 
   Taro.useReady(() => {
     const newwindowHeight = Taro.getWindowInfo().windowHeight;
     setWindowHeight(newwindowHeight);
   });
 
-  const handleScroll = (newwindowHeight?: number) => {
+  const handleScroll = (e: any, newwindowHeight?: number) => {
+    if (e && e.detail) {
+      setShowScrollTop(e.detail.scrollTop > 300);
+    }
     let tempHeight = windowHeight;
     if (newwindowHeight) {
       tempHeight = newwindowHeight;
     }
     const query = Taro.createSelectorQuery();
-    blogList.forEach((_, index) => {
+    PostList.forEach((_, index) => {
       query.select(`#post-item-${index}`).boundingClientRect();
     });
     query.exec((res) => {
@@ -79,11 +87,12 @@ const Index = () => {
     });
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchValue === '') {
-      get(`/post/all`).then((res) => {
+      try {
+        const res = await getPostList();
         if (res.msg === 'success') {
-          setBlogList(res.data);
+          setPostList(res.data);
         } else {
           Taro.showToast({
             title: `${res.msg}`,
@@ -91,11 +100,19 @@ const Index = () => {
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('获取帖子列表失败:', error);
+        Taro.showToast({
+          title: '获取帖子列表失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     } else {
-      post('/post/find', { name: searchValue }).then((res) => {
+      try {
+        const res = await searchPostList({ name: searchValue });
         if (res.msg === 'success') {
-          setBlogList(res.data);
+          setPostList(res.data);
         } else {
           Taro.showToast({
             title: `${res.msg}`,
@@ -103,93 +120,97 @@ const Index = () => {
             duration: 1000,
           });
         }
-      });
+      } catch (error) {
+        console.error('搜索帖子失败:', error);
+        Taro.showToast({
+          title: '搜索帖子失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 
-  useDidShow(() => {
-    get('/feed/total')
-      .then((res) => {
-        setMsgCount(res.data.total);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  useDidShow(async () => {
+    try {
+      const res = await get<GetNotificationCountResponse>('/feed/total');
+      setMsgCount(res?.data?.total || 0);
+    } catch (err) {
+      console.log(err);
+    }
   });
 
-const onRefresh = () => {
-  console.log('refresh');
-  setRefreshing(true);
-  
-  const timeoutId = setTimeout(() => {
-    if (refreshing) {
-      setRefreshing(false);
-      console.log('刷新失败');
-    }
-  }, 3000);
-  
-  const clearTimeoutSafely = () => {
-    clearTimeout(timeoutId);
-  };
-  
-  try {
-    if (searchValue === '') {
-      get('/post/all').then((res) => {
-        clearTimeoutSafely();
-        setBlogList(res.data);
-        get('/feed/total').then((res) => {
-          setMsgCount(res.data.total);
+  const onRefresh = async () => {
+    console.log('refresh');
+    setRefreshing(true);
+
+    const timeoutId = setTimeout(() => {
+      if (refreshing) {
+        setRefreshing(false);
+        console.log('刷新失败');
+      }
+    }, 3000);
+
+    const clearTimeoutSafely = () => {
+      clearTimeout(timeoutId);
+    };
+
+    try {
+      if (searchValue === '') {
+        try {
+          const res = await getPostList();
+          clearTimeoutSafely();
+          setPostList(res.data);
+
+          const feedRes = await get<GetNotificationCountResponse>('/feed/total');
+          setMsgCount(feedRes.data.total);
           setRefreshing(false);
-        }).catch((err) => {
+        } catch (err) {
           clearTimeoutSafely();
           setRefreshing(false);
           console.error(err);
-        });
-      }).catch((err) => {
-        clearTimeoutSafely();
-        setRefreshing(false);
-        console.error(err);
-      });
-    } else {
-      post('/post/find', { name: searchValue }).then((res) => {
-        clearTimeoutSafely();
-        if (res.msg === 'success') {
-          setBlogList(res.data);
-        } else {
-          Taro.showToast({
-            title: `${res.msg}`,
-            icon: 'none',
-            duration: 1000,
-          });
         }
-        setRefreshing(false);
-      }).catch((err) => {
-        clearTimeoutSafely();
-        setRefreshing(false);
-        console.error(err);
+      } else {
+        try {
+          const res = await searchPostList({ name: searchValue });
+          clearTimeoutSafely();
+          if (res.msg === 'success') {
+            setPostList(res.data);
+          } else {
+            Taro.showToast({
+              title: `${res.msg}`,
+              icon: 'none',
+              duration: 1000,
+            });
+          }
+          setRefreshing(false);
+        } catch (err) {
+          clearTimeoutSafely();
+          setRefreshing(false);
+          console.error(err);
+        }
+      }
+    } catch (error) {
+      clearTimeoutSafely();
+      setRefreshing(false);
+      console.error('刷新过程发生错误:', error);
+      Taro.showToast({
+        title: '刷新失败，请稍后重试',
+        icon: 'none',
+        duration: 1000,
       });
     }
-  } catch (error) {
-    clearTimeoutSafely();
-    setRefreshing(false);
-    console.error('刷新过程发生错误:', error);
-    Taro.showToast({
-      title: "刷新失败，请稍后重试",
-      icon: 'none',
-      duration: 1000,
-    });
-  }
-};
+  };
 
   return (
     <>
       <NavigationBarTabBar backgroundColor="#FFFFFF" title="发现" />
       <View className="blog-page">
+        <ScrollTop setScrollTop={setScrollTop} isVisible={showScrollTop} />
         <AddPostButton setIsVisiable={setIsAlbumVisiable} />
         <ImagePicker
           isVisiable={isAlbumVisiable}
           setIsVisiable={setIsAlbumVisiable}
-          isOverlay={true}
           imgUrl={imgUrl}
           setImgUrl={setImgUrl}
           type={'blog'}
@@ -229,7 +250,8 @@ const onRefresh = () => {
           type="custom"
           style={{ height: 'calc(100vh - 270rpx)' }}
           scrollY={true}
-          onScroll={() => handleScroll()}
+          scrollTop={scrollTop}
+          onScroll={(e) => handleScroll(e)}
           enhanced={true}
           showScrollbar={false}
           refresherEnabled={true}
@@ -238,14 +260,14 @@ const onRefresh = () => {
           refresherBackground="#f9f8fc"
         >
           <GridView type="masonry" crossAxisGap={5} mainAxisGap={5}>
-            {blogList === null
+            {PostList === null
               ? null
-              : blogList.map((item, index) => (
+              : PostList.map((item, index) => (
                   <View
                     key={index}
                     id={`post-item-${index}`}
                     onClick={() => {
-                      setBlogIndex(item.bid);
+                      setPostIndex(item.bid);
                       setBackPage('postHome');
                     }}
                   >

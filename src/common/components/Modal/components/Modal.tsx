@@ -2,33 +2,7 @@ import { View, Text, Image } from '@tarojs/components';
 import { memo } from 'react';
 import deleteSvg from '@/common/svg/delete.svg';
 import './style.scss';
-
-interface ModalProps {
-  /** 是否显示模态框 */
-  visible: boolean;
-  /** 关闭回调 */
-  onClose: () => void;
-  /** 标题 */
-  title?: string;
-  confirmText?: string;
-  cancelText?: string;
-  onConfirm?: () => void;
-  /** 是否显示取消按钮 */
-  showCancel?: boolean;
-  /** 是否显示确认按钮 */
-  showConfirm?: boolean;
-  /** 子元素 */
-  children?: React.ReactNode;
-  /** 是否显示标题栏 */
-  showHeader?: boolean;
-  /** 是否显示内容栏 */
-  showContent?: boolean;
-  /** 自定义样式 */
-  className?: string;
-  customStyle?: React.CSSProperties;
-  /** 标题栏自定义样式 */
-  headerClassName: string;
-}
+import { ModalProps } from '@/common/types';
 
 const Modal: React.FC<ModalProps> = memo(({ ...props }) => {
   if (!props.visible) {
@@ -95,6 +69,8 @@ const Modal: React.FC<ModalProps> = memo(({ ...props }) => {
             )}
           </View>
         )}
+
+        {props.customFooter || <></>}
       </View>
     </View>
   );

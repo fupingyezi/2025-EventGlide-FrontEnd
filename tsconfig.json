@@ -24,6 +24,13 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./src", "./types", "./config", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "./src",
+    "./types",
+    "./config",
+    "**/*.ts",
+    "**/*.tsx",
+    "src/common/types/global/.d.ts"
+  ],
   "compileOnSave": false
 }

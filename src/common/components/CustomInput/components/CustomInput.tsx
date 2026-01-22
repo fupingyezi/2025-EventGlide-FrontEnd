@@ -1,65 +1,7 @@
 import { View, Input, Textarea, Text } from '@tarojs/components';
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import './style.scss';
-
-interface CustomInputProps {
-  /** 输入框类型 */
-  type?: 'text' | 'number' | 'password' | 'textarea';
-  /** 输入框的值 */
-  value?: string;
-  /** 输入框为空时占位符 */
-  placeholder?: string;
-  /** 是否禁用输入框 */
-  disabled?: boolean;
-  /** 最大输入长度 */
-  maxLength?: number;
-  /** 是否是密码类型 */
-  password?: boolean;
-  /** 是否聚焦 */
-  focus?: boolean;
-  /** 键盘弹起时，是否自动上推页面 */
-  adjustPosition?: boolean;
-  /** 点击完成时，是否保持键盘不收起 */
-  holdKeyboard?: boolean;
-  /** 是否自动聚焦 */
-  autoFocus?: boolean;
-  /** 是否可清空 */
-  clearable?: boolean;
-  /** 是否显示字数统计 */
-  showWordLimit?: boolean;
-  /** 标题 */
-  title?: string;
-  /** 左侧图标 */
-  leftIcon?: string;
-  /** 右侧图标 */
-  rightIcon?: string;
-  /** 输入框样式 */
-  inputStyle?: React.CSSProperties;
-  /** 自定义样式 */
-  customStyle?: React.CSSProperties;
-  /** 自定义类名 */
-  className?: string;
-  /** 输入时触发的事件 */
-  onInput?: (value: string) => void;
-  /** 聚焦时触发的事件 */
-  onFocus?: (e: any) => void;
-  /** 失焦时触发的事件 */
-  onBlur?: (e: any) => void;
-  /** 点击完成时触发的事件 */
-  onConfirm?: (value: string) => void;
-  /** 清空内容时触发的事件 */
-  onClear?: () => void;
-  /** 是否自动增高 */
-  autoHeight?: boolean;
-  /** 指定光标与键盘的距离 */
-  cursorSpacing?: number;
-  /** 是否显示键盘上方带有"完成"按钮那一栏 */
-  showConfirmBar?: boolean;
-  /** 光标起始位置 */
-  selectionStart?: number;
-  /** 光标结束位置 */
-  selectionEnd?: number;
-}
+import { CustomInputProps } from '@/common/types';
 
 const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
   const {
@@ -68,6 +10,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
     placeholder,
     disabled = false,
     maxLength = 140,
+    maxHeight = 120,
     password = false,
     focus = false,
     adjustPosition = true,
@@ -80,6 +23,8 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
     rightIcon,
     inputStyle,
     customStyle,
+    wrapperStyle,
+    wrapperClassName = '',
     className = '',
     onInput,
     onFocus,
@@ -95,16 +40,17 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
 
   const [innerValue, setInnerValue] = useState(value);
 
-  // 当外部value变化时同步内部状态
-  if (value !== innerValue && typeof value !== 'undefined') {
-    setInnerValue(value);
-  }
+  useEffect(() => {
+    if (typeof value !== 'undefined') {
+      setInnerValue(value);
+    }
+  }, [value]);
 
   const handleInput = (e: any) => {
     const newValue = e.detail.value;
     setInnerValue(newValue);
     if (onInput) {
-      onInput(newValue);
+      onInput(e);
     }
   };
 
@@ -156,7 +102,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
           onBlur={handleBlur}
           onConfirm={handleConfirm}
           className="custom-input-field custom-textarea-field"
-          style={inputStyle}
+          style={{ maxHeight: `${maxHeight}px`, ...inputStyle }}
         />
       );
     } else {
@@ -177,7 +123,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
           onBlur={handleBlur}
           onConfirm={handleConfirm}
           className="custom-input-field"
-          style={inputStyle}
+          style={{ maxHeight: `${maxHeight}px`, ...inputStyle }}
         />
       );
     }
@@ -186,7 +132,7 @@ const CustomInput: React.FC<CustomInputProps> = memo(({ ...props }) => {
   return (
     <View className={`custom-input ${className}`} style={customStyle}>
       {title && <Text className="custom-input-title">{title}</Text>}
-      <View className="custom-input-wrapper">
+      <View className={`custom-input-wrapper ${wrapperClassName}`} style={wrapperStyle}>
         {leftIcon && (
           <View className="custom-input-left-icon">
             <Text>{leftIcon}</Text>

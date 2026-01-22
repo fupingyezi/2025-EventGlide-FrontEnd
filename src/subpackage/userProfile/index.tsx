@@ -1,20 +1,22 @@
-import { View, Image, Input } from '@tarojs/components';
+import { View, Image } from '@tarojs/components';
 import { reLaunch } from '@tarojs/taro';
 import { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import './index.scss';
-// import avatar from "@/common/assets/Postlist/波奇.jpg";
 import schoolSrc from '@/common/assets/mineInfo/学校.png';
 import departmentSrc from '@/common/assets/mineInfo/院系.png';
 import cardSrc from '@/common/assets/mineInfo/一卡通号.png';
 import useUserStore from '@/store/userStore';
 import ImagePicker from '@/modules/ImagePicker';
-import post from '@/common/api/post';
+import { post } from '@/common/api/request';
 import { NavigationBarBack } from '@/common/components/NavigationBar';
 import PictureCut from '@/modules/picturecut/components/picturecut';
+import Modal from '@/common/components/Modal';
+import CustomInput from '@/common/components/CustomInput';
+
 const Index = () => {
   const {
-    studentid: studentId,
+    studentId: studentId,
     username,
     school,
     college,
@@ -26,42 +28,52 @@ const Index = () => {
   const [imgUrl, setImgUrl] = useState<string[]>([avatar]);
   const [cutImgUrl, setCutImgUrl] = useState<string[]>([]);
   const [isCutVisible, setIsCutVisible] = useState(false);
-  const [changgename, setChanggename] = useState(false);
-  const [isShowPlaceholder, setIsShowPlaceholder] = useState(true);
+  const [isRenameVisible, setIsRenameVisible] = useState<boolean>(false);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     setInputValue(e.detail.value);
   };
-  const handleConfirm = () => {
+
+  const handleConfirm = async () => {
     if (!inputValue) {
       Taro.showToast({ title: '昵称不能为空', icon: 'none' });
       return;
     } else {
-      post('/user/username', { new_name: inputValue, studentid: studentId }).then((res) => {
+      try {
+        const res = await post('/user/username', { newName: inputValue, studentId: studentId });
         console.log(res);
         setUsername(inputValue);
-      });
-      setUsername(inputValue);
-      setChanggename(false);
+      } catch (error) {
+        console.error('更新昵称失败:', error);
+        Taro.showToast({ title: '更新昵称失败', icon: 'none' });
+      }
+      setIsRenameVisible(false);
       setInputValue('');
     }
   };
-  const handleLogOut = () => {
-    post('/user/logout').then((res) => {
+
+  const handleLogOut = async () => {
+    try {
+      const res = await post('/user/logout');
       console.log(res);
       if (res.msg === 'success') {
         Taro.showToast({ title: '退出成功', icon: 'success' });
         Taro.removeStorageSync('token');
         reLaunch({ url: '/pages/login/index' });
       }
-    });
+    } catch (error) {
+      console.error('退出登录失败:', error);
+      Taro.showToast({ title: '退出登录失败', icon: 'none' });
+    }
   };
+
   useEffect(() => {
     console.log(cutImgUrl);
     if (cutImgUrl.length > 0) {
       setIsCutVisible(true);
     }
   }, [cutImgUrl]);
+
   return (
     <>
       <NavigationBarBack backgroundColor="#FFFFFF" title="账号设置" url="/pages/mineHome/index" />
@@ -81,18 +93,8 @@ const Index = () => {
           </View>
           <View className="userProfile-container-bottom">
             <View className="userProfile-container-column">昵称</View>
-            <View className="userProfile-container-desc">
-              <Input
-                className="userProfile-container-input"
-                placeholder={isShowPlaceholder ? (username ? username : '点击设置昵称') : ''}
-                placeholderClass="userProfile-container-desc-placeholder"
-                placeholderStyle="text-align: right"
-                value={inputValue}
-                onInput={handleInputChange}
-                onConfirm={handleConfirm}
-                onFocus={() => setIsShowPlaceholder(false)}
-                onBlur={() => setIsShowPlaceholder(true)}
-              />
+            <View className="userProfile-container-desc" onClick={() => setIsRenameVisible(true)}>
+              {username ? username : '点击设置昵称'}
             </View>
           </View>
         </View>
@@ -129,13 +131,29 @@ const Index = () => {
       <ImagePicker
         isVisiable={isVisiable}
         setIsVisiable={setIsVisiable}
-        isOverlay={true}
         imgUrl={imgUrl}
         setImgUrl={setCutImgUrl}
         type="event"
         count={1}
         isRequest={true}
       />
+
+      <Modal
+        visible={isRenameVisible}
+        showHeader={false}
+        onConfirm={handleConfirm}
+        onClose={() => setIsRenameVisible(false)}
+      >
+        <CustomInput
+          className="userProfile-container-input"
+          wrapperStyle={{ border: 'none' }}
+          value={inputValue}
+          onInput={handleInputChange}
+          onConfirm={handleConfirm}
+          maxLength={7}
+        />
+      </Modal>
+
       {cutImgUrl.length > 0 && (
         <PictureCut
           isvisible={isCutVisible}

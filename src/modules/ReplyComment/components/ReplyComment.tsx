@@ -1,20 +1,20 @@
 import './style.scss';
 import { View, Image } from '@tarojs/components';
-import { replyType } from '@/common/types/PostList';
+import { ReplyType } from '@/common/types';
 import { memo } from 'react';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 import favor from '@/common/svg/post/heart.svg';
 import favorAct from '@/common/svg/post/heartAct.svg';
 import { useState } from 'react';
 import handleInteraction from '@/common/utils/Interaction';
-const ReplyComment: React.FC<replyType | any> = memo(({ ...props }) => {
+const ReplyComment: React.FC<ReplyType | any> = memo(({ ...props }) => {
   const [islike, setIslike] = useState(props.isLike);
   const [nums, setNums] = useState(props.likeNum);
   const param = {
-    studentid: props.studentid,
+    studentId: props.studentId,
     subject: 'comment',
     targetid: props.bid,
-    receiver: props.reply_creator.studentid,
+    receiver: props.reply_creator.studentId,
   };
   const clickLove = async () => {
     const action = islike === 'true' ? 'dislike' : 'like';
@@ -47,7 +47,7 @@ const ReplyComment: React.FC<replyType | any> = memo(({ ...props }) => {
           className="ReplyComment-info"
           onClick={() => {
             props.setIsVisible(true);
-            props.setReply_id(props.bid);
+            props.setReplyId(props.bid);
           }}
         >
           <View className="ReplyComment-info-name">{props.reply_creator.username ?? '校灵通'}</View>

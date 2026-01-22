@@ -1,47 +1,52 @@
-import { View, Image, Input, Span, Swiper, SwiperItem } from '@tarojs/components';
+import { View, Image, Span, Swiper, SwiperItem } from '@tarojs/components';
 import Taro, { useDidShow } from '@tarojs/taro';
 import { useState, useEffect, createContext, useRef } from 'react';
 import './index.scss';
 import { NavigationBar } from '@/common/components/NavigationBar';
-import PostComment from '@/modules/PostComment';
 import favor from '@/common/svg/post/heart.svg';
 import collect from '@/common/svg/post/star.svg';
 import comment from '@/common/assets/Postlist/comment.png';
 import icon from '@/common/assets/Postlist/inputIcon.png';
 import collectActive from '@/common/svg/post/starAct.svg';
 import favorActive from '@/common/svg/post/heartAct.svg';
-import get from '@/common/api/get';
-import post from '@/common/api/post';
-import { responseType } from '@/common/types/PostList';
+import { CommentResponse } from '@/common/types';
+import { getCommentsBySubject, createComment, replyComment } from '@/common/api/Comment';
 import useActivityStore from '@/store/ActivityStore';
-import useUserStore from '@/store/userStore';
+import { CreatorType } from '@/common/types';
 import handleInteraction from '@/common/utils/Interaction';
 import ReplyInput from '@/modules/ReplyInput';
 import { ScrollView } from '@tarojs/components';
+import CommentList from '@/modules/Comment';
+import CommentActionSheet from '@/modules/CommentActionSheet';
 
 export const SetReponseContext = createContext<(params: any) => void>(() => {});
 export const SetActivityComment = createContext<(params: any) => void>(() => {});
+
 const Index = () => {
   const { selectedItem, setSelectedItem, setLikeNumChange, setCollectNumChange, setIsSelect } =
     useActivityStore();
   const [inputValue, setInputValue] = useState('');
-  const [response, setResponse] = useState<responseType[]>([]);
-  const [reply_id, setReply_id] = useState('');
-  const [isVisible, setIsVisible] = useState(false);
+  const [response, setResponse] = useState<CommentResponse[]>([]);
+  const [replyId, setReplyId] = useState('');
   const [commentInput, setCommentInput] = useState(false);
+  const [replytype, setReplytype] = useState('create');
   const [showpicture, setShowpicture] = useState(false);
   const [ratios, setRatios] = useState<string[]>([]);
   const [clickCount, setClickCount] = useState(0);
   const [clickTimer, setClickTimer] = useState<NodeJS.Timeout | null>(null);
+  const [commentOperation, setCommentOperation] = useState(false);
+  const [commentItems, setCommentItems] = useState('');
+  const [commentCreator, setCommentCreator] = useState<CreatorType>();
+  const [commentid, setCommentid] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const windowWidth = Taro.getWindowInfo().windowWidth;
   const windowHeight = Taro.getWindowInfo().windowHeight;
-  const studentid = Taro.getStorageSync('sid');
+  const studentId = Taro.getStorageSync('sid');
   const params = {
-    studentid: studentid,
+    studentId: studentId,
     subject: 'activity',
-    targetid: selectedItem.bid,
-    receiver: selectedItem.userInfo.studentid,
+    targetId: selectedItem.bid,
+    receiver: selectedItem.userInfo.studentId,
   };
 
   console.log(selectedItem);
@@ -54,31 +59,30 @@ const Index = () => {
   const scrollViewRef = useRef<any>(null);
 
   const reply_params = {
-    parent_id: reply_id,
+    parentId: replyId,
     subject: 'comment',
-    receiver: selectedItem.userInfo.studentid,
   };
   const comment_params = {
-    parent_id: selectedItem.bid,
+    parentId: selectedItem.bid,
     subject: 'activity',
-    receiver: selectedItem.userInfo.studentid,
+    receiver: selectedItem.userInfo.studentId,
   };
 
   const handlepic = (pictures) => {
     let windowRatio = Number((windowHeight / windowWidth).toFixed(2));
-    const res = Array(pictures.length).fill("widthimg");
+    const res = Array(pictures.length).fill('widthimg');
     for (let i = 0; i < pictures.length; i++) {
       if (pictures[i] > windowRatio) {
-        res[i]="heigthimg";
+        res[i] = 'heigthimg';
       }
     }
     setRatios(res);
-  }
-  
+  };
+
   const loadImageRatios = async () => {
     if (selectedItem && selectedItem.showImg) {
       const ratios: number[] = [];
-      
+
       for (const imgUrl of selectedItem.showImg) {
         try {
           const imgInfo = await Taro.getImageInfo({ src: imgUrl });
@@ -93,17 +97,17 @@ const Index = () => {
     }
   };
 
-  const handleImageClick = () => {
-    setClickCount(prev => prev + 1);
-    
+  const handleImageClick = async () => {
+    setClickCount((prev) => prev + 1);
+
     if (clickCount === 1) {
       if (clickTimer) {
         clearTimeout(clickTimer);
         setClickTimer(null);
       }
       if (selectedItem.isLike === 'false') {
-      handleInteraction('like', params)
-        .then((res) => {
+        try {
+          const res = await handleInteraction('like', params);
           if (res.msg === 'success') {
             setLikeNumChange(selectedItem.bid, 'add');
             setSelectedItem({
@@ -112,10 +116,9 @@ const Index = () => {
               likeNum: selectedItem.likeNum + 1,
             });
           }
-        })
-        .catch((err) => {
+        } catch (err) {
           console.log(err);
-        });
+        }
       }
       setClickCount(0);
     } else {
@@ -135,27 +138,31 @@ const Index = () => {
     };
   }, [clickTimer]);
 
-  const handleInput = (e: any) => {
-    setInputValue(e.detail.value);
-  };
-
   useDidShow(() => {
     setIsSelect(false);
   });
 
   useEffect(() => {
-    get(`/comment/load/${selectedItem.bid}`).then((res) => {
-      if (res.data === null) {
+    const fetchComments = async () => {
+      try {
+        const res = await getCommentsBySubject(selectedItem.bid);
+        if (res.data === null) {
+          setResponse([]);
+          return;
+        }
+        console.log(res.data);
+        setResponse(res.data);
+      } catch (error) {
+        console.error('获取评论失败:', error);
         setResponse([]);
-        return;
       }
-      console.log(res.data);
-      setResponse(res.data);
-    });
+    };
+
+    fetchComments();
     loadImageRatios();
   }, []);
 
-  const setReponseContext = (params: any) => {
+  const setReponseContext = async (params: any) => {
     if (params.content === '') {
       Taro.showToast({
         title: '评论不能为空',
@@ -163,134 +170,93 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/answer', params).then((res) => {
-        console.log(res, params);
+      try {
+        const res = await replyComment(params);
         if (res.msg === 'success') {
-          get(`/comment/load/${selectedItem.bid}`).then((res) => {
-            if (res.data === null) {
-              setResponse([]);
-              return;
-            }
-            console.log(res.data);
-            setResponse(res.data);
-          });
-        }
-      });
-    }
-  };
-
-  const handleLikeComment = async (bid: string,receiver: string) => {
-    const action =
-      response.find((item) => item.bid === bid)?.isLike === 'true' ? 'dislike' : 'like';
-    const tag = handleInteraction(action, {
-      studentid: studentid,
-      subject: 'comment',
-      targetid: bid,
-      receiver: receiver,
-    });
-
-    try {
-      const res = await tag;
-      if (res.msg === 'success') {
-        const updatedResponse = response.map((item) => {
-          if (item.bid === bid) {
-            const newIsLike = item.isLike === 'true' ? 'false' : 'true';
-            const newLikeNum = newIsLike === 'true' ? item.likeNum + 1 : item.likeNum - 1;
-            return {
-              ...item,
-              isLike: newIsLike,
-              likeNum: newLikeNum,
-            };
+          const commentRes = await getCommentsBySubject(selectedItem.bid);
+          if (commentRes.data === null) {
+            setResponse([]);
+            return;
           }
-          return item;
-        });
-        setResponse(updatedResponse);
-      } else {
+          console.log(commentRes.data);
+          setResponse(commentRes.data);
+        }
+      } catch (error) {
+        console.log(error);
         Taro.showToast({
-          title: '点赞失败',
+          title: '回复评论失败',
           icon: 'none',
           duration: 1000,
         });
       }
-    } catch (err) {
-      console.error(err);
-      Taro.showToast({
-        title: '点赞失败',
-        icon: 'none',
-        duration: 1000,
-      });
     }
   };
 
-  const handleLike = () => {
+  const handleLike = async () => {
     if (selectedItem.isLike === 'true') {
-      handleInteraction('dislike', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setLikeNumChange(selectedItem.bid, 'reduce');
-            setSelectedItem({
-              ...selectedItem,
-              isLike: 'false',
-              likeNum: selectedItem.likeNum - 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('dislike', params);
+        if (res.msg === 'success') {
+          setLikeNumChange(selectedItem.bid, 'reduce');
+          setSelectedItem({
+            ...selectedItem,
+            isLike: 'false',
+            likeNum: selectedItem.likeNum - 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (selectedItem.isLike === 'false') {
-      handleInteraction('like', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setLikeNumChange(selectedItem.bid, 'add');
-            setSelectedItem({
-              ...selectedItem,
-              isLike: 'true',
-              likeNum: selectedItem.likeNum + 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('like', params);
+        if (res.msg === 'success') {
+          setLikeNumChange(selectedItem.bid, 'add');
+          setSelectedItem({
+            ...selectedItem,
+            isLike: 'true',
+            likeNum: selectedItem.likeNum + 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const handleCollect = () => {
+  const handleCollect = async () => {
     if (selectedItem.isCollect === 'true') {
-      handleInteraction('discollect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(selectedItem.bid, 'reduce');
-            setSelectedItem({
-              ...selectedItem,
-              isCollect: 'false',
-              collectNum: selectedItem.collectNum - 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('discollect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(selectedItem.bid, 'reduce');
+          setSelectedItem({
+            ...selectedItem,
+            isCollect: 'false',
+            collectNum: selectedItem.collectNum - 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     } else if (selectedItem.isCollect === 'false') {
-      handleInteraction('collect', params)
-        .then((res) => {
-          if (res.msg === 'success') {
-            setCollectNumChange(selectedItem.bid, 'add');
-            setSelectedItem({
-              ...selectedItem,
-              isCollect: 'true',
-              collectNum: selectedItem.collectNum + 1,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        const res = await handleInteraction('collect', params);
+        if (res.msg === 'success') {
+          setCollectNumChange(selectedItem.bid, 'add');
+          setSelectedItem({
+            ...selectedItem,
+            isCollect: 'true',
+            collectNum: selectedItem.collectNum + 1,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const setActivityComment=(params:any)=>{
+  const setActivityComment = async (params: any) => {
     if (params.content === '') {
       Taro.showToast({
         title: '评论不能为空',
@@ -298,7 +264,8 @@ const Index = () => {
         duration: 300,
       });
     } else {
-      post('/comment/create', params).then((res) => {
+      try {
+        const res = await createComment(params);
         console.log(res, params);
         if (res.msg === 'success') {
           setResponse([...response, res.data]);
@@ -308,7 +275,14 @@ const Index = () => {
           });
           setInputValue('');
         }
-      });
+      } catch (error) {
+        console.error('创建评论失败:', error);
+        Taro.showToast({
+          title: '评论发送失败',
+          icon: 'none',
+          duration: 1000,
+        });
+      }
     }
   };
 
@@ -337,6 +311,10 @@ const Index = () => {
   const handleTouchEnd = () => {
     setIsTouchingHandle(false);
   };
+  const replyCom = () => {
+    setCommentInput(true);
+    setReplytype('reply');
+  };
 
   return (
     <>
@@ -353,11 +331,12 @@ const Index = () => {
                 {selectedItem.introduce}
               </View>
             </View>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 10 }}
-            onClick={()=>{
-              setCurrentPosition(0);
-              handleImageClick();
-            }}
+            <View
+              style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 10 }}
+              onClick={() => {
+                setCurrentPosition(0);
+                handleImageClick();
+              }}
             >
               {(selectedItem.showImg || []).map((item, index) => (
                 <Image
@@ -438,23 +417,15 @@ const Index = () => {
             ref={scrollViewRef}
           >
             <View className="actComment-container">
-              {response.map((item, index) => (
-                <PostComment
-                  key={index}
-                  bid={item.bid}
-                  creator={item.creator}
-                  content={item.content}
-                  commented_time={item.commented_time}
-                  commented_pos={item.commented_pos}
-                  reply={item.reply ?? []}
-                  isLike={item.isLike}
-                  likeNum={item.likeNum}
-                  replyNum={item.replyNum}
-                  setIsVisible={setIsVisible}
-                  setReply_id={setReply_id}
-                  onLikeComment={handleLikeComment}
-                />
-              ))}
+              <CommentList
+                comments={response}
+                replycomment={replyCom}
+                setReplyId={setReplyId}
+                longClick={() => setCommentOperation(true)}
+                setCommentItems={setCommentItems}
+                setCommentCreator={setCommentCreator}
+                setCommentid={setCommentid}
+              />
             </View>
           </ScrollView>
         </View>
@@ -462,14 +433,6 @@ const Index = () => {
         <View className="actComment-footer">
           <View className="actComment-footer-input" onClick={() => setCommentInput(true)}>
             <Image className="actComment-footer-input-icon" mode="widthFix" src={icon}></Image>
-            {/*<Input
-              className="actComment-footer-input-text"
-              placeholder="说点什么"
-              placeholderClass="actComment-footer-input-text"
-              value={inputValue}
-              onInput={(e) => handleInput(e)}
-              onConfirm={() => handleSubmit()}
-            ></Input>*/}
             <View className="actComment-footer-input-text">
               {inputValue ? inputValue : '说点什么'}
             </View>
@@ -482,7 +445,7 @@ const Index = () => {
                 src={selectedItem.isLike === 'true' ? favorActive : favor}
                 onClick={handleLike}
               ></Image>
-              <View className="actComment-footer-desc-text">{selectedItem.likeNum}</View>              
+              <View className="actComment-footer-desc-text">{selectedItem.likeNum}</View>
             </View>
             <View className="actComment-footer-desc-item">
               <Image
@@ -491,7 +454,7 @@ const Index = () => {
                 src={selectedItem.isCollect === 'true' ? collectActive : collect}
                 onClick={handleCollect}
               ></Image>
-              <View className="actComment-footer-desc-text">{selectedItem.collectNum}</View>              
+              <View className="actComment-footer-desc-text">{selectedItem.collectNum}</View>
             </View>
             <View className="actComment-footer-desc-item">
               <Image className="actComment-footer-desc-icon3" mode="widthFix" src={comment}></Image>
@@ -499,62 +462,46 @@ const Index = () => {
             </View>
           </View>
         </View>
-        {/*{commentInput && (
-          <View className="comment-popup">
-            <View className="comment-popup-cancel" onClick={() => setCommentInput(false)} />
-            <View className="comment-popup-box">
-              <Input
-                className="comment-popup-box-input"
-                placeholder="在此输入"
-                placeholderClass="postDetail-comment-input-text-input"
-                value={inputValue}
-                focus={true}
-                onInput={(e) => handleInput(e)}
-              ></Input>
-              <View
-                className={`comment-popup-box-send ${inputValue ? 'comment-popup-box-send-active' : ''}`}
-                onClick={() => {
-                  handleSubmit();
-                  setCommentInput(false);
-                }}
-              >
-                发送
-              </View>
-            </View>
-          </View>
-        )}*/}
       </View>
-
-      {isVisible? 
-      <SetReponseContext.Provider value={setReponseContext}>
-        <ReplyInput
-          isVisible={isVisible}
-          setIsVisible={setIsVisible}
-          params={reply_params}
-          page="activity"
-        />
-      </SetReponseContext.Provider>      
-      : 
-      <SetActivityComment.Provider value={setActivityComment}>
-        <ReplyWindow
-          isVisible={commentInput}
-          setIsVisible={setCommentInput}
-          params={comment_params}
-          page="activity"
-          comment={true}
-        />
-      </SetActivityComment.Provider>        
-      }
-      {(showpicture && ratios.length > 0) && (
-        <View className='showpicture' onClick={() => setShowpicture(false)}>
-          <Swiper className='showpicture-swiper' indicatorDots={true} interval={3000} circular={false} current={currentIndex}>
+      {commentInput && (
+        <SetReponseContext.Provider
+          value={replytype === 'create' ? setActivityComment : setReponseContext}
+        >
+          <ReplyInput
+            isVisible={commentInput}
+            setIsVisible={setCommentInput}
+            params={replytype === 'create' ? comment_params : reply_params}
+            page="activity"
+            comment={replytype === 'create' ? true : false}
+          />
+        </SetReponseContext.Provider>
+      )}
+      {showpicture && ratios.length > 0 && (
+        <View className="showpicture" onClick={() => setShowpicture(false)}>
+          <Swiper
+            className="showpicture-swiper"
+            indicatorDots={true}
+            interval={3000}
+            circular={false}
+            current={currentIndex}
+          >
             {selectedItem.showImg.map((item, index) => (
               <SwiperItem key={index} className={`showpicture-swiper-${ratios[index]}`}>
-                <Image src={item} className='showpicture-swiper-item-img' mode='widthFix'/>
+                <Image src={item} className="showpicture-swiper-item-img" mode="widthFix" />
               </SwiperItem>
             ))}
           </Swiper>
         </View>
+      )}
+      {commentOperation && (
+        <CommentActionSheet
+          visible={commentOperation}
+          setVisible={setCommentOperation}
+          studentId={studentId}
+          commentItems={commentItems}
+          commentCreator={commentCreator}
+          commentid={commentid}
+        />
       )}
     </>
   );

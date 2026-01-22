@@ -14,6 +14,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
   &-title {
     height: 140rpx;
@@ -41,7 +46,7 @@
     align-items: center;
     &-draft {
       position: absolute;
-      left: 60rpx;
+      left: 30rpx;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -53,7 +58,12 @@
     }
     &-btn {
       position: absolute;
-      left: 180rpx;
+      left: 150rpx;
     }
   }
+}
+
+.textmid {
+  text-align: center;
+  justify-content: center;
 }

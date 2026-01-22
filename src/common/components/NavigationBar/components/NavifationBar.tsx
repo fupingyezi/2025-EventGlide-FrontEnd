@@ -4,9 +4,9 @@ import { switchTab } from '@tarojs/taro';
 import './style.scss';
 import avatar from '@/common/assets/Postlist/波奇.jpg';
 import Naviarrow from '@/common/assets/arrowhead/Naviarrow.png';
-import user from '@/common/types/User';
+import { UserInfo } from '@/common/types';
 
-const NavigationBar: React.FC<{ url: string; userInfo: user }> = memo(({ url, userInfo }) => {
+const NavigationBar: React.FC<{ url: string; userInfo: UserInfo }> = memo(({ url, userInfo }) => {
   return (
     <View className="navigationBar">
       <Image

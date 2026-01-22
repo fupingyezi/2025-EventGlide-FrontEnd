@@ -1,19 +1,22 @@
 import Taro from '@tarojs/taro';
-import get from './get';
+import { get } from './request';
 
 export interface WebGetTubeTokenData {
-  access_token: string;
-  domain_name: string;
+  accessToken: string;
+  domainName: string;
 }
+
 export interface QiniuUploadResponse {
   key: string;
   hash: string;
 }
+
 export interface ResponseQiniu {
   code?: number;
   data: WebGetTubeTokenData;
   msg?: string;
 }
+
 export const fetchQiniuToken = async () => {
   try {
     const url = '/user/token/qiniu';
@@ -32,7 +35,7 @@ export const fetchQiniuToken = async () => {
 export const fetchToQiniu = async (filepath: string) => {
   try {
     const data = await fetchQiniuToken();
-    if (!data || !data.access_token || !data.domain_name) {
+    if (!data || !data.accessToken || !data.domainName) {
       Taro.showToast({
         title: '上传',
         icon: 'none',
@@ -41,7 +44,7 @@ export const fetchToQiniu = async (filepath: string) => {
       throw new Error('Qiniu token 无');
     }
 
-    const { access_token, domain_name } = data;
+    const { accessToken, domainName } = data;
 
     return new Promise((resolve, reject) => {
       void Taro.uploadFile({
@@ -49,10 +52,10 @@ export const fetchToQiniu = async (filepath: string) => {
         filePath: filepath,
         name: 'file',
         formData: {
-          token: access_token,
+          token: accessToken,
         },
         success: (res) => {
-          resolve(`https://${domain_name}/${JSON.parse(res.data)?.key}`);
+          resolve(`https://${domainName}/${JSON.parse(res.data)?.key}`);
         },
         fail: (err) => {
           reject(err);

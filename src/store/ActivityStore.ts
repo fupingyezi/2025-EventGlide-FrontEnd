@@ -1,15 +1,15 @@
 import { create } from 'zustand';
-import { selectedInfo, ActivityDetailList } from '@/common/types/ActiveList';
+import { SelectedInfo, ActivityDetailInfo } from '@/common/types';
 
 interface ActivityStoreState {
-  selectedInfo: selectedInfo;
-  activeList: ActivityDetailList[];
-  selectedItem: ActivityDetailList;
+  selectedInfo: SelectedInfo;
+  activeList: ActivityDetailInfo[];
+  selectedItem: ActivityDetailInfo;
   isSelect: boolean;
   setIsSelect: (type: boolean) => void;
-  setSelectInfo: (info: selectedInfo) => void; //筛选条件
-  setActiveList: (list: ActivityDetailList[]) => void;
-  setSelectedItem: (list: ActivityDetailList) => void; //选中的活动详情
+  setSelectInfo: (info: SelectedInfo) => void; //筛选条件
+  setActiveList: (list: ActivityDetailInfo[]) => void;
+  setSelectedItem: (list: ActivityDetailInfo) => void; //选中的活动详情
   setLikeNumChange: (id: string, type: string) => void;
   setCollectNumChange: (id: string, type: string) => void;
 }
@@ -19,14 +19,14 @@ const useActivityStore = create<ActivityStoreState>((set) => ({
     holderType: [],
     type: [],
     position: [],
-    if_register: '',
+    ifRegister: '',
     detailTime: {
       startTime: '',
-      endTime: ''
-    }
+      endTime: '',
+    },
   },
   activeList: [],
-  selectedItem: {} as ActivityDetailList,
+  selectedItem: {} as ActivityDetailInfo,
   isSelect: false,
   setIsSelect: (type) => set(() => ({ isSelect: type })),
   setSelectInfo: (info) => set(() => ({ selectedInfo: info })),

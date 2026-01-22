@@ -1,14 +1,14 @@
 import { memo } from 'react';
 import { View, Image } from '@tarojs/components';
 import './style.scss';
-import { responseType } from '@/common/types/PostList';
+import { ResponseType } from '@/common/types';
 import defaultAvatar from '@/common/assets/Postlist/波奇.jpg';
 import favor from '@/common/svg/post/heart.svg';
 import favorAct from '@/common/svg/post/heartAct.svg';
 import TimeTranslation from '@/common/utils/TimeTranslation';
 import ReplyComment from '@/modules/ReplyComment';
 
-const PostComment: React.FC<responseType | any> = memo((props) => {
+const PostComment: React.FC<ResponseType | any> = memo((props) => {
   const flattenReplies = (replies) => {
     return replies.flatMap((reply) => {
       const result = [reply];
@@ -22,7 +22,7 @@ const PostComment: React.FC<responseType | any> = memo((props) => {
     '为了让大家更好地了解该活动， 请介绍一下活动亮点，活动流程 和注意事项等内容......';
 
   const handleCommentLike = () => {
-    props.onLikeComment(props.bid, props.creator.studentid);
+    props.onLikeComment(props.bid, props.creator.studentId);
   };
 
   return (
@@ -34,22 +34,18 @@ const PostComment: React.FC<responseType | any> = memo((props) => {
             src={props.creator.avatar ? props.creator.avatar : defaultAvatar}
             mode="scaleToFill"
           />
-          <View className="postComment-info"
-          onClick={() => {
-            props.setIsVisible(true);
-            props.setReply_id(props.bid);
-          }}
+          <View
+            className="postComment-info"
+            onClick={() => {
+              props.setIsVisible(true);
+              props.setReplyId(props.bid);
+            }}
           >
             <View className="postComment-info-name">{props.creator.username ?? '校灵通'}</View>
             <View className="postComment-info-content">{props.content || defaultContent}</View>
             <View className="postComment-info-timesite">
               {TimeTranslation(props.commented_time)}&nbsp;&nbsp;
-              
-              <View
-                className="postComment-info-reply"
-              >
-                回复
-              </View>
+              <View className="postComment-info-reply">回复</View>
             </View>
           </View>
           <Image
@@ -72,7 +68,7 @@ const PostComment: React.FC<responseType | any> = memo((props) => {
                 reply_pos={item.reply_pos}
                 setIsVisible={props.setIsVisible}
                 parentUserName={item.parentUserName}
-                setReply_id={props.setReply_id}
+                setReplyId={props.setReplyId}
                 isLike={item.isLike}
                 likeNum={item.likeNum}
               />
